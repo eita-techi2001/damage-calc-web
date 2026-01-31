@@ -1,0 +1,28 @@
+{
+    "species": "Annihilape",
+    "level": 50,
+    "nature": "Careful",
+    "ability": "Defiant",
+    "item": "Leftovers",
+    "evs": {
+        "hp": 252,
+        "atk": 4,
+        "def": 100,
+        "spa": 0,
+        "spd": 152,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Water",
+    "moves": [
+        "Rage Fist",
+        "Drain Punch"
+    ]
+}

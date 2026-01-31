@@ -1,0 +1,7316 @@
+[
+  {
+    "name": {
+      "english": "Bulbasaur",
+      "japanese": "フシギダネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ivysaur",
+      "japanese": "フシギソウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Venusaur",
+      "japanese": "フシギバナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Charmander",
+      "japanese": "ヒトカゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Charmeleon",
+      "japanese": "リザード"
+    }
+  },
+  {
+    "name": {
+      "english": "Charizard",
+      "japanese": "リザードン"
+    }
+  },
+  {
+    "name": {
+      "english": "Squirtle",
+      "japanese": "ゼニガメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wartortle",
+      "japanese": "カメール"
+    }
+  },
+  {
+    "name": {
+      "english": "Blastoise",
+      "japanese": "カメックス"
+    }
+  },
+  {
+    "name": {
+      "english": "Caterpie",
+      "japanese": "キャタピー"
+    }
+  },
+  {
+    "name": {
+      "english": "Metapod",
+      "japanese": "トランセル"
+    }
+  },
+  {
+    "name": {
+      "english": "Butterfree",
+      "japanese": "バタフリー"
+    }
+  },
+  {
+    "name": {
+      "english": "Weedle",
+      "japanese": "ビードル"
+    }
+  },
+  {
+    "name": {
+      "english": "Kakuna",
+      "japanese": "コクーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Beedrill",
+      "japanese": "スピアー"
+    }
+  },
+  {
+    "name": {
+      "english": "Pidgey",
+      "japanese": "ポッポ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pidgeotto",
+      "japanese": "ピジョン"
+    }
+  },
+  {
+    "name": {
+      "english": "Pidgeot",
+      "japanese": "ピジョット"
+    }
+  },
+  {
+    "name": {
+      "english": "Rattata",
+      "japanese": "コラッタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Rattata-Alola",
+      "japanese": "コラッタ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Raticate",
+      "japanese": "ラッタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Raticate-Alola",
+      "japanese": "ラッタ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Raticate-Alola-Totem",
+      "japanese": "ラッタ(アローラ)(アローラ)(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Spearow",
+      "japanese": "オニスズメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Fearow",
+      "japanese": "オニドリル"
+    }
+  },
+  {
+    "name": {
+      "english": "Ekans",
+      "japanese": "アーボ"
+    }
+  },
+  {
+    "name": {
+      "english": "Arbok",
+      "japanese": "アーボック"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu",
+      "japanese": "ピカチュウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Alola",
+      "japanese": "ピカチュウ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Hoenn",
+      "japanese": "ピカチュウ(ホウエン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Kalos",
+      "japanese": "ピカチュウ(カロス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Original",
+      "japanese": "ピカチュウ(オリジン)(オリジナル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Partner",
+      "japanese": "ピカチュウ(キミにきめた)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Sinnoh",
+      "japanese": "ピカチュウ(シンオウ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-Unova",
+      "japanese": "ピカチュウ(イッシュ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikachu-World",
+      "japanese": "ピカチュウ(ワールド)"
+    }
+  },
+  {
+    "name": {
+      "english": "Raichu",
+      "japanese": "ライチュウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Raichu-Alola",
+      "japanese": "ライチュウ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandshrew",
+      "japanese": "サンド"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandshrew-Alola",
+      "japanese": "サンド(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandslash",
+      "japanese": "サンドパン"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandslash-Alola",
+      "japanese": "サンドパン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Nidorina",
+      "japanese": "ニドリーナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Nidoqueen",
+      "japanese": "ニドクイン"
+    }
+  },
+  {
+    "name": {
+      "english": "Nidorino",
+      "japanese": "ニドリーノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Nidoking",
+      "japanese": "ニドキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Clefairy",
+      "japanese": "ピッピ"
+    }
+  },
+  {
+    "name": {
+      "english": "Clefable",
+      "japanese": "ピクシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Vulpix",
+      "japanese": "ロコン"
+    }
+  },
+  {
+    "name": {
+      "english": "Vulpix-Alola",
+      "japanese": "ロコン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Ninetales",
+      "japanese": "キュウコン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ninetales-Alola",
+      "japanese": "キュウコン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Jigglypuff",
+      "japanese": "プリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Wigglytuff",
+      "japanese": "プクリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Zubat",
+      "japanese": "ズバット"
+    }
+  },
+  {
+    "name": {
+      "english": "Golbat",
+      "japanese": "ゴルバット"
+    }
+  },
+  {
+    "name": {
+      "english": "Oddish",
+      "japanese": "ナゾノクサ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gloom",
+      "japanese": "クサイハナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vileplume",
+      "japanese": "ラフレシア"
+    }
+  },
+  {
+    "name": {
+      "english": "Paras",
+      "japanese": "パラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Parasect",
+      "japanese": "パラセクト"
+    }
+  },
+  {
+    "name": {
+      "english": "Venonat",
+      "japanese": "コンパン"
+    }
+  },
+  {
+    "name": {
+      "english": "Venomoth",
+      "japanese": "モルフォン"
+    }
+  },
+  {
+    "name": {
+      "english": "Diglett",
+      "japanese": "ディグダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Diglett-Alola",
+      "japanese": "ディグダ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Dugtrio",
+      "japanese": "ダグトリオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dugtrio-Alola",
+      "japanese": "ダグトリオ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowth",
+      "japanese": "ニャース"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowth-Alola",
+      "japanese": "ニャース(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowth-Galar",
+      "japanese": "ニャース(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Persian",
+      "japanese": "ペルシアン"
+    }
+  },
+  {
+    "name": {
+      "english": "Persian-Alola",
+      "japanese": "ペルシアン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Psyduck",
+      "japanese": "コダック"
+    }
+  },
+  {
+    "name": {
+      "english": "Golduck",
+      "japanese": "ゴルダック"
+    }
+  },
+  {
+    "name": {
+      "english": "Mankey",
+      "japanese": "マンキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Primeape",
+      "japanese": "オコリザル"
+    }
+  },
+  {
+    "name": {
+      "english": "Growlithe",
+      "japanese": "ガーディ"
+    }
+  },
+  {
+    "name": {
+      "english": "Growlithe-Hisui",
+      "japanese": "ガーディ(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arcanine",
+      "japanese": "ウインディ"
+    }
+  },
+  {
+    "name": {
+      "english": "Arcanine-Hisui",
+      "japanese": "ウインディ(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Poliwag",
+      "japanese": "ニョロモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Poliwhirl",
+      "japanese": "ニョロゾ"
+    }
+  },
+  {
+    "name": {
+      "english": "Poliwrath",
+      "japanese": "ニョロボン"
+    }
+  },
+  {
+    "name": {
+      "english": "Abra",
+      "japanese": "ケーシィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kadabra",
+      "japanese": "ユンゲラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Alakazam",
+      "japanese": "フーディン"
+    }
+  },
+  {
+    "name": {
+      "english": "Machop",
+      "japanese": "ワンリキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Machoke",
+      "japanese": "ゴーリキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Machamp",
+      "japanese": "カイリキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Bellsprout",
+      "japanese": "マダツボミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Weepinbell",
+      "japanese": "ウツドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Victreebel",
+      "japanese": "ウツボット"
+    }
+  },
+  {
+    "name": {
+      "english": "Tentacool",
+      "japanese": "メノクラゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tentacruel",
+      "japanese": "ドククラゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Geodude",
+      "japanese": "イシツブテ"
+    }
+  },
+  {
+    "name": {
+      "english": "Geodude-Alola",
+      "japanese": "イシツブテ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Graveler",
+      "japanese": "ゴロ��ン"
+    }
+  },
+  {
+    "name": {
+      "english": "Graveler-Alola",
+      "japanese": "ゴロ��ン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Golem",
+      "japanese": "ゴローニャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Golem-Alola",
+      "japanese": "ゴローニャ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Ponyta",
+      "japanese": "ポニータ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ponyta-Galar",
+      "japanese": "ポニータ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rapidash",
+      "japanese": "ギャロップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Rapidash-Galar",
+      "japanese": "ギャロップ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowpoke",
+      "japanese": "ヤドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowpoke-Galar",
+      "japanese": "ヤドン(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowbro",
+      "japanese": "ヤドラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowbro-Galar",
+      "japanese": "ヤドラン(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Magnemite",
+      "japanese": "コイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Magneton",
+      "japanese": "レアコイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Doduo",
+      "japanese": "ドードー"
+    }
+  },
+  {
+    "name": {
+      "english": "Dodrio",
+      "japanese": "ドードリオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Seel",
+      "japanese": "パウワウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dewgong",
+      "japanese": "ジュゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Grimer",
+      "japanese": "ベトベター"
+    }
+  },
+  {
+    "name": {
+      "english": "Grimer-Alola",
+      "japanese": "ベトベター(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Muk",
+      "japanese": "ベトベトン"
+    }
+  },
+  {
+    "name": {
+      "english": "Muk-Alola",
+      "japanese": "ベトベトン(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Shellder",
+      "japanese": "シェルダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Cloyster",
+      "japanese": "パルシェン"
+    }
+  },
+  {
+    "name": {
+      "english": "Gastly",
+      "japanese": "ゴース"
+    }
+  },
+  {
+    "name": {
+      "english": "Haunter",
+      "japanese": "ゴースト"
+    }
+  },
+  {
+    "name": {
+      "english": "Gengar",
+      "japanese": "ゲンガー"
+    }
+  },
+  {
+    "name": {
+      "english": "Onix",
+      "japanese": "イワーク"
+    }
+  },
+  {
+    "name": {
+      "english": "Drowzee",
+      "japanese": "スリープ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hypno",
+      "japanese": "スリーパー"
+    }
+  },
+  {
+    "name": {
+      "english": "Krabby",
+      "japanese": "クラブ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kingler",
+      "japanese": "キングラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Voltorb",
+      "japanese": "ビリリダマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Voltorb-Hisui",
+      "japanese": "ビリリダマ(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Electrode",
+      "japanese": "マルマイン"
+    }
+  },
+  {
+    "name": {
+      "english": "Electrode-Hisui",
+      "japanese": "マルマイン(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Exeggcute",
+      "japanese": "タマタマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Exeggutor",
+      "japanese": "ナッシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Exeggutor-Alola",
+      "japanese": "ナッシー(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Cubone",
+      "japanese": "カラカラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Marowak",
+      "japanese": "ガラガラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Marowak-Alola",
+      "japanese": "ガラガラ(アローラ)(アローラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Marowak-Alola-Totem",
+      "japanese": "ガラガラ(アローラ)(アローラ)(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Hitmonlee",
+      "japanese": "サワムラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Hitmonchan",
+      "japanese": "エビワラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Lickitung",
+      "japanese": "ベロリンガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Koffing",
+      "japanese": "ドガース"
+    }
+  },
+  {
+    "name": {
+      "english": "Weezing",
+      "japanese": "マタドガス"
+    }
+  },
+  {
+    "name": {
+      "english": "Weezing-Galar",
+      "japanese": "マタドガス(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rhyhorn",
+      "japanese": "サイホーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rhydon",
+      "japanese": "サイドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Chansey",
+      "japanese": "ラッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Tangela",
+      "japanese": "モンジャラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kangaskhan",
+      "japanese": "ガルーラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Horsea",
+      "japanese": "タッツー"
+    }
+  },
+  {
+    "name": {
+      "english": "Seadra",
+      "japanese": "シードラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Goldeen",
+      "japanese": "トサキント"
+    }
+  },
+  {
+    "name": {
+      "english": "Seaking",
+      "japanese": "アズマオウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Staryu",
+      "japanese": "ヒトデマン"
+    }
+  },
+  {
+    "name": {
+      "english": "Starmie",
+      "japanese": "スターミー"
+    }
+  },
+  {
+    "name": {
+      "english": "Mr. Mime",
+      "japanese": "バリヤード"
+    }
+  },
+  {
+    "name": {
+      "english": "Mr. Mime-Galar",
+      "japanese": "バリヤード(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Scyther",
+      "japanese": "ストライク"
+    }
+  },
+  {
+    "name": {
+      "english": "Jynx",
+      "japanese": "ルージュラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Electabuzz",
+      "japanese": "エレブー"
+    }
+  },
+  {
+    "name": {
+      "english": "Magmar",
+      "japanese": "ブーバー"
+    }
+  },
+  {
+    "name": {
+      "english": "Pinsir",
+      "japanese": "カイロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Tauros",
+      "japanese": "ケンタロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Tauros-Paldea-Aqua",
+      "japanese": "ケンタロス(パルデア)(ウォーター)"
+    }
+  },
+  {
+    "name": {
+      "english": "Tauros-Paldea-Blaze",
+      "japanese": "ケンタロス(パルデア)(ブレイズ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Tauros-Paldea-Combat",
+      "japanese": "ケンタロス(パルデア)(コンバット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Magikarp",
+      "japanese": "コイキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Gyarados",
+      "japanese": "ギャラドス"
+    }
+  },
+  {
+    "name": {
+      "english": "Lapras",
+      "japanese": "ラプラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Ditto",
+      "japanese": "メタモン"
+    }
+  },
+  {
+    "name": {
+      "english": "Eevee",
+      "japanese": "イーブイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vaporeon",
+      "japanese": "シャワーズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Jolteon",
+      "japanese": "サンダース"
+    }
+  },
+  {
+    "name": {
+      "english": "Flareon",
+      "japanese": "ブースター"
+    }
+  },
+  {
+    "name": {
+      "english": "Porygon",
+      "japanese": "ポリゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Omanyte",
+      "japanese": "オムナイト"
+    }
+  },
+  {
+    "name": {
+      "english": "Omastar",
+      "japanese": "オムスター"
+    }
+  },
+  {
+    "name": {
+      "english": "Kabuto",
+      "japanese": "カブト"
+    }
+  },
+  {
+    "name": {
+      "english": "Kabutops",
+      "japanese": "カブトプス"
+    }
+  },
+  {
+    "name": {
+      "english": "Aerodactyl",
+      "japanese": "プテラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Snorlax",
+      "japanese": "カビゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Articuno",
+      "japanese": "フリーザー"
+    }
+  },
+  {
+    "name": {
+      "english": "Articuno-Galar",
+      "japanese": "フリーザー(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Zapdos",
+      "japanese": "サンダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Zapdos-Galar",
+      "japanese": "サンダー(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Moltres",
+      "japanese": "ファイヤー"
+    }
+  },
+  {
+    "name": {
+      "english": "Moltres-Galar",
+      "japanese": "ファイヤー(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Dratini",
+      "japanese": "ミニリュウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dragonair",
+      "japanese": "ハクリュー"
+    }
+  },
+  {
+    "name": {
+      "english": "Dragonite",
+      "japanese": "カイリュー"
+    }
+  },
+  {
+    "name": {
+      "english": "Mewtwo",
+      "japanese": "ミュウツー"
+    }
+  },
+  {
+    "name": {
+      "english": "Mew",
+      "japanese": "ミュウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Chikorita",
+      "japanese": "チコリータ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bayleef",
+      "japanese": "ベイリーフ"
+    }
+  },
+  {
+    "name": {
+      "english": "Meganium",
+      "japanese": "メガニウム"
+    }
+  },
+  {
+    "name": {
+      "english": "Cyndaquil",
+      "japanese": "ヒノアラシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Quilava",
+      "japanese": "マグマラシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Typhlosion",
+      "japanese": "バクフーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Typhlosion-Hisui",
+      "japanese": "バクフーン(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Totodile",
+      "japanese": "ワニノコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Croconaw",
+      "japanese": "アリゲイツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Feraligatr",
+      "japanese": "オーダイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Sentret",
+      "japanese": "オタチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Furret",
+      "japanese": "オオタチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hoothoot",
+      "japanese": "ホーホー"
+    }
+  },
+  {
+    "name": {
+      "english": "Noctowl",
+      "japanese": "ヨルノズク"
+    }
+  },
+  {
+    "name": {
+      "english": "Ledyba",
+      "japanese": "レディバ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ledian",
+      "japanese": "レディアン"
+    }
+  },
+  {
+    "name": {
+      "english": "Spinarak",
+      "japanese": "イトマル"
+    }
+  },
+  {
+    "name": {
+      "english": "Ariados",
+      "japanese": "アリアドス"
+    }
+  },
+  {
+    "name": {
+      "english": "Crobat",
+      "japanese": "クロバット"
+    }
+  },
+  {
+    "name": {
+      "english": "Chinchou",
+      "japanese": "チョンチー"
+    }
+  },
+  {
+    "name": {
+      "english": "Lanturn",
+      "japanese": "ランターン"
+    }
+  },
+  {
+    "name": {
+      "english": "Pichu",
+      "japanese": "ピチュー"
+    }
+  },
+  {
+    "name": {
+      "english": "Cleffa",
+      "japanese": "ピィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Igglybuff",
+      "japanese": "ププリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Togepi",
+      "japanese": "トゲピー"
+    }
+  },
+  {
+    "name": {
+      "english": "Togetic",
+      "japanese": "トゲチック"
+    }
+  },
+  {
+    "name": {
+      "english": "Natu",
+      "japanese": "ネイティ"
+    }
+  },
+  {
+    "name": {
+      "english": "Xatu",
+      "japanese": "ネイティオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mareep",
+      "japanese": "メリープ"
+    }
+  },
+  {
+    "name": {
+      "english": "Flaaffy",
+      "japanese": "モココ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ampharos",
+      "japanese": "デンリュウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bellossom",
+      "japanese": "キレイハナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Marill",
+      "japanese": "マリル"
+    }
+  },
+  {
+    "name": {
+      "english": "Azumarill",
+      "japanese": "マリルリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sudowoodo",
+      "japanese": "ウソッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Politoed",
+      "japanese": "ニョロトノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hoppip",
+      "japanese": "ハネッコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Skiploom",
+      "japanese": "ポポッコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Jumpluff",
+      "japanese": "ワタッコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Aipom",
+      "japanese": "エイパム"
+    }
+  },
+  {
+    "name": {
+      "english": "Sunkern",
+      "japanese": "ヒマナッツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sunflora",
+      "japanese": "キマワリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Yanma",
+      "japanese": "ヤンヤンマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wooper",
+      "japanese": "ウパー"
+    }
+  },
+  {
+    "name": {
+      "english": "Wooper-Paldea",
+      "japanese": "ウパー(パルデア)"
+    }
+  },
+  {
+    "name": {
+      "english": "Quagsire",
+      "japanese": "ヌオー"
+    }
+  },
+  {
+    "name": {
+      "english": "Espeon",
+      "japanese": "エーフィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Umbreon",
+      "japanese": "ブラッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Murkrow",
+      "japanese": "ヤミカラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowking",
+      "japanese": "ヤドキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Slowking-Galar",
+      "japanese": "ヤドキング(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Misdreavus",
+      "japanese": "ムウマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Unown",
+      "japanese": "アンノーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Wobbuffet",
+      "japanese": "ソーナンス"
+    }
+  },
+  {
+    "name": {
+      "english": "Girafarig",
+      "japanese": "キリンリキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pineco",
+      "japanese": "クヌギダマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Forretress",
+      "japanese": "フォレトス"
+    }
+  },
+  {
+    "name": {
+      "english": "Dunsparce",
+      "japanese": "ノコッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gligar",
+      "japanese": "グライガー"
+    }
+  },
+  {
+    "name": {
+      "english": "Steelix",
+      "japanese": "ハガネール"
+    }
+  },
+  {
+    "name": {
+      "english": "Snubbull",
+      "japanese": "ブルー"
+    }
+  },
+  {
+    "name": {
+      "english": "Granbull",
+      "japanese": "グランブル"
+    }
+  },
+  {
+    "name": {
+      "english": "Qwilfish",
+      "japanese": "ハリーセン"
+    }
+  },
+  {
+    "name": {
+      "english": "Qwilfish-Hisui",
+      "japanese": "ハリーセン(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Scizor",
+      "japanese": "ハッサム"
+    }
+  },
+  {
+    "name": {
+      "english": "Shuckle",
+      "japanese": "ツボツボ"
+    }
+  },
+  {
+    "name": {
+      "english": "Heracross",
+      "japanese": "ヘラクロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Sneasel",
+      "japanese": "ニューラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sneasel-Hisui",
+      "japanese": "ニューラ(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Teddiursa",
+      "japanese": "ヒメグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ursaring",
+      "japanese": "リングマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Slugma",
+      "japanese": "マグマッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Magcargo",
+      "japanese": "マグカルゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Swinub",
+      "japanese": "ウリムー"
+    }
+  },
+  {
+    "name": {
+      "english": "Piloswine",
+      "japanese": "イノムー"
+    }
+  },
+  {
+    "name": {
+      "english": "Corsola",
+      "japanese": "サニーゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Corsola-Galar",
+      "japanese": "サニーゴ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Remoraid",
+      "japanese": "テッポウオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Octillery",
+      "japanese": "オクタン"
+    }
+  },
+  {
+    "name": {
+      "english": "Delibird",
+      "japanese": "デリバード"
+    }
+  },
+  {
+    "name": {
+      "english": "Mantine",
+      "japanese": "マン��イン"
+    }
+  },
+  {
+    "name": {
+      "english": "Skarmory",
+      "japanese": "エアームド"
+    }
+  },
+  {
+    "name": {
+      "english": "Houndour",
+      "japanese": "デルビル"
+    }
+  },
+  {
+    "name": {
+      "english": "Houndoom",
+      "japanese": "ヘルガー"
+    }
+  },
+  {
+    "name": {
+      "english": "Kingdra",
+      "japanese": "キングドラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Phanpy",
+      "japanese": "ゴマゾウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Donphan",
+      "japanese": "ドンファン"
+    }
+  },
+  {
+    "name": {
+      "english": "Porygon2",
+      "japanese": "ポリゴン２"
+    }
+  },
+  {
+    "name": {
+      "english": "Stantler",
+      "japanese": "オドシシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Smeargle",
+      "japanese": "ドーブル"
+    }
+  },
+  {
+    "name": {
+      "english": "Tyrogue",
+      "japanese": "バルキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Hitmontop",
+      "japanese": "カポエラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Smoochum",
+      "japanese": "ムチュール"
+    }
+  },
+  {
+    "name": {
+      "english": "Elekid",
+      "japanese": "エレキッド"
+    }
+  },
+  {
+    "name": {
+      "english": "Magby",
+      "japanese": "ブビィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Miltank",
+      "japanese": "ミルタンク"
+    }
+  },
+  {
+    "name": {
+      "english": "Blissey",
+      "japanese": "ハピナス"
+    }
+  },
+  {
+    "name": {
+      "english": "Raikou",
+      "japanese": "ライコウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Entei",
+      "japanese": "エンテイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Suicune",
+      "japanese": "スイクン"
+    }
+  },
+  {
+    "name": {
+      "english": "Larvitar",
+      "japanese": "ヨーギラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Pupitar",
+      "japanese": "サナギラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Tyranitar",
+      "japanese": "バンギラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Lugia",
+      "japanese": "ルギア"
+    }
+  },
+  {
+    "name": {
+      "english": "Ho-Oh",
+      "japanese": "ホウオウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Celebi",
+      "japanese": "セレビィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Treecko",
+      "japanese": "キモリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Grovyle",
+      "japanese": "ジュプトル"
+    }
+  },
+  {
+    "name": {
+      "english": "Sceptile",
+      "japanese": "ジュカイン"
+    }
+  },
+  {
+    "name": {
+      "english": "Torchic",
+      "japanese": "アチャモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Combusken",
+      "japanese": "ワカシャモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Blaziken",
+      "japanese": "バシャーモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mudkip",
+      "japanese": "ミズゴロウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Marshtomp",
+      "japanese": "ヌマクロー"
+    }
+  },
+  {
+    "name": {
+      "english": "Swampert",
+      "japanese": "ラグラージ"
+    }
+  },
+  {
+    "name": {
+      "english": "Poochyena",
+      "japanese": "ポチエナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mightyena",
+      "japanese": "グラエナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zigzagoon",
+      "japanese": "ジグザグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zigzagoon-Galar",
+      "japanese": "ジグザグマ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Linoone",
+      "japanese": "マッスグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Linoone-Galar",
+      "japanese": "マッスグマ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Wurmple",
+      "japanese": "ケムッソ"
+    }
+  },
+  {
+    "name": {
+      "english": "Silcoon",
+      "japanese": "カラサリス"
+    }
+  },
+  {
+    "name": {
+      "english": "Beautifly",
+      "japanese": "アゲハント"
+    }
+  },
+  {
+    "name": {
+      "english": "Cascoon",
+      "japanese": "マユルド"
+    }
+  },
+  {
+    "name": {
+      "english": "Dustox",
+      "japanese": "ドクケイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Lotad",
+      "japanese": "ハスボー"
+    }
+  },
+  {
+    "name": {
+      "english": "Lombre",
+      "japanese": "ハスブレロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ludicolo",
+      "japanese": "ルンパッパ"
+    }
+  },
+  {
+    "name": {
+      "english": "Seedot",
+      "japanese": "タネボー"
+    }
+  },
+  {
+    "name": {
+      "english": "Nuzleaf",
+      "japanese": "コノハナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shiftry",
+      "japanese": "ダーテング"
+    }
+  },
+  {
+    "name": {
+      "english": "Taillow",
+      "japanese": "スバメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Swellow",
+      "japanese": "オオスバメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wingull",
+      "japanese": "キャモメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pelipper",
+      "japanese": "ペリッパー"
+    }
+  },
+  {
+    "name": {
+      "english": "Ralts",
+      "japanese": "ラルトス"
+    }
+  },
+  {
+    "name": {
+      "english": "Kirlia",
+      "japanese": "キルリア"
+    }
+  },
+  {
+    "name": {
+      "english": "Gardevoir",
+      "japanese": "サーナイト"
+    }
+  },
+  {
+    "name": {
+      "english": "Surskit",
+      "japanese": "アメタマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Masquerain",
+      "japanese": "アメモース"
+    }
+  },
+  {
+    "name": {
+      "english": "Shroomish",
+      "japanese": "キノココ"
+    }
+  },
+  {
+    "name": {
+      "english": "Breloom",
+      "japanese": "キノガッサ"
+    }
+  },
+  {
+    "name": {
+      "english": "Slakoth",
+      "japanese": "ナマケロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vigoroth",
+      "japanese": "ヤルキモノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Slaking",
+      "japanese": "ケッキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Nincada",
+      "japanese": "ツチニン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ninjask",
+      "japanese": "テッカニン"
+    }
+  },
+  {
+    "name": {
+      "english": "Shedinja",
+      "japanese": "ヌケニン"
+    }
+  },
+  {
+    "name": {
+      "english": "Whismur",
+      "japanese": "ゴニョニョ"
+    }
+  },
+  {
+    "name": {
+      "english": "Loudred",
+      "japanese": "ドゴーム"
+    }
+  },
+  {
+    "name": {
+      "english": "Exploud",
+      "japanese": "バクオング"
+    }
+  },
+  {
+    "name": {
+      "english": "Makuhita",
+      "japanese": "マクノシタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hariyama",
+      "japanese": "ハリテヤマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Azurill",
+      "japanese": "ルリリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Nosepass",
+      "japanese": "ノズパス"
+    }
+  },
+  {
+    "name": {
+      "english": "Skitty",
+      "japanese": "エネコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Delcatty",
+      "japanese": "エネコロロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sableye",
+      "japanese": "ヤミラミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mawile",
+      "japanese": "クチート"
+    }
+  },
+  {
+    "name": {
+      "english": "Aron",
+      "japanese": "ココドラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lairon",
+      "japanese": "コドラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Aggron",
+      "japanese": "ボスゴドラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Meditite",
+      "japanese": "アサナン"
+    }
+  },
+  {
+    "name": {
+      "english": "Medicham",
+      "japanese": "チャーレム"
+    }
+  },
+  {
+    "name": {
+      "english": "Electrike",
+      "japanese": "ラクライ"
+    }
+  },
+  {
+    "name": {
+      "english": "Manectric",
+      "japanese": "ライボルト"
+    }
+  },
+  {
+    "name": {
+      "english": "Plusle",
+      "japanese": "プラスル"
+    }
+  },
+  {
+    "name": {
+      "english": "Minun",
+      "japanese": "マイナン"
+    }
+  },
+  {
+    "name": {
+      "english": "Volbeat",
+      "japanese": "バルビート"
+    }
+  },
+  {
+    "name": {
+      "english": "Illumise",
+      "japanese": "イルミーゼ"
+    }
+  },
+  {
+    "name": {
+      "english": "Roselia",
+      "japanese": "ロゼリア"
+    }
+  },
+  {
+    "name": {
+      "english": "Gulpin",
+      "japanese": "ゴクリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Swalot",
+      "japanese": "マルノーム"
+    }
+  },
+  {
+    "name": {
+      "english": "Carvanha",
+      "japanese": "キバニア"
+    }
+  },
+  {
+    "name": {
+      "english": "Sharpedo",
+      "japanese": "サメハダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Wailmer",
+      "japanese": "ホエルコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wailord",
+      "japanese": "ホエルオー"
+    }
+  },
+  {
+    "name": {
+      "english": "Numel",
+      "japanese": "ドンメル"
+    }
+  },
+  {
+    "name": {
+      "english": "Camerupt",
+      "japanese": "バクーダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Torkoal",
+      "japanese": "コータス"
+    }
+  },
+  {
+    "name": {
+      "english": "Spoink",
+      "japanese": "バネブー"
+    }
+  },
+  {
+    "name": {
+      "english": "Grumpig",
+      "japanese": "ブーピッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Spinda",
+      "japanese": "パッチール"
+    }
+  },
+  {
+    "name": {
+      "english": "Trapinch",
+      "japanese": "ナックラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Vibrava",
+      "japanese": "ビブラーバ"
+    }
+  },
+  {
+    "name": {
+      "english": "Flygon",
+      "japanese": "フライゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Cacnea",
+      "japanese": "サボネア"
+    }
+  },
+  {
+    "name": {
+      "english": "Cacturne",
+      "japanese": "ノクタス"
+    }
+  },
+  {
+    "name": {
+      "english": "Swablu",
+      "japanese": "チルット"
+    }
+  },
+  {
+    "name": {
+      "english": "Altaria",
+      "japanese": "チルタリス"
+    }
+  },
+  {
+    "name": {
+      "english": "Zangoose",
+      "japanese": "ザングース"
+    }
+  },
+  {
+    "name": {
+      "english": "Seviper",
+      "japanese": "ハブネーク"
+    }
+  },
+  {
+    "name": {
+      "english": "Lunatone",
+      "japanese": "ルナトーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Solrock",
+      "japanese": "ソルロック"
+    }
+  },
+  {
+    "name": {
+      "english": "Barboach",
+      "japanese": "ドジョッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Whiscash",
+      "japanese": "ナマズン"
+    }
+  },
+  {
+    "name": {
+      "english": "Corphish",
+      "japanese": "ヘイガニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Crawdaunt",
+      "japanese": "シザリガー"
+    }
+  },
+  {
+    "name": {
+      "english": "Baltoy",
+      "japanese": "ヤジロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Claydol",
+      "japanese": "ネンドール"
+    }
+  },
+  {
+    "name": {
+      "english": "Lileep",
+      "japanese": "リリーラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cradily",
+      "japanese": "ユレイドル"
+    }
+  },
+  {
+    "name": {
+      "english": "Anorith",
+      "japanese": "アノプス"
+    }
+  },
+  {
+    "name": {
+      "english": "Armaldo",
+      "japanese": "アーマルド"
+    }
+  },
+  {
+    "name": {
+      "english": "Feebas",
+      "japanese": "ヒンバス"
+    }
+  },
+  {
+    "name": {
+      "english": "Milotic",
+      "japanese": "ミロカロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Castform",
+      "japanese": "ポワルン"
+    }
+  },
+  {
+    "name": {
+      "english": "Kecleon",
+      "japanese": "カクレオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Shuppet",
+      "japanese": "カゲボウズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Banette",
+      "japanese": "ジュペッタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Duskull",
+      "japanese": "ヨマワル"
+    }
+  },
+  {
+    "name": {
+      "english": "Dusclops",
+      "japanese": "サマヨール"
+    }
+  },
+  {
+    "name": {
+      "english": "Tropius",
+      "japanese": "トロピウス"
+    }
+  },
+  {
+    "name": {
+      "english": "Chimecho",
+      "japanese": "チリーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Absol",
+      "japanese": "アブソル"
+    }
+  },
+  {
+    "name": {
+      "english": "Wynaut",
+      "japanese": "ソーナノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Snorunt",
+      "japanese": "ユキワラシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Glalie",
+      "japanese": "オニゴーリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Spheal",
+      "japanese": "タマザラシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sealeo",
+      "japanese": "トドグラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Walrein",
+      "japanese": "トドゼルガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Clamperl",
+      "japanese": "パールル"
+    }
+  },
+  {
+    "name": {
+      "english": "Huntail",
+      "japanese": "ハンテール"
+    }
+  },
+  {
+    "name": {
+      "english": "Gorebyss",
+      "japanese": "サクラビス"
+    }
+  },
+  {
+    "name": {
+      "english": "Relicanth",
+      "japanese": "ジーランス"
+    }
+  },
+  {
+    "name": {
+      "english": "Luvdisc",
+      "japanese": "ラブカス"
+    }
+  },
+  {
+    "name": {
+      "english": "Bagon",
+      "japanese": "タツベイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shelgon",
+      "japanese": "コモルー"
+    }
+  },
+  {
+    "name": {
+      "english": "Salamence",
+      "japanese": "ボーマンダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Beldum",
+      "japanese": "ダンバル"
+    }
+  },
+  {
+    "name": {
+      "english": "Metang",
+      "japanese": "メタング"
+    }
+  },
+  {
+    "name": {
+      "english": "Metagross",
+      "japanese": "���タグロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Regirock",
+      "japanese": "レジロック"
+    }
+  },
+  {
+    "name": {
+      "english": "Regice",
+      "japanese": "レジアイス"
+    }
+  },
+  {
+    "name": {
+      "english": "Registeel",
+      "japanese": "レジスチル"
+    }
+  },
+  {
+    "name": {
+      "english": "Latias",
+      "japanese": "ラティアス"
+    }
+  },
+  {
+    "name": {
+      "english": "Latios",
+      "japanese": "ラティオス"
+    }
+  },
+  {
+    "name": {
+      "english": "Kyogre",
+      "japanese": "カイオーガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Groudon",
+      "japanese": "グラードン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rayquaza",
+      "japanese": "レックウザ"
+    }
+  },
+  {
+    "name": {
+      "english": "Jirachi",
+      "japanese": "ジラーチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Deoxys",
+      "japanese": "デオキシス"
+    }
+  },
+  {
+    "name": {
+      "english": "Deoxys-Attack",
+      "japanese": "デオキシス(アタック)"
+    }
+  },
+  {
+    "name": {
+      "english": "Deoxys-Defense",
+      "japanese": "デオキシス(ディフェンス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Deoxys-Speed",
+      "japanese": "デオキシス(スピード)"
+    }
+  },
+  {
+    "name": {
+      "english": "Turtwig",
+      "japanese": "ナエトル"
+    }
+  },
+  {
+    "name": {
+      "english": "Grotle",
+      "japanese": "ハヤシガメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Torterra",
+      "japanese": "ドダイトス"
+    }
+  },
+  {
+    "name": {
+      "english": "Chimchar",
+      "japanese": "ヒコザル"
+    }
+  },
+  {
+    "name": {
+      "english": "Monferno",
+      "japanese": "モウカザル"
+    }
+  },
+  {
+    "name": {
+      "english": "Infernape",
+      "japanese": "ゴウカザル"
+    }
+  },
+  {
+    "name": {
+      "english": "Piplup",
+      "japanese": "ポッチャマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Prinplup",
+      "japanese": "ポッタイシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Empoleon",
+      "japanese": "エンペルト"
+    }
+  },
+  {
+    "name": {
+      "english": "Starly",
+      "japanese": "ムックル"
+    }
+  },
+  {
+    "name": {
+      "english": "Staravia",
+      "japanese": "ムクバード"
+    }
+  },
+  {
+    "name": {
+      "english": "Staraptor",
+      "japanese": "ムクホーク"
+    }
+  },
+  {
+    "name": {
+      "english": "Bidoof",
+      "japanese": "ビッパ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bibarel",
+      "japanese": "ビーダル"
+    }
+  },
+  {
+    "name": {
+      "english": "Kricketot",
+      "japanese": "コロボーシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kricketune",
+      "japanese": "コロトック"
+    }
+  },
+  {
+    "name": {
+      "english": "Shinx",
+      "japanese": "コリンク"
+    }
+  },
+  {
+    "name": {
+      "english": "Luxio",
+      "japanese": "ルクシオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Luxray",
+      "japanese": "レントラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Budew",
+      "japanese": "スボミー"
+    }
+  },
+  {
+    "name": {
+      "english": "Roserade",
+      "japanese": "ロズレイド"
+    }
+  },
+  {
+    "name": {
+      "english": "Cranidos",
+      "japanese": "ズガイドス"
+    }
+  },
+  {
+    "name": {
+      "english": "Rampardos",
+      "japanese": "ラムパルド"
+    }
+  },
+  {
+    "name": {
+      "english": "Shieldon",
+      "japanese": "タテトプス"
+    }
+  },
+  {
+    "name": {
+      "english": "Bastiodon",
+      "japanese": "トリデプス"
+    }
+  },
+  {
+    "name": {
+      "english": "Burmy",
+      "japanese": "ミノムッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wormadam",
+      "japanese": "ミノマダム"
+    }
+  },
+  {
+    "name": {
+      "english": "Wormadam-Sandy",
+      "japanese": "ミノマダム(すなち)"
+    }
+  },
+  {
+    "name": {
+      "english": "Wormadam-Trash",
+      "japanese": "ミノマダム(ゴミ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Mothim",
+      "japanese": "ガーメイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Combee",
+      "japanese": "ミツハニー"
+    }
+  },
+  {
+    "name": {
+      "english": "Vespiquen",
+      "japanese": "ビークイン"
+    }
+  },
+  {
+    "name": {
+      "english": "Pachirisu",
+      "japanese": "パチリス"
+    }
+  },
+  {
+    "name": {
+      "english": "Buizel",
+      "japanese": "ブイゼル"
+    }
+  },
+  {
+    "name": {
+      "english": "Floatzel",
+      "japanese": "フローゼル"
+    }
+  },
+  {
+    "name": {
+      "english": "Cherubi",
+      "japanese": "チェリンボ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cherrim",
+      "japanese": "チェリム"
+    }
+  },
+  {
+    "name": {
+      "english": "Cherrim-Sunshine",
+      "japanese": "Cherrim-Sunshine"
+    }
+  },
+  {
+    "name": {
+      "english": "Shellos",
+      "japanese": "カラナクシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gastrodon",
+      "japanese": "トリトドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ambipom",
+      "japanese": "エテボース"
+    }
+  },
+  {
+    "name": {
+      "english": "Drifloon",
+      "japanese": "フワンテ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drifblim",
+      "japanese": "フワライド"
+    }
+  },
+  {
+    "name": {
+      "english": "Buneary",
+      "japanese": "ミミロル"
+    }
+  },
+  {
+    "name": {
+      "english": "Lopunny",
+      "japanese": "ミミロップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mismagius",
+      "japanese": "ムウマージ"
+    }
+  },
+  {
+    "name": {
+      "english": "Honchkrow",
+      "japanese": "ドンカラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Glameow",
+      "japanese": "ニャルマー"
+    }
+  },
+  {
+    "name": {
+      "english": "Purugly",
+      "japanese": "ブニャット"
+    }
+  },
+  {
+    "name": {
+      "english": "Chingling",
+      "japanese": "リーシャン"
+    }
+  },
+  {
+    "name": {
+      "english": "Stunky",
+      "japanese": "スカンプー"
+    }
+  },
+  {
+    "name": {
+      "english": "Skuntank",
+      "japanese": "スカタンク"
+    }
+  },
+  {
+    "name": {
+      "english": "Bronzor",
+      "japanese": "ドーミラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Bronzong",
+      "japanese": "ドータクン"
+    }
+  },
+  {
+    "name": {
+      "english": "Bonsly",
+      "japanese": "ウソハチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mime Jr.",
+      "japanese": "マネネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Happiny",
+      "japanese": "ピンプク"
+    }
+  },
+  {
+    "name": {
+      "english": "Chatot",
+      "japanese": "ペラップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Spiritomb",
+      "japanese": "ミカルゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gible",
+      "japanese": "フカマル"
+    }
+  },
+  {
+    "name": {
+      "english": "Gabite",
+      "japanese": "ガバイト"
+    }
+  },
+  {
+    "name": {
+      "english": "Garchomp",
+      "japanese": "ガブリアス"
+    }
+  },
+  {
+    "name": {
+      "english": "Munchlax",
+      "japanese": "ゴンベ"
+    }
+  },
+  {
+    "name": {
+      "english": "Riolu",
+      "japanese": "リオル"
+    }
+  },
+  {
+    "name": {
+      "english": "Lucario",
+      "japanese": "ルカリオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hippopotas",
+      "japanese": "ヒポポタス"
+    }
+  },
+  {
+    "name": {
+      "english": "Hippowdon",
+      "japanese": "カバルドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Skorupi",
+      "japanese": "スコルピ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drapion",
+      "japanese": "ドラピオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Croagunk",
+      "japanese": "グレッグル"
+    }
+  },
+  {
+    "name": {
+      "english": "Toxicroak",
+      "japanese": "ドクロッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Carnivine",
+      "japanese": "マスキッパ"
+    }
+  },
+  {
+    "name": {
+      "english": "Finneon",
+      "japanese": "ケイコウオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lumineon",
+      "japanese": "ネオラント"
+    }
+  },
+  {
+    "name": {
+      "english": "Mantyke",
+      "japanese": "タマンタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Snover",
+      "japanese": "ユキカブリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Abomasnow",
+      "japanese": "ユキノオー"
+    }
+  },
+  {
+    "name": {
+      "english": "Weavile",
+      "japanese": "マニューラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Magnezone",
+      "japanese": "ジバコイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Lickilicky",
+      "japanese": "ベロベルト"
+    }
+  },
+  {
+    "name": {
+      "english": "Rhyperior",
+      "japanese": "ドサイドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tangrowth",
+      "japanese": "モジャンボ"
+    }
+  },
+  {
+    "name": {
+      "english": "Electivire",
+      "japanese": "エレキブル"
+    }
+  },
+  {
+    "name": {
+      "english": "Magmortar",
+      "japanese": "ブーバーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Togekiss",
+      "japanese": "トゲキッス"
+    }
+  },
+  {
+    "name": {
+      "english": "Yanmega",
+      "japanese": "メガヤンマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Leafeon",
+      "japanese": "リーフィア"
+    }
+  },
+  {
+    "name": {
+      "english": "Glaceon",
+      "japanese": "グレイシア"
+    }
+  },
+  {
+    "name": {
+      "english": "Gliscor",
+      "japanese": "グライオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Mamoswine",
+      "japanese": "マンムー"
+    }
+  },
+  {
+    "name": {
+      "english": "Porygon-Z",
+      "japanese": "ポリゴンＺ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gallade",
+      "japanese": "エルレイド"
+    }
+  },
+  {
+    "name": {
+      "english": "Probopass",
+      "japanese": "ダイノーズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dusknoir",
+      "japanese": "ヨノワール"
+    }
+  },
+  {
+    "name": {
+      "english": "Froslass",
+      "japanese": "ユキメノコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom",
+      "japanese": "ロトム"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom-Fan",
+      "japanese": "ロトム(スピン)(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom-Frost",
+      "japanese": "ロトム(フロスト)(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom-Heat",
+      "japanese": "ロトム(ヒート)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom-Mow",
+      "japanese": "ロトム(カット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rotom-Wash",
+      "japanese": "ロトム(ウォッシュ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Uxie",
+      "japanese": "ユクシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Mesprit",
+      "japanese": "エムリット"
+    }
+  },
+  {
+    "name": {
+      "english": "Azelf",
+      "japanese": "アグノム"
+    }
+  },
+  {
+    "name": {
+      "english": "Dialga",
+      "japanese": "ディアルガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dialga-Origin",
+      "japanese": "ディアルガ(オリジン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Palkia",
+      "japanese": "パルキア"
+    }
+  },
+  {
+    "name": {
+      "english": "Palkia-Origin",
+      "japanese": "パルキア(オリジン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Heatran",
+      "japanese": "ヒードラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Regigigas",
+      "japanese": "レジギガス"
+    }
+  },
+  {
+    "name": {
+      "english": "Giratina",
+      "japanese": "ギラティナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Giratina-Origin",
+      "japanese": "ギラティナ(オリジン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Cresselia",
+      "japanese": "クレセリア"
+    }
+  },
+  {
+    "name": {
+      "english": "Phione",
+      "japanese": "フィオネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Manaphy",
+      "japanese": "マナフィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Darkrai",
+      "japanese": "ダークライ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shaymin",
+      "japanese": "シェイミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shaymin-Sky",
+      "japanese": "シェイミ(スカイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus",
+      "japanese": "アルセウス"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Bug",
+      "japanese": "アルセウス(むし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Dark",
+      "japanese": "アルセウス(あく)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Dragon",
+      "japanese": "アルセウス(ドラゴン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Electric",
+      "japanese": "アルセウス(でんき)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Fairy",
+      "japanese": "アルセウス(フェアリー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Fighting",
+      "japanese": "アルセウス(かくとう)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Fire",
+      "japanese": "アルセウス(ほのお)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Flying",
+      "japanese": "アルセウス(ひこう)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Ghost",
+      "japanese": "アルセウス(ゴースト)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Grass",
+      "japanese": "アルセウス(くさ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Ground",
+      "japanese": "アルセウス(じめん)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Ice",
+      "japanese": "アルセウス(こおり)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Poison",
+      "japanese": "アルセウス(どく)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Psychic",
+      "japanese": "アルセウス(エスパー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Rock",
+      "japanese": "アルセウス(いわ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Steel",
+      "japanese": "アルセウス(はがね)"
+    }
+  },
+  {
+    "name": {
+      "english": "Arceus-Water",
+      "japanese": "アルセウス(みず)"
+    }
+  },
+  {
+    "name": {
+      "english": "Victini",
+      "japanese": "ビクティニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Snivy",
+      "japanese": "ツタージャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Servine",
+      "japanese": "ジャノビー"
+    }
+  },
+  {
+    "name": {
+      "english": "Serperior",
+      "japanese": "ジャローダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tepig",
+      "japanese": "ポカブ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pignite",
+      "japanese": "チャオブー"
+    }
+  },
+  {
+    "name": {
+      "english": "Emboar",
+      "japanese": "エンブオー"
+    }
+  },
+  {
+    "name": {
+      "english": "Oshawott",
+      "japanese": "ミジュマル"
+    }
+  },
+  {
+    "name": {
+      "english": "Dewott",
+      "japanese": "フタチマル"
+    }
+  },
+  {
+    "name": {
+      "english": "Samurott",
+      "japanese": "ダイケンキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Samurott-Hisui",
+      "japanese": "ダイケンキ(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Patrat",
+      "japanese": "ミネズミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Watchog",
+      "japanese": "ミルホッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lillipup",
+      "japanese": "ヨーテリー"
+    }
+  },
+  {
+    "name": {
+      "english": "Herdier",
+      "japanese": "ハーデリア"
+    }
+  },
+  {
+    "name": {
+      "english": "Stoutland",
+      "japanese": "ムーランド"
+    }
+  },
+  {
+    "name": {
+      "english": "Purrloin",
+      "japanese": "チョロネコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Liepard",
+      "japanese": "レパルダス"
+    }
+  },
+  {
+    "name": {
+      "english": "Pansage",
+      "japanese": "ヤナップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Simisage",
+      "japanese": "ヤナッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Pansear",
+      "japanese": "バオップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Simisear",
+      "japanese": "バオッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Panpour",
+      "japanese": "ヒヤップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Simipour",
+      "japanese": "ヒヤッキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Munna",
+      "japanese": "ムンナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Musharna",
+      "japanese": "ムシャーナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pidove",
+      "japanese": "マメパト"
+    }
+  },
+  {
+    "name": {
+      "english": "Tranquill",
+      "japanese": "ハトーボー"
+    }
+  },
+  {
+    "name": {
+      "english": "Unfezant",
+      "japanese": "���ンホロウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Blitzle",
+      "japanese": "シママ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zebstrika",
+      "japanese": "ゼブライカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Roggenrola",
+      "japanese": "ダンゴロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Boldore",
+      "japanese": "ガントル"
+    }
+  },
+  {
+    "name": {
+      "english": "Gigalith",
+      "japanese": "ギガイアス"
+    }
+  },
+  {
+    "name": {
+      "english": "Woobat",
+      "japanese": "コロモリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Swoobat",
+      "japanese": "ココロモリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drilbur",
+      "japanese": "モグリュー"
+    }
+  },
+  {
+    "name": {
+      "english": "Excadrill",
+      "japanese": "ドリュウズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Audino",
+      "japanese": "タブンネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Timburr",
+      "japanese": "ドッコラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Gurdurr",
+      "japanese": "ドテッコツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Conkeldurr",
+      "japanese": "ローブシン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tympole",
+      "japanese": "オタマロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Palpitoad",
+      "japanese": "ガマガル"
+    }
+  },
+  {
+    "name": {
+      "english": "Seismitoad",
+      "japanese": "ガマゲロゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Throh",
+      "japanese": "ナゲキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sawk",
+      "japanese": "ダゲキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sewaddle",
+      "japanese": "クルミル"
+    }
+  },
+  {
+    "name": {
+      "english": "Swadloon",
+      "japanese": "クルマユ"
+    }
+  },
+  {
+    "name": {
+      "english": "Leavanny",
+      "japanese": "ハハコモリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Venipede",
+      "japanese": "フシデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Whirlipede",
+      "japanese": "ホイーガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Scolipede",
+      "japanese": "ペンドラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Cottonee",
+      "japanese": "モンメン"
+    }
+  },
+  {
+    "name": {
+      "english": "Whimsicott",
+      "japanese": "エルフーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Petilil",
+      "japanese": "チュリネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lilligant",
+      "japanese": "ドレディア"
+    }
+  },
+  {
+    "name": {
+      "english": "Lilligant-Hisui",
+      "japanese": "ドレディア(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Basculin",
+      "japanese": "バスラオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Basculin-Blue-Striped",
+      "japanese": "バスラオ(ブルー)(あおすじ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Basculin-White-Striped",
+      "japanese": "バスラオ(ホワイト)(ホワイト)(しろすじ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandile",
+      "japanese": "メグロコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Krokorok",
+      "japanese": "ワルビル"
+    }
+  },
+  {
+    "name": {
+      "english": "Krookodile",
+      "japanese": "ワルビアル"
+    }
+  },
+  {
+    "name": {
+      "english": "Darumaka",
+      "japanese": "ダルマッカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Darumaka-Galar",
+      "japanese": "ダルマッカ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Darmanitan",
+      "japanese": "ヒヒダルマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Darmanitan-Galar",
+      "japanese": "ヒヒダルマ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Darmanitan-Galar-Zen",
+      "japanese": "ヒヒダルマ(ガラル)(ダルマ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Darmanitan-Zen",
+      "japanese": "ヒヒダルマ(ダルマ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Maractus",
+      "japanese": "マラカッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dwebble",
+      "japanese": "イシズマイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Crustle",
+      "japanese": "イワパレス"
+    }
+  },
+  {
+    "name": {
+      "english": "Scraggy",
+      "japanese": "ズルッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Scrafty",
+      "japanese": "ズルズキン"
+    }
+  },
+  {
+    "name": {
+      "english": "Sigilyph",
+      "japanese": "シンボラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Yamask",
+      "japanese": "デスマス"
+    }
+  },
+  {
+    "name": {
+      "english": "Yamask-Galar",
+      "japanese": "デスマス(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Cofagrigus",
+      "japanese": "デスカーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tirtouga",
+      "japanese": "プロトーガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Carracosta",
+      "japanese": "アバゴーラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Archen",
+      "japanese": "アーケン"
+    }
+  },
+  {
+    "name": {
+      "english": "Archeops",
+      "japanese": "アーケオス"
+    }
+  },
+  {
+    "name": {
+      "english": "Trubbish",
+      "japanese": "ヤブクロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Garbodor",
+      "japanese": "ダストダス"
+    }
+  },
+  {
+    "name": {
+      "english": "Zorua",
+      "japanese": "ゾロア"
+    }
+  },
+  {
+    "name": {
+      "english": "Zorua-Hisui",
+      "japanese": "ゾロア(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Zoroark",
+      "japanese": "ゾロアーク"
+    }
+  },
+  {
+    "name": {
+      "english": "Zoroark-Hisui",
+      "japanese": "ゾロアーク(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Minccino",
+      "japanese": "チラーミィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cinccino",
+      "japanese": "チラチーノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gothita",
+      "japanese": "ゴチム"
+    }
+  },
+  {
+    "name": {
+      "english": "Gothorita",
+      "japanese": "ゴチミル"
+    }
+  },
+  {
+    "name": {
+      "english": "Gothitelle",
+      "japanese": "ゴチルゼル"
+    }
+  },
+  {
+    "name": {
+      "english": "Solosis",
+      "japanese": "ユニラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Duosion",
+      "japanese": "ダブラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Reuniclus",
+      "japanese": "ランクルス"
+    }
+  },
+  {
+    "name": {
+      "english": "Ducklett",
+      "japanese": "コアルヒー"
+    }
+  },
+  {
+    "name": {
+      "english": "Swanna",
+      "japanese": "スワンナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vanillite",
+      "japanese": "バニプッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vanillish",
+      "japanese": "バニリッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vanilluxe",
+      "japanese": "バイバニラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Deerling",
+      "japanese": "シキジカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sawsbuck",
+      "japanese": "メブキジカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Emolga",
+      "japanese": "エモンガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Karrablast",
+      "japanese": "カブルモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Escavalier",
+      "japanese": "シュバルゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Foongus",
+      "japanese": "タマゲタケ"
+    }
+  },
+  {
+    "name": {
+      "english": "Amoonguss",
+      "japanese": "モロバレル"
+    }
+  },
+  {
+    "name": {
+      "english": "Frillish",
+      "japanese": "プルリル"
+    }
+  },
+  {
+    "name": {
+      "english": "Jellicent",
+      "japanese": "ブルンゲル"
+    }
+  },
+  {
+    "name": {
+      "english": "Alomomola",
+      "japanese": "ママンボウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Joltik",
+      "japanese": "バチュ���"
+    }
+  },
+  {
+    "name": {
+      "english": "Galvantula",
+      "japanese": "デンチュラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ferroseed",
+      "japanese": "テッシード"
+    }
+  },
+  {
+    "name": {
+      "english": "Ferrothorn",
+      "japanese": "ナットレイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Klink",
+      "japanese": "ギアル"
+    }
+  },
+  {
+    "name": {
+      "english": "Klang",
+      "japanese": "ギギアル"
+    }
+  },
+  {
+    "name": {
+      "english": "Klinklang",
+      "japanese": "ギギギアル"
+    }
+  },
+  {
+    "name": {
+      "english": "Tynamo",
+      "japanese": "シビシラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Eelektrik",
+      "japanese": "シビビール"
+    }
+  },
+  {
+    "name": {
+      "english": "Eelektross",
+      "japanese": "シビルドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Elgyem",
+      "japanese": "リグレー"
+    }
+  },
+  {
+    "name": {
+      "english": "Beheeyem",
+      "japanese": "オーベム"
+    }
+  },
+  {
+    "name": {
+      "english": "Litwick",
+      "japanese": "ヒトモシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lampent",
+      "japanese": "ランプラー"
+    }
+  },
+  {
+    "name": {
+      "english": "Chandelure",
+      "japanese": "シャンデラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Axew",
+      "japanese": "キバゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Fraxure",
+      "japanese": "オノンド"
+    }
+  },
+  {
+    "name": {
+      "english": "Haxorus",
+      "japanese": "オノノクス"
+    }
+  },
+  {
+    "name": {
+      "english": "Cubchoo",
+      "japanese": "クマシュン"
+    }
+  },
+  {
+    "name": {
+      "english": "Beartic",
+      "japanese": "ツンベアー"
+    }
+  },
+  {
+    "name": {
+      "english": "Cryogonal",
+      "japanese": "フリージオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shelmet",
+      "japanese": "チョボマキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Accelgor",
+      "japanese": "アギルダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Stunfisk",
+      "japanese": "マッギョ"
+    }
+  },
+  {
+    "name": {
+      "english": "Stunfisk-Galar",
+      "japanese": "マッギョ(ガラル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Mienfoo",
+      "japanese": "コジョフー"
+    }
+  },
+  {
+    "name": {
+      "english": "Mienshao",
+      "japanese": "コジョンド"
+    }
+  },
+  {
+    "name": {
+      "english": "Druddigon",
+      "japanese": "クリムガン"
+    }
+  },
+  {
+    "name": {
+      "english": "Golett",
+      "japanese": "ゴビット"
+    }
+  },
+  {
+    "name": {
+      "english": "Golurk",
+      "japanese": "ゴルーグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pawniard",
+      "japanese": "コマタナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bisharp",
+      "japanese": "キリキザン"
+    }
+  },
+  {
+    "name": {
+      "english": "Bouffalant",
+      "japanese": "バッフロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rufflet",
+      "japanese": "ワシボン"
+    }
+  },
+  {
+    "name": {
+      "english": "Braviary",
+      "japanese": "ウォーグル"
+    }
+  },
+  {
+    "name": {
+      "english": "Braviary-Hisui",
+      "japanese": "ウォーグル(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Vullaby",
+      "japanese": "バルチャイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mandibuzz",
+      "japanese": "バルジーナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Heatmor",
+      "japanese": "クイタラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Durant",
+      "japanese": "アイアント"
+    }
+  },
+  {
+    "name": {
+      "english": "Deino",
+      "japanese": "モノズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zweilous",
+      "japanese": "ジヘッド"
+    }
+  },
+  {
+    "name": {
+      "english": "Hydreigon",
+      "japanese": "サザンドラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Larvesta",
+      "japanese": "メラルバ"
+    }
+  },
+  {
+    "name": {
+      "english": "Volcarona",
+      "japanese": "ウルガモス"
+    }
+  },
+  {
+    "name": {
+      "english": "Cobalion",
+      "japanese": "コバルオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Terrakion",
+      "japanese": "テラキオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Virizion",
+      "japanese": "ビリジオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tornadus",
+      "japanese": "トルネロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Tornadus-Therian",
+      "japanese": "トルネロス(霊獣)"
+    }
+  },
+  {
+    "name": {
+      "english": "Thundurus",
+      "japanese": "ボルトロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Thundurus-Therian",
+      "japanese": "ボルトロス(霊獣)"
+    }
+  },
+  {
+    "name": {
+      "english": "Reshiram",
+      "japanese": "レシラム"
+    }
+  },
+  {
+    "name": {
+      "english": "Zekrom",
+      "japanese": "ゼクロム"
+    }
+  },
+  {
+    "name": {
+      "english": "Landorus",
+      "japanese": "ランドロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Landorus-Therian",
+      "japanese": "ランドロス(霊獣)"
+    }
+  },
+  {
+    "name": {
+      "english": "Kyurem",
+      "japanese": "キュレム"
+    }
+  },
+  {
+    "name": {
+      "english": "Kyurem-Black",
+      "japanese": "キュレム(ブラック)"
+    }
+  },
+  {
+    "name": {
+      "english": "Kyurem-White",
+      "japanese": "キュレム(ホワイト)(ホワイト)"
+    }
+  },
+  {
+    "name": {
+      "english": "Keldeo",
+      "japanese": "ケルディオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Keldeo-Resolute",
+      "japanese": "ケルディオ(かくご)"
+    }
+  },
+  {
+    "name": {
+      "english": "Meloetta",
+      "japanese": "メロエッタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Meloetta-Pirouette",
+      "japanese": "メロエッタ(ステップ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Genesect",
+      "japanese": "ゲノセクト"
+    }
+  },
+  {
+    "name": {
+      "english": "Genesect-Burn",
+      "japanese": "ゲノセクト(ブレイズカセット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Genesect-Chill",
+      "japanese": "ゲノセクト(フリーズカセット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Genesect-Douse",
+      "japanese": "ゲノセクト(アクアカセット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Genesect-Shock",
+      "japanese": "ゲノセクト(イナズマカセット)"
+    }
+  },
+  {
+    "name": {
+      "english": "Chespin",
+      "japanese": "ハリマロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Quilladin",
+      "japanese": "ハリボーグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Chesnaught",
+      "japanese": "ブリガロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Fennekin",
+      "japanese": "フォッコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Braixen",
+      "japanese": "テールナー"
+    }
+  },
+  {
+    "name": {
+      "english": "Delphox",
+      "japanese": "マフォクシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Froakie",
+      "japanese": "ケロマツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Frogadier",
+      "japanese": "ゲコガシラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Greninja",
+      "japanese": "ゲッコウガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Greninja-Ash",
+      "japanese": "ゲッコウガ(サトシ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Greninja-Bond",
+      "japanese": "Greninja-Bond"
+    }
+  },
+  {
+    "name": {
+      "english": "Bunnelby",
+      "japanese": "ホルビー"
+    }
+  },
+  {
+    "name": {
+      "english": "Diggersby",
+      "japanese": "ホルード"
+    }
+  },
+  {
+    "name": {
+      "english": "Fletchling",
+      "japanese": "ヤヤコマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Fletchinder",
+      "japanese": "ヒノヤコマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Talonflame",
+      "japanese": "ファイアロー"
+    }
+  },
+  {
+    "name": {
+      "english": "Scatterbug",
+      "japanese": "コフキムシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Spewpa",
+      "japanese": "コフーライ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vivillon",
+      "japanese": "ビビヨン"
+    }
+  },
+  {
+    "name": {
+      "english": "Vivillon-Fancy",
+      "japanese": "ビビヨン(スピン)(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Vivillon-Pokeball",
+      "japanese": "Vivillon-Pokeball"
+    }
+  },
+  {
+    "name": {
+      "english": "Litleo",
+      "japanese": "シシコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pyroar",
+      "japanese": "カエンジシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Floette",
+      "japanese": "フラエッテ"
+    }
+  },
+  {
+    "name": {
+      "english": "Floette-Eternal",
+      "japanese": "Floette-Eternal"
+    }
+  },
+  {
+    "name": {
+      "english": "Florges",
+      "japanese": "フラージェス"
+    }
+  },
+  {
+    "name": {
+      "english": "Skiddo",
+      "japanese": "メェークル"
+    }
+  },
+  {
+    "name": {
+      "english": "Gogoat",
+      "japanese": "ゴーゴート"
+    }
+  },
+  {
+    "name": {
+      "english": "Pancham",
+      "japanese": "ヤンチャム"
+    }
+  },
+  {
+    "name": {
+      "english": "Pangoro",
+      "japanese": "ゴロンダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Furfrou",
+      "japanese": "トリミアン"
+    }
+  },
+  {
+    "name": {
+      "english": "Espurr",
+      "japanese": "ニャスパー"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowstic",
+      "japanese": "ニャオニクス"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowstic-F",
+      "japanese": "ニャオニクス(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Honedge",
+      "japanese": "ヒトツキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Doublade",
+      "japanese": "ニダンギル"
+    }
+  },
+  {
+    "name": {
+      "english": "Aegislash-Blade",
+      "japanese": "ギルガルド(ブレード)"
+    }
+  },
+  {
+    "name": {
+      "english": "Aegislash-Both",
+      "japanese": "Aegislash-Both"
+    }
+  },
+  {
+    "name": {
+      "english": "Aegislash-Shield",
+      "japanese": "ギルガルド(シールド)"
+    }
+  },
+  {
+    "name": {
+      "english": "Spritzee",
+      "japanese": "シュシュプ"
+    }
+  },
+  {
+    "name": {
+      "english": "Aromatisse",
+      "japanese": "フレフワン"
+    }
+  },
+  {
+    "name": {
+      "english": "Swirlix",
+      "japanese": "ペロッパフ"
+    }
+  },
+  {
+    "name": {
+      "english": "Slurpuff",
+      "japanese": "ペロリーム"
+    }
+  },
+  {
+    "name": {
+      "english": "Inkay",
+      "japanese": "マーイーカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Malamar",
+      "japanese": "カラマネロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Binacle",
+      "japanese": "カメテテ"
+    }
+  },
+  {
+    "name": {
+      "english": "Barbaracle",
+      "japanese": "ガメノデス"
+    }
+  },
+  {
+    "name": {
+      "english": "Skrelp",
+      "japanese": "クズモー"
+    }
+  },
+  {
+    "name": {
+      "english": "Dragalge",
+      "japanese": "ドラミドロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Clauncher",
+      "japanese": "ウデッポウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Clawitzer",
+      "japanese": "ブロスター"
+    }
+  },
+  {
+    "name": {
+      "english": "Helioptile",
+      "japanese": "エリキテル"
+    }
+  },
+  {
+    "name": {
+      "english": "Heliolisk",
+      "japanese": "エレザード"
+    }
+  },
+  {
+    "name": {
+      "english": "Tyrunt",
+      "japanese": "チゴラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Tyrantrum",
+      "japanese": "ガチゴラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Amaura",
+      "japanese": "アマルス"
+    }
+  },
+  {
+    "name": {
+      "english": "Aurorus",
+      "japanese": "アマルルガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sylveon",
+      "japanese": "ニンフィア"
+    }
+  },
+  {
+    "name": {
+      "english": "Hawlucha",
+      "japanese": "ルチャブル"
+    }
+  },
+  {
+    "name": {
+      "english": "Dedenne",
+      "japanese": "デデンネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Carbink",
+      "japanese": "メレシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Goomy",
+      "japanese": "ヌメラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sliggoo",
+      "japanese": "ヌメイル"
+    }
+  },
+  {
+    "name": {
+      "english": "Sliggoo-Hisui",
+      "japanese": "ヌメイル(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Goodra",
+      "japanese": "ヌメルゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Goodra-Hisui",
+      "japanese": "ヌメルゴン(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Klefki",
+      "japanese": "クレッフィ"
+    }
+  },
+  {
+    "name": {
+      "english": "Phantump",
+      "japanese": "ボクレー"
+    }
+  },
+  {
+    "name": {
+      "english": "Trevenant",
+      "japanese": "オーロット"
+    }
+  },
+  {
+    "name": {
+      "english": "Pumpkaboo",
+      "japanese": "バケッチャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pumpkaboo-Large",
+      "japanese": "バケッチャ(おおきい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pumpkaboo-Small",
+      "japanese": "バケッチャ(ちいさい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pumpkaboo-Super",
+      "japanese": "バケッチャ(とくだい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Gourgeist",
+      "japanese": "パンプジン"
+    }
+  },
+  {
+    "name": {
+      "english": "Gourgeist-Large",
+      "japanese": "パンプジン(おおきい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Gourgeist-Small",
+      "japanese": "パンプジン(ちいさい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Gourgeist-Super",
+      "japanese": "パンプジン(とくだい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Bergmite",
+      "japanese": "カチコール"
+    }
+  },
+  {
+    "name": {
+      "english": "Avalugg",
+      "japanese": "クレベース"
+    }
+  },
+  {
+    "name": {
+      "english": "Avalugg-Hisui",
+      "japanese": "クレベース(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Noibat",
+      "japanese": "オンバット"
+    }
+  },
+  {
+    "name": {
+      "english": "Noivern",
+      "japanese": "オンバーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Xerneas",
+      "japanese": "ゼルネアス"
+    }
+  },
+  {
+    "name": {
+      "english": "Yveltal",
+      "japanese": "イベルタル"
+    }
+  },
+  {
+    "name": {
+      "english": "Zygarde",
+      "japanese": "ジガルデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zygarde-10%",
+      "japanese": "ジガルデ(10%)"
+    }
+  },
+  {
+    "name": {
+      "english": "Zygarde-Complete",
+      "japanese": "ジガルデ(パーフェクト)(かんぜん)"
+    }
+  },
+  {
+    "name": {
+      "english": "Diancie",
+      "japanese": "ディアンシー"
+    }
+  },
+  {
+    "name": {
+      "english": "Hoopa",
+      "japanese": "フーパ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hoopa-Unbound",
+      "japanese": "Hoopa-Unbound"
+    }
+  },
+  {
+    "name": {
+      "english": "Volcanion",
+      "japanese": "ボルケニオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rowlet",
+      "japanese": "モクロー"
+    }
+  },
+  {
+    "name": {
+      "english": "Dartrix",
+      "japanese": "フクスロー"
+    }
+  },
+  {
+    "name": {
+      "english": "Decidueye",
+      "japanese": "ジュナイパー"
+    }
+  },
+  {
+    "name": {
+      "english": "Decidueye-Hisui",
+      "japanese": "ジュナイパー(ヒスイ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Litten",
+      "japanese": "ニャビー"
+    }
+  },
+  {
+    "name": {
+      "english": "Torracat",
+      "japanese": "ニャヒート"
+    }
+  },
+  {
+    "name": {
+      "english": "Incineroar",
+      "japanese": "ガオガエン"
+    }
+  },
+  {
+    "name": {
+      "english": "Popplio",
+      "japanese": "アシマリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Brionne",
+      "japanese": "オシャマリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Primarina",
+      "japanese": "アシレーヌ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pikipek",
+      "japanese": "ツツケラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Trumbeak",
+      "japanese": "ケララッパ"
+    }
+  },
+  {
+    "name": {
+      "english": "Toucannon",
+      "japanese": "ドデカバシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Yungoos",
+      "japanese": "ヤングース"
+    }
+  },
+  {
+    "name": {
+      "english": "Gumshoos",
+      "japanese": "デカグース"
+    }
+  },
+  {
+    "name": {
+      "english": "Gumshoos-Totem",
+      "japanese": "デカグース(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Grubbin",
+      "japanese": "アゴジムシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Charjabug",
+      "japanese": "デンヂムシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Vikavolt",
+      "japanese": "クワガノン"
+    }
+  },
+  {
+    "name": {
+      "english": "Vikavolt-Totem",
+      "japanese": "クワガノン(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Crabrawler",
+      "japanese": "マケンカニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Crabominable",
+      "japanese": "ケケンカニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Oricorio",
+      "japanese": "オドリドリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Oricorio-Pa'u",
+      "japanese": "Oricorio-Pa'u"
+    }
+  },
+  {
+    "name": {
+      "english": "Oricorio-Pom-Pom",
+      "japanese": "Oricorio-Pom-Pom"
+    }
+  },
+  {
+    "name": {
+      "english": "Oricorio-Sensu",
+      "japanese": "Oricorio-Sensu"
+    }
+  },
+  {
+    "name": {
+      "english": "Cutiefly",
+      "japanese": "アブリー"
+    }
+  },
+  {
+    "name": {
+      "english": "Ribombee",
+      "japanese": "アブリボン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ribombee-Totem",
+      "japanese": "アブリボン(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Rockruff",
+      "japanese": "イワンコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lycanroc",
+      "japanese": "ルガルガン"
+    }
+  },
+  {
+    "name": {
+      "english": "Lycanroc-Dusk",
+      "japanese": "ルガルガン(たそがれ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Lycanroc-Midnight",
+      "japanese": "ルガルガン(まよなか)"
+    }
+  },
+  {
+    "name": {
+      "english": "Wishiwashi",
+      "japanese": "ヨワシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wishiwashi-School",
+      "japanese": "ヨワシ(むれた)"
+    }
+  },
+  {
+    "name": {
+      "english": "Mareanie",
+      "japanese": "ヒドイデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Toxapex",
+      "japanese": "ドヒドイデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mudbray",
+      "japanese": "ドロバンコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mudsdale",
+      "japanese": "バンバドロ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dewpider",
+      "japanese": "シズクモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Araquanid",
+      "japanese": "オニシズクモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Araquanid-Totem",
+      "japanese": "オニシズクモ(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Fomantis",
+      "japanese": "カリキリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lurantis",
+      "japanese": "ラランテス"
+    }
+  },
+  {
+    "name": {
+      "english": "Lurantis-Totem",
+      "japanese": "ラランテス(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Morelull",
+      "japanese": "ネマシュ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shiinotic",
+      "japanese": "マシェード"
+    }
+  },
+  {
+    "name": {
+      "english": "Salandit",
+      "japanese": "ヤトウモリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Salazzle",
+      "japanese": "エンニュート"
+    }
+  },
+  {
+    "name": {
+      "english": "Salazzle-Totem",
+      "japanese": "エンニュート(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Stufful",
+      "japanese": "ヌイコグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bewear",
+      "japanese": "キテルグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bounsweet",
+      "japanese": "アマカジ"
+    }
+  },
+  {
+    "name": {
+      "english": "Steenee",
+      "japanese": "アママイコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tsareena",
+      "japanese": "アマージョ"
+    }
+  },
+  {
+    "name": {
+      "english": "Comfey",
+      "japanese": "キュワワー"
+    }
+  },
+  {
+    "name": {
+      "english": "Oranguru",
+      "japanese": "ヤレユータン"
+    }
+  },
+  {
+    "name": {
+      "english": "Passimian",
+      "japanese": "ナゲツケサル"
+    }
+  },
+  {
+    "name": {
+      "english": "Wimpod",
+      "japanese": "コソクムシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Golisopod",
+      "japanese": "グソクムシャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandygast",
+      "japanese": "スナバァ"
+    }
+  },
+  {
+    "name": {
+      "english": "Palossand",
+      "japanese": "シロデスナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pyukumuku",
+      "japanese": "ナマコブシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Type: Null",
+      "japanese": "タイプ：ヌル"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally",
+      "japanese": "シルヴァディ"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Bug",
+      "japanese": "シルヴァディ(むし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Dark",
+      "japanese": "シルヴァディ(あく)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Dragon",
+      "japanese": "シルヴァディ(ドラゴン)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Electric",
+      "japanese": "シルヴァディ(でんき)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Fairy",
+      "japanese": "シルヴァディ(フェアリー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Fighting",
+      "japanese": "シルヴァディ(かくとう)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Fire",
+      "japanese": "シルヴァディ(ほのお)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Flying",
+      "japanese": "シルヴァディ(ひこう)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Ghost",
+      "japanese": "シルヴァディ(ゴースト)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Grass",
+      "japanese": "シルヴァディ(くさ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Ground",
+      "japanese": "シルヴァディ(じめん)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Ice",
+      "japanese": "シルヴァディ(こおり)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Poison",
+      "japanese": "シルヴァディ(どく)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Psychic",
+      "japanese": "シルヴァディ(エスパー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Rock",
+      "japanese": "シルヴァディ(いわ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Steel",
+      "japanese": "シルヴァディ(はがね)"
+    }
+  },
+  {
+    "name": {
+      "english": "Silvally-Water",
+      "japanese": "シルヴァディ(みず)"
+    }
+  },
+  {
+    "name": {
+      "english": "Minior",
+      "japanese": "メテノ"
+    }
+  },
+  {
+    "name": {
+      "english": "Minior-Meteor",
+      "japanese": "メテノ(りゅうせい)"
+    }
+  },
+  {
+    "name": {
+      "english": "Komala",
+      "japanese": "ネッコアラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Turtonator",
+      "japanese": "バクガメス"
+    }
+  },
+  {
+    "name": {
+      "english": "Togedemaru",
+      "japanese": "トゲデマル"
+    }
+  },
+  {
+    "name": {
+      "english": "Togedemaru-Totem",
+      "japanese": "トゲデマル(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Mimikyu",
+      "japanese": "ミミッキュ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mimikyu-Busted",
+      "japanese": "Mimikyu-Busted"
+    }
+  },
+  {
+    "name": {
+      "english": "Mimikyu-Busted-Totem",
+      "japanese": "ミミッキュ(ぬし)"
+    }
+  },
+  {
+    "name": {
+      "english": "Bruxish",
+      "japanese": "ハギギシリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drampa",
+      "japanese": "ジジーロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Dhelmise",
+      "japanese": "ダダリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Jangmo-o",
+      "japanese": "ジャラコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Hakamo-o",
+      "japanese": "ジャランゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kommo-o",
+      "japanese": "ジャラランガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tapu Koko",
+      "japanese": "カプ・コケコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tapu Lele",
+      "japanese": "カプ・テテフ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tapu Bulu",
+      "japanese": "カプ・ブルル"
+    }
+  },
+  {
+    "name": {
+      "english": "Tapu Fini",
+      "japanese": "カプ・レヒレ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cosmog",
+      "japanese": "コスモッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cosmoem",
+      "japanese": "コスモウム"
+    }
+  },
+  {
+    "name": {
+      "english": "Solgaleo",
+      "japanese": "ソルガレオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lunala",
+      "japanese": "ルナアーラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Nihilego",
+      "japanese": "ウツロイド"
+    }
+  },
+  {
+    "name": {
+      "english": "Buzzwole",
+      "japanese": "マッシブーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Pheromosa",
+      "japanese": "フェローチェ"
+    }
+  },
+  {
+    "name": {
+      "english": "Xurkitree",
+      "japanese": "デンジュモク"
+    }
+  },
+  {
+    "name": {
+      "english": "Celesteela",
+      "japanese": "テッカグヤ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kartana",
+      "japanese": "カミツルギ"
+    }
+  },
+  {
+    "name": {
+      "english": "Guzzlord",
+      "japanese": "アクジキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Necrozma",
+      "japanese": "ネクロズマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Necrozma-Dawn-Wings",
+      "japanese": "ネクロズマ(あかつき)"
+    }
+  },
+  {
+    "name": {
+      "english": "Necrozma-Dusk-Mane",
+      "japanese": "ネクロズマ(たそがれ)(たそがれ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Necrozma-Ultra",
+      "japanese": "ネクロズマ(ウルトラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Magearna",
+      "japanese": "マギアナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Magearna-Original",
+      "japanese": "マギアナ(オリジン)(オリジナル)"
+    }
+  },
+  {
+    "name": {
+      "english": "Marshadow",
+      "japanese": "マーシャドー"
+    }
+  },
+  {
+    "name": {
+      "english": "Poipole",
+      "japanese": "ベベノム"
+    }
+  },
+  {
+    "name": {
+      "english": "Naganadel",
+      "japanese": "アーゴヨン"
+    }
+  },
+  {
+    "name": {
+      "english": "Stakataka",
+      "japanese": "ツンデツンデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Blacephalon",
+      "japanese": "ズガドーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Zeraora",
+      "japanese": "ゼラオラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Meltan",
+      "japanese": "メルタ���"
+    }
+  },
+  {
+    "name": {
+      "english": "Melmetal",
+      "japanese": "メルメタル"
+    }
+  },
+  {
+    "name": {
+      "english": "Grookey",
+      "japanese": "サルノリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Thwackey",
+      "japanese": "バチンキー"
+    }
+  },
+  {
+    "name": {
+      "english": "Rillaboom",
+      "japanese": "ゴリランダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Scorbunny",
+      "japanese": "ヒバニー"
+    }
+  },
+  {
+    "name": {
+      "english": "Raboot",
+      "japanese": "ラビフット"
+    }
+  },
+  {
+    "name": {
+      "english": "Cinderace",
+      "japanese": "エースバーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Sobble",
+      "japanese": "メッソン"
+    }
+  },
+  {
+    "name": {
+      "english": "Drizzile",
+      "japanese": "ジメレオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Inteleon",
+      "japanese": "インテレオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Skwovet",
+      "japanese": "ホシガリス"
+    }
+  },
+  {
+    "name": {
+      "english": "Greedent",
+      "japanese": "ヨクバリス"
+    }
+  },
+  {
+    "name": {
+      "english": "Rookidee",
+      "japanese": "ココガラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Corvisquire",
+      "japanese": "アオガラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Corviknight",
+      "japanese": "アーマーガア"
+    }
+  },
+  {
+    "name": {
+      "english": "Blipbug",
+      "japanese": "サッチムシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dottler",
+      "japanese": "レドームシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Orbeetle",
+      "japanese": "イオルブ"
+    }
+  },
+  {
+    "name": {
+      "english": "Nickit",
+      "japanese": "クスネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Thievul",
+      "japanese": "フォクスライ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gossifleur",
+      "japanese": "ヒメンカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Eldegoss",
+      "japanese": "ワタシラガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wooloo",
+      "japanese": "ウールー"
+    }
+  },
+  {
+    "name": {
+      "english": "Dubwool",
+      "japanese": "バイウールー"
+    }
+  },
+  {
+    "name": {
+      "english": "Chewtle",
+      "japanese": "カムカメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drednaw",
+      "japanese": "カジリガメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Yamper",
+      "japanese": "ワンパチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Boltund",
+      "japanese": "パルスワン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rolycoly",
+      "japanese": "タンドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Carkol",
+      "japanese": "トロッゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Coalossal",
+      "japanese": "セキタンザン"
+    }
+  },
+  {
+    "name": {
+      "english": "Applin",
+      "japanese": "カジッチュ"
+    }
+  },
+  {
+    "name": {
+      "english": "Flapple",
+      "japanese": "アップリュー"
+    }
+  },
+  {
+    "name": {
+      "english": "Appletun",
+      "japanese": "タルップル"
+    }
+  },
+  {
+    "name": {
+      "english": "Silicobra",
+      "japanese": "スナヘビ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandaconda",
+      "japanese": "サダイジャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cramorant",
+      "japanese": "ウッウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cramorant-Gorging",
+      "japanese": "Cramorant-Gorging"
+    }
+  },
+  {
+    "name": {
+      "english": "Cramorant-Gulping",
+      "japanese": "Cramorant-Gulping"
+    }
+  },
+  {
+    "name": {
+      "english": "Arrokuda",
+      "japanese": "サシカマス"
+    }
+  },
+  {
+    "name": {
+      "english": "Barraskewda",
+      "japanese": "カマスジョー"
+    }
+  },
+  {
+    "name": {
+      "english": "Toxel",
+      "japanese": "エレズン"
+    }
+  },
+  {
+    "name": {
+      "english": "Toxtricity",
+      "japanese": "ストリンダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Toxtricity-Low-Key",
+      "japanese": "ストリンダー(ロー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sizzlipede",
+      "japanese": "ヤクデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Centiskorch",
+      "japanese": "マルヤクデ"
+    }
+  },
+  {
+    "name": {
+      "english": "Clobbopus",
+      "japanese": "タタッコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Grapploct",
+      "japanese": "オトスパス"
+    }
+  },
+  {
+    "name": {
+      "english": "Sinistea",
+      "japanese": "ヤバチャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sinistea-Antique",
+      "japanese": "Sinistea-Antique"
+    }
+  },
+  {
+    "name": {
+      "english": "Polteageist",
+      "japanese": "ポットデス"
+    }
+  },
+  {
+    "name": {
+      "english": "Polteageist-Antique",
+      "japanese": "Polteageist-Antique"
+    }
+  },
+  {
+    "name": {
+      "english": "Hatenna",
+      "japanese": "ミブリム"
+    }
+  },
+  {
+    "name": {
+      "english": "Hattrem",
+      "japanese": "テブリム"
+    }
+  },
+  {
+    "name": {
+      "english": "Hatterene",
+      "japanese": "ブリムオン"
+    }
+  },
+  {
+    "name": {
+      "english": "Impidimp",
+      "japanese": "ベロバー"
+    }
+  },
+  {
+    "name": {
+      "english": "Morgrem",
+      "japanese": "ギモー"
+    }
+  },
+  {
+    "name": {
+      "english": "Grimmsnarl",
+      "japanese": "オーロンゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Obstagoon",
+      "japanese": "タチフサグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Perrserker",
+      "japanese": "ニャイキング"
+    }
+  },
+  {
+    "name": {
+      "english": "Cursola",
+      "japanese": "サニゴーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Mr. Rime",
+      "japanese": "バリコオル"
+    }
+  },
+  {
+    "name": {
+      "english": "Runerigus",
+      "japanese": "デスバーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Milcery",
+      "japanese": "マホミル"
+    }
+  },
+  {
+    "name": {
+      "english": "Alcremie",
+      "japanese": "マホイップ"
+    }
+  },
+  {
+    "name": {
+      "english": "Falinks",
+      "japanese": "タイレーツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pincurchin",
+      "japanese": "バチンウニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Snom",
+      "japanese": "ユキハミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Frosmoth",
+      "japanese": "モスノウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Stonjourner",
+      "japanese": "イシヘンジン"
+    }
+  },
+  {
+    "name": {
+      "english": "Eiscue",
+      "japanese": "コオリッポ"
+    }
+  },
+  {
+    "name": {
+      "english": "Eiscue-Noice",
+      "japanese": "コオリッポ(ナイス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Indeedee",
+      "japanese": "イエッサン"
+    }
+  },
+  {
+    "name": {
+      "english": "Indeedee-F",
+      "japanese": "イエッサン(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Morpeko",
+      "japanese": "モルペコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Morpeko-Hangry",
+      "japanese": "モルペコ(はらぺこ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Cufant",
+      "japanese": "ゾウドウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Copperajah",
+      "japanese": "ダイオウドウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dracozolt",
+      "japanese": "パッチラゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Arctozolt",
+      "japanese": "パッチルドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Dracovish",
+      "japanese": "ウオノラゴン"
+    }
+  },
+  {
+    "name": {
+      "english": "Arctovish",
+      "japanese": "ウオチルドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Duraludon",
+      "japanese": "ジュラルドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Dreepy",
+      "japanese": "ドラメシヤ"
+    }
+  },
+  {
+    "name": {
+      "english": "Drakloak",
+      "japanese": "ドロンチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dragapult",
+      "japanese": "ドラパルト"
+    }
+  },
+  {
+    "name": {
+      "english": "Zacian",
+      "japanese": "ザシアン"
+    }
+  },
+  {
+    "name": {
+      "english": "Zacian-Crowned",
+      "japanese": "ザシアン(王)"
+    }
+  },
+  {
+    "name": {
+      "english": "Zamazenta",
+      "japanese": "ザマゼンタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Zamazenta-Crowned",
+      "japanese": "ザマゼンタ(王)"
+    }
+  },
+  {
+    "name": {
+      "english": "Eternatus",
+      "japanese": "ムゲンダイナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kubfu",
+      "japanese": "ダクマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Urshifu",
+      "japanese": "ウーラオス"
+    }
+  },
+  {
+    "name": {
+      "english": "Urshifu-Rapid-Strike",
+      "japanese": "ウーラオス(れんげき)"
+    }
+  },
+  {
+    "name": {
+      "english": "Zarude",
+      "japanese": "ザルード"
+    }
+  },
+  {
+    "name": {
+      "english": "Zarude-Dada",
+      "japanese": "Zarude-Dada"
+    }
+  },
+  {
+    "name": {
+      "english": "Regieleki",
+      "japanese": "レジエレキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Regidrago",
+      "japanese": "レジドラゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Glastrier",
+      "japanese": "ブリザポス"
+    }
+  },
+  {
+    "name": {
+      "english": "Spectrier",
+      "japanese": "レイスポス"
+    }
+  },
+  {
+    "name": {
+      "english": "Calyrex",
+      "japanese": "バドレックス"
+    }
+  },
+  {
+    "name": {
+      "english": "Calyrex-Ice",
+      "japanese": "バドレックス(はくば)(アイス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Calyrex-Shadow",
+      "japanese": "バドレックス(こくば)"
+    }
+  },
+  {
+    "name": {
+      "english": "Wyrdeer",
+      "japanese": "アヤシシ"
+    }
+  },
+  {
+    "name": {
+      "english": "Kleavor",
+      "japanese": "バサギリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ursaluna",
+      "japanese": "ガチグマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Basculegion",
+      "japanese": "イダイトウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Basculegion-F",
+      "japanese": "イダイトウ(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sneasler",
+      "japanese": "オオニューラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Overqwil",
+      "japanese": "ハリーマン"
+    }
+  },
+  {
+    "name": {
+      "english": "Enamorus",
+      "japanese": "ラブトロス"
+    }
+  },
+  {
+    "name": {
+      "english": "Enamorus-Therian",
+      "japanese": "ラブトロス(霊獣)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sprigatito",
+      "japanese": "ニャオハ"
+    }
+  },
+  {
+    "name": {
+      "english": "Floragato",
+      "japanese": "ニャローテ"
+    }
+  },
+  {
+    "name": {
+      "english": "Meowscarada",
+      "japanese": "マスカーニャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Fuecoco",
+      "japanese": "ホゲータ"
+    }
+  },
+  {
+    "name": {
+      "english": "Crocalor",
+      "japanese": "アチゲータ"
+    }
+  },
+  {
+    "name": {
+      "english": "Skeledirge",
+      "japanese": "ラウドボーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Quaxly",
+      "japanese": "クワッス"
+    }
+  },
+  {
+    "name": {
+      "english": "Quaxwell",
+      "japanese": "ウェルカモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Quaquaval",
+      "japanese": "ウェーニバル"
+    }
+  },
+  {
+    "name": {
+      "english": "Lechonk",
+      "japanese": "グルトン"
+    }
+  },
+  {
+    "name": {
+      "english": "Oinkologne",
+      "japanese": "パフュートン"
+    }
+  },
+  {
+    "name": {
+      "english": "Oinkologne-F",
+      "japanese": "パフュートン(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Tarountula",
+      "japanese": "タマンチュラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Spidops",
+      "japanese": "ワナイダー"
+    }
+  },
+  {
+    "name": {
+      "english": "Nymble",
+      "japanese": "マメバッタ"
+    }
+  },
+  {
+    "name": {
+      "english": "Lokix",
+      "japanese": "エクスレッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pawmi",
+      "japanese": "パモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Pawmo",
+      "japanese": "パモット"
+    }
+  },
+  {
+    "name": {
+      "english": "Pawmot",
+      "japanese": "パーモット"
+    }
+  },
+  {
+    "name": {
+      "english": "Tandemaus",
+      "japanese": "ワッカネズミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Maushold",
+      "japanese": "イッカネズミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Maushold-Four",
+      "japanese": "イッカネズミ(４ひき)(メス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Fidough",
+      "japanese": "パピモッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dachsbun",
+      "japanese": "バウッツェル"
+    }
+  },
+  {
+    "name": {
+      "english": "Smoliv",
+      "japanese": "ミニーブ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dolliv",
+      "japanese": "オリーニョ"
+    }
+  },
+  {
+    "name": {
+      "english": "Arboliva",
+      "japanese": "オリーヴァ"
+    }
+  },
+  {
+    "name": {
+      "english": "Squawkabilly",
+      "japanese": "イキリンコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Squawkabilly-Blue",
+      "japanese": "イキリンコ(ブルー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Squawkabilly-White",
+      "japanese": "イキリンコ(ホワイト)(ホワイト)"
+    }
+  },
+  {
+    "name": {
+      "english": "Squawkabilly-Yellow",
+      "japanese": "イキリンコ(イエロー)"
+    }
+  },
+  {
+    "name": {
+      "english": "Nacli",
+      "japanese": "コジオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Naclstack",
+      "japanese": "ジオヅム"
+    }
+  },
+  {
+    "name": {
+      "english": "Garganacl",
+      "japanese": "キョジオーン"
+    }
+  },
+  {
+    "name": {
+      "english": "Charcadet",
+      "japanese": "カルボウ"
+    }
+  },
+  {
+    "name": {
+      "english": "Armarouge",
+      "japanese": "グレンアルマ"
+    }
+  },
+  {
+    "name": {
+      "english": "Ceruledge",
+      "japanese": "ソウブレイズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tadbulb",
+      "japanese": "ズピカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bellibolt",
+      "japanese": "ハラバリー"
+    }
+  },
+  {
+    "name": {
+      "english": "Wattrel",
+      "japanese": "カイデン"
+    }
+  },
+  {
+    "name": {
+      "english": "Kilowattrel",
+      "japanese": "タイカイデン"
+    }
+  },
+  {
+    "name": {
+      "english": "Maschiff",
+      "japanese": "オラチフ"
+    }
+  },
+  {
+    "name": {
+      "english": "Mabosstiff",
+      "japanese": "マフィティフ"
+    }
+  },
+  {
+    "name": {
+      "english": "Shroodle",
+      "japanese": "シルシュルー"
+    }
+  },
+  {
+    "name": {
+      "english": "Grafaiai",
+      "japanese": "タギングル"
+    }
+  },
+  {
+    "name": {
+      "english": "Bramblin",
+      "japanese": "アノクサ"
+    }
+  },
+  {
+    "name": {
+      "english": "Brambleghast",
+      "japanese": "アノホラグサ"
+    }
+  },
+  {
+    "name": {
+      "english": "Toedscool",
+      "japanese": "ノノクラゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Toedscruel",
+      "japanese": "リククラゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Klawf",
+      "japanese": "ガケガニ"
+    }
+  },
+  {
+    "name": {
+      "english": "Capsakid",
+      "japanese": "カプサイジ"
+    }
+  },
+  {
+    "name": {
+      "english": "Scovillain",
+      "japanese": "スコヴィラン"
+    }
+  },
+  {
+    "name": {
+      "english": "Rellor",
+      "japanese": "シガロコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Rabsca",
+      "japanese": "ベラカス"
+    }
+  },
+  {
+    "name": {
+      "english": "Flittle",
+      "japanese": "ヒラヒナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Espathra",
+      "japanese": "クエスパトラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tinkatink",
+      "japanese": "カヌチャン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tinkatuff",
+      "japanese": "ナカヌチャン"
+    }
+  },
+  {
+    "name": {
+      "english": "Tinkaton",
+      "japanese": "デカヌチャン"
+    }
+  },
+  {
+    "name": {
+      "english": "Wiglett",
+      "japanese": "ウミディグダ"
+    }
+  },
+  {
+    "name": {
+      "english": "Wugtrio",
+      "japanese": "ウミトリオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Bombirdier",
+      "japanese": "オトシドリ"
+    }
+  },
+  {
+    "name": {
+      "english": "Finizen",
+      "japanese": "ナミイルカ"
+    }
+  },
+  {
+    "name": {
+      "english": "Palafin",
+      "japanese": "イルカマン"
+    }
+  },
+  {
+    "name": {
+      "english": "Palafin-Hero",
+      "japanese": "イルカマン(マイティ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Varoom",
+      "japanese": "ブロロン"
+    }
+  },
+  {
+    "name": {
+      "english": "Revavroom",
+      "japanese": "ブロロローム"
+    }
+  },
+  {
+    "name": {
+      "english": "Cyclizar",
+      "japanese": "モトトカゲ"
+    }
+  },
+  {
+    "name": {
+      "english": "Orthworm",
+      "japanese": "ミミズズ"
+    }
+  },
+  {
+    "name": {
+      "english": "Glimmet",
+      "japanese": "キラーメ"
+    }
+  },
+  {
+    "name": {
+      "english": "Glimmora",
+      "japanese": "キラフロル"
+    }
+  },
+  {
+    "name": {
+      "english": "Greavard",
+      "japanese": "ボチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Houndstone",
+      "japanese": "ハカドッグ"
+    }
+  },
+  {
+    "name": {
+      "english": "Flamigo",
+      "japanese": "カラミンゴ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cetoddle",
+      "japanese": "アルクジラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Cetitan",
+      "japanese": "ハルクジラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Veluza",
+      "japanese": "ミガルーサ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dondozo",
+      "japanese": "ヘイラッシャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Tatsugiri",
+      "japanese": "シャリタツ"
+    }
+  },
+  {
+    "name": {
+      "english": "Annihilape",
+      "japanese": "コノヨザル"
+    }
+  },
+  {
+    "name": {
+      "english": "Clodsire",
+      "japanese": "ドオー"
+    }
+  },
+  {
+    "name": {
+      "english": "Farigiraf",
+      "japanese": "リキキリン"
+    }
+  },
+  {
+    "name": {
+      "english": "Dudunsparce",
+      "japanese": "ノココッチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dudunsparce-Three-Segment",
+      "japanese": "ノココッチ(みつふし)(３びき)"
+    }
+  },
+  {
+    "name": {
+      "english": "Kingambit",
+      "japanese": "ドドゲザン"
+    }
+  },
+  {
+    "name": {
+      "english": "Great Tusk",
+      "japanese": "イダイナキバ"
+    }
+  },
+  {
+    "name": {
+      "english": "Scream Tail",
+      "japanese": "サケブシッポ"
+    }
+  },
+  {
+    "name": {
+      "english": "Brute Bonnet",
+      "japanese": "アラブルタケ"
+    }
+  },
+  {
+    "name": {
+      "english": "Flutter Mane",
+      "japanese": "ハバタクカミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Slither Wing",
+      "japanese": "チヲハウハネ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sandy Shocks",
+      "japanese": "スナノケガワ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Treads",
+      "japanese": "テツノワダチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Bundle",
+      "japanese": "テツノツツミ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Hands",
+      "japanese": "テツノカイナ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Jugulis",
+      "japanese": "テツノコウベ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Moth",
+      "japanese": "テツノドクガ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Thorns",
+      "japanese": "テツノイバラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Frigibax",
+      "japanese": "セビエ"
+    }
+  },
+  {
+    "name": {
+      "english": "Arctibax",
+      "japanese": "セゴール"
+    }
+  },
+  {
+    "name": {
+      "english": "Baxcalibur",
+      "japanese": "セグレイブ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gimmighoul",
+      "japanese": "コレクレー"
+    }
+  },
+  {
+    "name": {
+      "english": "Gimmighoul-Roaming",
+      "japanese": "コレクレー(とほ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Gholdengo",
+      "japanese": "サーフゴー"
+    }
+  },
+  {
+    "name": {
+      "english": "Wo-Chien",
+      "japanese": "チオンジェン"
+    }
+  },
+  {
+    "name": {
+      "english": "Chien-Pao",
+      "japanese": "パオジアン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ting-Lu",
+      "japanese": "ディンルー"
+    }
+  },
+  {
+    "name": {
+      "english": "Chi-Yu",
+      "japanese": "イーユイ"
+    }
+  },
+  {
+    "name": {
+      "english": "Roaring Moon",
+      "japanese": "トドロクツキ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Valiant",
+      "japanese": "テツノブジン"
+    }
+  },
+  {
+    "name": {
+      "english": "Koraidon",
+      "japanese": "コライドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Miraidon",
+      "japanese": "ミライドン"
+    }
+  },
+  {
+    "name": {
+      "english": "Walking Wake",
+      "japanese": "ウネルミナモ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Leaves",
+      "japanese": "テツノイサハ"
+    }
+  },
+  {
+    "name": {
+      "english": "Dipplin",
+      "japanese": "カミッチュ"
+    }
+  },
+  {
+    "name": {
+      "english": "Poltchageist",
+      "japanese": "チャデス"
+    }
+  },
+  {
+    "name": {
+      "english": "Poltchageist-Artisan",
+      "japanese": "チャデス(たくみ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Sinistcha",
+      "japanese": "ヤバソチャ"
+    }
+  },
+  {
+    "name": {
+      "english": "Sinistcha-Masterpiece",
+      "japanese": "ヤバソチャ(けっさく)"
+    }
+  },
+  {
+    "name": {
+      "english": "Okidogi",
+      "japanese": "イイネイヌ"
+    }
+  },
+  {
+    "name": {
+      "english": "Munkidori",
+      "japanese": "マシマシラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Fezandipiti",
+      "japanese": "キチキギス"
+    }
+  },
+  {
+    "name": {
+      "english": "Ogerpon",
+      "japanese": "オーガポン"
+    }
+  },
+  {
+    "name": {
+      "english": "Ogerpon-Cornerstone",
+      "japanese": "オーガポン(いしずえ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Ogerpon-Hearthflame",
+      "japanese": "オーガポン(かまど)"
+    }
+  },
+  {
+    "name": {
+      "english": "Ogerpon-Teal-Tera",
+      "japanese": "オーガポン(みどり)"
+    }
+  },
+  {
+    "name": {
+      "english": "Ogerpon-Wellspring",
+      "japanese": "オーガポン(いど)"
+    }
+  },
+  {
+    "name": {
+      "english": "Archaludon",
+      "japanese": "ブリジュラス"
+    }
+  },
+  {
+    "name": {
+      "english": "Hydrapple",
+      "japanese": "カミツオロチ"
+    }
+  },
+  {
+    "name": {
+      "english": "Gouging Fire",
+      "japanese": "ウガツホムラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Raging Bolt",
+      "japanese": "タケルライコ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Boulder",
+      "japanese": "テツノイワオ"
+    }
+  },
+  {
+    "name": {
+      "english": "Iron Crown",
+      "japanese": "テツノカシラ"
+    }
+  },
+  {
+    "name": {
+      "english": "Terapagos",
+      "japanese": "テラパゴス"
+    }
+  },
+  {
+    "name": {
+      "english": "Terapagos-Stellar",
+      "japanese": "テラパゴス(ステラ)"
+    }
+  },
+  {
+    "name": {
+      "english": "Terapagos-Terastal",
+      "japanese": "テラパゴス(テラス)"
+    }
+  },
+  {
+    "name": {
+      "english": "Pecharunt",
+      "japanese": "モモワロウ"
+    }
+  }
+]

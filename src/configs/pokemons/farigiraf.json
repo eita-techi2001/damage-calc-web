@@ -1,0 +1,28 @@
+{
+    "species": "Farigiraf",
+    "level": 50,
+    "nature": "Modest",
+    "ability": "Armor Tail",
+    "item": "Throat Spray",
+    "evs": {
+        "hp": 252,
+        "atk": 0,
+        "def": 100,
+        "spa": 156,
+        "spd": 0,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Fairy",
+    "moves": [
+        "Hyper Voice",
+        "Psychic Noise"
+    ]
+}

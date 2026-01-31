@@ -1,0 +1,29 @@
+{
+    "species": "Ogerpon-Wellspring",
+    "level": 50,
+    "nature": "Jolly",
+    "ability": "Water Absorb",
+    "item": "Wellspring Mask",
+    "evs": {
+        "hp": 252,
+        "atk": 100,
+        "def": 100,
+        "spa": 0,
+        "spd": 0,
+        "spe": 56
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Water",
+    "moves": [
+        "Ivy Cudgel",
+        "Horn Leech",
+        "Wood Hammer"
+    ]
+}

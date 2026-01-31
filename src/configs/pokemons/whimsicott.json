@@ -1,0 +1,27 @@
+{
+    "species": "Whimsicott",
+    "level": 50,
+    "nature": "Timid",
+    "ability": "Prankster",
+    "item": "Focus Sash",
+    "evs": {
+        "hp": 4,
+        "atk": 0,
+        "def": 0,
+        "spa": 252,
+        "spd": 0,
+        "spe": 252
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Ghost",
+    "moves": [
+        "Moonblast"
+    ]
+}

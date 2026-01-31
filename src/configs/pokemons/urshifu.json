@@ -1,0 +1,29 @@
+{
+    "species": "Urshifu",
+    "level": 50,
+    "nature": "Adamant",
+    "ability": "Unseen Fist",
+    "item": "Focus Sash",
+    "evs": {
+        "hp": 0,
+        "atk": 252,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 252
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Dark",
+    "moves": [
+        "Wicked Blow",
+        "Close Combat",
+        "Sucker Punch"
+    ]
+}

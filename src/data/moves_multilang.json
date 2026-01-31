@@ -1,0 +1,2922 @@
+[
+  {
+    "ename": "Absorb",
+    "jname": "すいとる"
+  },
+  {
+    "ename": "Acid",
+    "jname": "ようかいえき"
+  },
+  {
+    "ename": "Acid Armor",
+    "jname": "とける"
+  },
+  {
+    "ename": "Acid Spray",
+    "jname": "アシッドボム"
+  },
+  {
+    "ename": "Acrobatics",
+    "jname": "アクロバット"
+  },
+  {
+    "ename": "Acupressure",
+    "jname": "つぼをつく"
+  },
+  {
+    "ename": "Aerial Ace",
+    "jname": "つばめがえし"
+  },
+  {
+    "ename": "Aeroblast",
+    "jname": "エアロブラスト"
+  },
+  {
+    "ename": "After You",
+    "jname": "おさきにどうぞ"
+  },
+  {
+    "ename": "Agility",
+    "jname": "こうそくいどう"
+  },
+  {
+    "ename": "Air Cutter",
+    "jname": "エアカッター"
+  },
+  {
+    "ename": "Air Slash",
+    "jname": "エアスラッシュ"
+  },
+  {
+    "ename": "Alluring Voice",
+    "jname": "みわくのボイス"
+  },
+  {
+    "ename": "Ally Switch",
+    "jname": "サイドチェンジ"
+  },
+  {
+    "ename": "Amnesia",
+    "jname": "ドわすれ"
+  },
+  {
+    "ename": "Ancient Power",
+    "jname": "げんしのちから"
+  },
+  {
+    "ename": "Apple Acid",
+    "jname": "りんごさん"
+  },
+  {
+    "ename": "Aqua Cutter",
+    "jname": "アクアカッター"
+  },
+  {
+    "ename": "Aqua Jet",
+    "jname": "アクアジェット"
+  },
+  {
+    "ename": "Aqua Ring",
+    "jname": "アクアリング"
+  },
+  {
+    "ename": "Aqua Step",
+    "jname": "アクアステップ"
+  },
+  {
+    "ename": "Aqua Tail",
+    "jname": "アクアテール"
+  },
+  {
+    "ename": "Arm Thrust",
+    "jname": "つっぱり"
+  },
+  {
+    "ename": "Armor Cannon",
+    "jname": "アーマーキャノン"
+  },
+  {
+    "ename": "Aromatherapy",
+    "jname": "アロマセラピー"
+  },
+  {
+    "ename": "Aromatic Mist",
+    "jname": "アロマミスト"
+  },
+  {
+    "ename": "Assist",
+    "jname": "ねこのて"
+  },
+  {
+    "ename": "Assurance",
+    "jname": "ダメおし"
+  },
+  {
+    "ename": "Astonish",
+    "jname": "おどろかす"
+  },
+  {
+    "ename": "Astral Barrage",
+    "jname": "アストラルビット"
+  },
+  {
+    "ename": "Attack Order",
+    "jname": "こうげきしれい"
+  },
+  {
+    "ename": "Attract",
+    "jname": "メロメロ"
+  },
+  {
+    "ename": "Aura Sphere",
+    "jname": "はどうだん"
+  },
+  {
+    "ename": "Aura Wheel",
+    "jname": "オーラぐるま"
+  },
+  {
+    "ename": "Aurora Beam",
+    "jname": "オーロラビーム"
+  },
+  {
+    "ename": "Autotomize",
+    "jname": "ボディパージ"
+  },
+  {
+    "ename": "Avalanche",
+    "jname": "ゆきなだれ"
+  },
+  {
+    "ename": "Baby-Doll Eyes",
+    "jname": "つぶらなひとみ"
+  },
+  {
+    "ename": "Barrage",
+    "jname": "たまなげ"
+  },
+  {
+    "ename": "Barrier",
+    "jname": "バリアー"
+  },
+  {
+    "ename": "Baton Pass",
+    "jname": "バトンタッチ"
+  },
+  {
+    "ename": "Beat Up",
+    "jname": "ふくろだたき"
+  },
+  {
+    "ename": "Behemoth Bash",
+    "jname": "きょじゅうだん"
+  },
+  {
+    "ename": "Behemoth Blade",
+    "jname": "きょじゅうざん"
+  },
+  {
+    "ename": "Belch",
+    "jname": "ゲップ"
+  },
+  {
+    "ename": "Belly Drum",
+    "jname": "はらだいこ"
+  },
+  {
+    "ename": "Bestow",
+    "jname": "ギフトパス"
+  },
+  {
+    "ename": "Bide",
+    "jname": "がまん"
+  },
+  {
+    "ename": "Bind",
+    "jname": "しめつける"
+  },
+  {
+    "ename": "Bite",
+    "jname": "かみつく"
+  },
+  {
+    "ename": "Bitter Blade",
+    "jname": "むねんのつるぎ"
+  },
+  {
+    "ename": "Blast Burn",
+    "jname": "ブラストバーン"
+  },
+  {
+    "ename": "Blaze Kick",
+    "jname": "ブレイズキック"
+  },
+  {
+    "ename": "Blazing Torque",
+    "jname": "バーンアクセル"
+  },
+  {
+    "ename": "Blizzard",
+    "jname": "ふぶき"
+  },
+  {
+    "ename": "Block",
+    "jname": "とおせんぼう"
+  },
+  {
+    "ename": "Blood Moon",
+    "jname": "ブラッドムーン"
+  },
+  {
+    "ename": "Blue Flare",
+    "jname": "あおいほのお"
+  },
+  {
+    "ename": "Body Press",
+    "jname": "ボディプレス"
+  },
+  {
+    "ename": "Body Slam",
+    "jname": "のしかかり"
+  },
+  {
+    "ename": "Bolt Beak",
+    "jname": "でんげきくちばし"
+  },
+  {
+    "ename": "Bolt Strike",
+    "jname": "らいげき"
+  },
+  {
+    "ename": "Bone Club",
+    "jname": "ホネこんぼう"
+  },
+  {
+    "ename": "Bone Rush",
+    "jname": "ボーンラッシュ"
+  },
+  {
+    "ename": "Bonemerang",
+    "jname": "ホネブーメラン"
+  },
+  {
+    "ename": "Boomburst",
+    "jname": "ばくおんぱ"
+  },
+  {
+    "ename": "Bounce",
+    "jname": "とびはねる"
+  },
+  {
+    "ename": "Branch Poke",
+    "jname": "えだづき"
+  },
+  {
+    "ename": "Brave Bird",
+    "jname": "ブレイブバード"
+  },
+  {
+    "ename": "Breaking Swipe",
+    "jname": "ワイドブレイカー"
+  },
+  {
+    "ename": "Brick Break",
+    "jname": "かわらわり"
+  },
+  {
+    "ename": "Brine",
+    "jname": "しおみず"
+  },
+  {
+    "ename": "Brutal Swing",
+    "jname": "ぶんまわす"
+  },
+  {
+    "ename": "Bubble",
+    "jname": "あわ"
+  },
+  {
+    "ename": "Bubble Beam",
+    "jname": "バブルこうせん"
+  },
+  {
+    "ename": "Bug Bite",
+    "jname": "むしくい"
+  },
+  {
+    "ename": "Bug Buzz",
+    "jname": "むしのさざめき"
+  },
+  {
+    "ename": "Bulk Up",
+    "jname": "ビルドアップ"
+  },
+  {
+    "ename": "Bulldoze",
+    "jname": "じならし"
+  },
+  {
+    "ename": "Bullet Punch",
+    "jname": "バレットパンチ"
+  },
+  {
+    "ename": "Bullet Seed",
+    "jname": "タネマシンガン"
+  },
+  {
+    "ename": "Burning Bulwark",
+    "jname": "かえんのまもり"
+  },
+  {
+    "ename": "Burning Jealousy",
+    "jname": "しっとのほのお"
+  },
+  {
+    "ename": "Calm Mind",
+    "jname": "めいそう"
+  },
+  {
+    "ename": "Camouflage",
+    "jname": "ほごしょく"
+  },
+  {
+    "ename": "Captivate",
+    "jname": "ゆうわく"
+  },
+  {
+    "ename": "Celebration",
+    "jname": "おいわい"
+  },
+  {
+    "ename": "Charge",
+    "jname": "じゅうでん"
+  },
+  {
+    "ename": "Charge Beam",
+    "jname": "チャージビーム"
+  },
+  {
+    "ename": "Charm",
+    "jname": "あまえる"
+  },
+  {
+    "ename": "Chatter",
+    "jname": "おしゃべり"
+  },
+  {
+    "ename": "Chilling Water",
+    "jname": "ひやみず"
+  },
+  {
+    "ename": "Chilly Reception",
+    "jname": "さむいギャグ"
+  },
+  {
+    "ename": "Chip Away",
+    "jname": "なしくずし"
+  },
+  {
+    "ename": "Circle Throw",
+    "jname": "ともえなげ"
+  },
+  {
+    "ename": "Clamp",
+    "jname": "からではさむ"
+  },
+  {
+    "ename": "Clangorous Soul",
+    "jname": "ソウルビート"
+  },
+  {
+    "ename": "Clear Smog",
+    "jname": "クリアスモッグ"
+  },
+  {
+    "ename": "Close Combat",
+    "jname": "インファイト"
+  },
+  {
+    "ename": "Coaching",
+    "jname": "コーチング"
+  },
+  {
+    "ename": "Coil",
+    "jname": "とぐろをまく"
+  },
+  {
+    "ename": "Collision Course",
+    "jname": "アクセルブレイク"
+  },
+  {
+    "ename": "Combat Torque",
+    "jname": "ファイトアクセル"
+  },
+  {
+    "ename": "Comet Punch",
+    "jname": "れんぞくパンチ"
+  },
+  {
+    "ename": "Comeuppance",
+    "jname": "ほうふく"
+  },
+  {
+    "ename": "Confide",
+    "jname": "ないしょばなし"
+  },
+  {
+    "ename": "Confuse Ray",
+    "jname": "あやしいひかり"
+  },
+  {
+    "ename": "Confusion",
+    "jname": "ねんりき"
+  },
+  {
+    "ename": "Constrict",
+    "jname": "からみつく"
+  },
+  {
+    "ename": "Conversion",
+    "jname": "テクスチャー"
+  },
+  {
+    "ename": "Conversion 2",
+    "jname": "テクスチャー２"
+  },
+  {
+    "ename": "Copycat",
+    "jname": "まねっこ"
+  },
+  {
+    "ename": "Corrosive Gas",
+    "jname": "ふしょくガス"
+  },
+  {
+    "ename": "Cosmic Power",
+    "jname": "コスモパワー"
+  },
+  {
+    "ename": "Cotton Guard",
+    "jname": "コットンガード"
+  },
+  {
+    "ename": "Cotton Spore",
+    "jname": "わたほうし"
+  },
+  {
+    "ename": "Counter",
+    "jname": "カウンター"
+  },
+  {
+    "ename": "Court Change",
+    "jname": "コートチェンジ"
+  },
+  {
+    "ename": "Covet",
+    "jname": "ほしがる"
+  },
+  {
+    "ename": "Crabhammer",
+    "jname": "クラブハンマー"
+  },
+  {
+    "ename": "Crafty Shield",
+    "jname": "トリックガード"
+  },
+  {
+    "ename": "Cross Chop",
+    "jname": "クロスチョップ"
+  },
+  {
+    "ename": "Cross Poison",
+    "jname": "クロスポイズン"
+  },
+  {
+    "ename": "Crunch",
+    "jname": "かみくだく"
+  },
+  {
+    "ename": "Crush Claw",
+    "jname": "ブレイククロー"
+  },
+  {
+    "ename": "Crush Grip",
+    "jname": "にぎりつぶす"
+  },
+  {
+    "ename": "Curse",
+    "jname": "のろい"
+  },
+  {
+    "ename": "Cut",
+    "jname": "いあいぎり"
+  },
+  {
+    "ename": "Dark Pulse",
+    "jname": "あくのはどう"
+  },
+  {
+    "ename": "Dark Void",
+    "jname": "ダークホール"
+  },
+  {
+    "ename": "Darkest Lariat",
+    "jname": "DDラリアット"
+  },
+  {
+    "ename": "Dazzling Gleam",
+    "jname": "マジカルシャイン"
+  },
+  {
+    "ename": "Decorate",
+    "jname": "デコレーション"
+  },
+  {
+    "ename": "Defend Order",
+    "jname": "ぼうぎょしれい"
+  },
+  {
+    "ename": "Defense Curl",
+    "jname": "まるくなる"
+  },
+  {
+    "ename": "Defog",
+    "jname": "きりばらい"
+  },
+  {
+    "ename": "Destiny Bond",
+    "jname": "みちづれ"
+  },
+  {
+    "ename": "Detect",
+    "jname": "みきり"
+  },
+  {
+    "ename": "Diamond Storm",
+    "jname": "ダイヤストーム"
+  },
+  {
+    "ename": "Dig",
+    "jname": "あなをほる"
+  },
+  {
+    "ename": "Disable",
+    "jname": "かなしばり"
+  },
+  {
+    "ename": "Disarming Voice",
+    "jname": "チャームボイス"
+  },
+  {
+    "ename": "Discharge",
+    "jname": "ほうでん"
+  },
+  {
+    "ename": "Dive",
+    "jname": "ダイビング"
+  },
+  {
+    "ename": "Dizzy Punch",
+    "jname": "ピヨピヨパンチ"
+  },
+  {
+    "ename": "Doodle",
+    "jname": "うつしえ"
+  },
+  {
+    "ename": "Doom Desire",
+    "jname": "はめつのねがい"
+  },
+  {
+    "ename": "Double Hit",
+    "jname": "ダブルアタック"
+  },
+  {
+    "ename": "Double Kick",
+    "jname": "にどげり"
+  },
+  {
+    "ename": "Double Shock",
+    "jname": "でんこうそうげき"
+  },
+  {
+    "ename": "Double Slap",
+    "jname": "おうふくビンタ"
+  },
+  {
+    "ename": "Double Team",
+    "jname": "かげぶんしん"
+  },
+  {
+    "ename": "Double-Edge",
+    "jname": "すてみタックル"
+  },
+  {
+    "ename": "Draco Meteor",
+    "jname": "りゅうせいぐん"
+  },
+  {
+    "ename": "Dragon Breath",
+    "jname": "りゅうのいぶき"
+  },
+  {
+    "ename": "Dragon Cheer",
+    "jname": "ドラゴンエール"
+  },
+  {
+    "ename": "Dragon Claw",
+    "jname": "ドラゴンクロー"
+  },
+  {
+    "ename": "Dragon Dance",
+    "jname": "りゅうのまい"
+  },
+  {
+    "ename": "Dragon Darts",
+    "jname": "ドラゴンアロー"
+  },
+  {
+    "ename": "Dragon Pulse",
+    "jname": "りゅうのはどう"
+  },
+  {
+    "ename": "Dragon Rage",
+    "jname": "りゅうのいかり"
+  },
+  {
+    "ename": "Dragon Rush",
+    "jname": "ドラゴンダイブ"
+  },
+  {
+    "ename": "Dragon Tail",
+    "jname": "ドラゴンテール"
+  },
+  {
+    "ename": "Drain Punch",
+    "jname": "ドレインパンチ"
+  },
+  {
+    "ename": "Draining Kiss",
+    "jname": "ドレインキッス"
+  },
+  {
+    "ename": "Dream Eater",
+    "jname": "ゆめくい"
+  },
+  {
+    "ename": "Drill Peck",
+    "jname": "ドリルくちばし"
+  },
+  {
+    "ename": "Drill Run",
+    "jname": "ドリルライナー"
+  },
+  {
+    "ename": "Drum Beating",
+    "jname": "ドラムアタック"
+  },
+  {
+    "ename": "Dual Chop",
+    "jname": "ダブルチョップ"
+  },
+  {
+    "ename": "Dual Wingbeat",
+    "jname": "ダブルウイング"
+  },
+  {
+    "ename": "Dynamax Cannon",
+    "jname": "ダイマックスほう"
+  },
+  {
+    "ename": "Dynamic Punch",
+    "jname": "ばくれつパンチ"
+  },
+  {
+    "ename": "Earth Power",
+    "jname": "だいちのちから"
+  },
+  {
+    "ename": "Earthquake",
+    "jname": "じしん"
+  },
+  {
+    "ename": "Echoed Voice",
+    "jname": "エコーボイス"
+  },
+  {
+    "ename": "Eerie Impulse",
+    "jname": "かいでんぱ"
+  },
+  {
+    "ename": "Eerie Spell",
+    "jname": "ぶきみなじゅもん"
+  },
+  {
+    "ename": "Egg Bomb",
+    "jname": "タマゴばくだん"
+  },
+  {
+    "ename": "Electric Terrain",
+    "jname": "エレキフィールド"
+  },
+  {
+    "ename": "Electrify",
+    "jname": "そうでん"
+  },
+  {
+    "ename": "Electro Ball",
+    "jname": "エレキボール"
+  },
+  {
+    "ename": "Electro Drift",
+    "jname": "イナズマドライブ"
+  },
+  {
+    "ename": "Electro Shot",
+    "jname": "エレクトロビーム"
+  },
+  {
+    "ename": "Electroweb",
+    "jname": "エレキネット"
+  },
+  {
+    "ename": "Embargo",
+    "jname": "さしおさえ"
+  },
+  {
+    "ename": "Ember",
+    "jname": "ひのこ"
+  },
+  {
+    "ename": "Encore",
+    "jname": "アンコール"
+  },
+  {
+    "ename": "Endeavor",
+    "jname": "がむしゃら"
+  },
+  {
+    "ename": "Endure",
+    "jname": "こらえる"
+  },
+  {
+    "ename": "Energy Ball",
+    "jname": "エナジーボール"
+  },
+  {
+    "ename": "Entrainment",
+    "jname": "なかまづくり"
+  },
+  {
+    "ename": "Eruption",
+    "jname": "ふんか"
+  },
+  {
+    "ename": "Eternabeam",
+    "jname": "ムゲンダイビーム"
+  },
+  {
+    "ename": "Expanding Force",
+    "jname": "ワイドフォース"
+  },
+  {
+    "ename": "Explosion",
+    "jname": "だいばくはつ"
+  },
+  {
+    "ename": "Extrasensory",
+    "jname": "じんつうりき"
+  },
+  {
+    "ename": "Extreme Speed",
+    "jname": "しんそく"
+  },
+  {
+    "ename": "Facade",
+    "jname": "からげんき"
+  },
+  {
+    "ename": "Fairy Lock",
+    "jname": "フェアリーロック"
+  },
+  {
+    "ename": "Fairy Wind",
+    "jname": "ようせいのかぜ"
+  },
+  {
+    "ename": "Fake Out",
+    "jname": "ねこだまし"
+  },
+  {
+    "ename": "Fake Tears",
+    "jname": "うそなき"
+  },
+  {
+    "ename": "False Surrender",
+    "jname": "どげざつき"
+  },
+  {
+    "ename": "False Swipe",
+    "jname": "みねうち"
+  },
+  {
+    "ename": "Feather Dance",
+    "jname": "フェザーダンス"
+  },
+  {
+    "ename": "Feint",
+    "jname": "フェイント"
+  },
+  {
+    "ename": "Feint Attack",
+    "jname": "だましうち"
+  },
+  {
+    "ename": "Fell Stinger",
+    "jname": "とどめばり"
+  },
+  {
+    "ename": "Fickle Beam",
+    "jname": "きまぐれレーザー"
+  },
+  {
+    "ename": "Fiery Dance",
+    "jname": "ほのおのまい"
+  },
+  {
+    "ename": "Fillet Away",
+    "jname": "みおけずる"
+  },
+  {
+    "ename": "Final Gambit",
+    "jname": "いのちがけ"
+  },
+  {
+    "ename": "Fire Blast",
+    "jname": "だいもんじ"
+  },
+  {
+    "ename": "Fire Fang",
+    "jname": "ほのおのキバ"
+  },
+  {
+    "ename": "Fire Pledge",
+    "jname": "ほのおのちかい"
+  },
+  {
+    "ename": "Fire Punch",
+    "jname": "ほのおのパンチ"
+  },
+  {
+    "ename": "Fire Spin",
+    "jname": "ほのおのうず"
+  },
+  {
+    "ename": "Fishious Rend",
+    "jname": "エラがみ"
+  },
+  {
+    "ename": "Fissure",
+    "jname": "じわれ"
+  },
+  {
+    "ename": "Flail",
+    "jname": "じたばた"
+  },
+  {
+    "ename": "Flame Burst",
+    "jname": "はじけるほのお"
+  },
+  {
+    "ename": "Flame Charge",
+    "jname": "ニトロチャージ"
+  },
+  {
+    "ename": "Flame Wheel",
+    "jname": "かえんぐるま"
+  },
+  {
+    "ename": "Flamethrower",
+    "jname": "かえんほうしゃ"
+  },
+  {
+    "ename": "Flare Blitz",
+    "jname": "フレアドライブ"
+  },
+  {
+    "ename": "Flash",
+    "jname": "フラッシュ"
+  },
+  {
+    "ename": "Flash Cannon",
+    "jname": "ラスターカノン"
+  },
+  {
+    "ename": "Flatter",
+    "jname": "おだてる"
+  },
+  {
+    "ename": "Fling",
+    "jname": "なげつける"
+  },
+  {
+    "ename": "Flip Turn",
+    "jname": "クイックターン"
+  },
+  {
+    "ename": "Flower Shield",
+    "jname": "フラワーガード"
+  },
+  {
+    "ename": "Flower Trick",
+    "jname": "トリックフラワー"
+  },
+  {
+    "ename": "Fly",
+    "jname": "そらをとぶ"
+  },
+  {
+    "ename": "Flying Press",
+    "jname": "フライングプレス"
+  },
+  {
+    "ename": "Focus Blast",
+    "jname": "きあいだま"
+  },
+  {
+    "ename": "Focus Energy",
+    "jname": "きあいだめ"
+  },
+  {
+    "ename": "Focus Punch",
+    "jname": "きあいパンチ"
+  },
+  {
+    "ename": "Follow Me",
+    "jname": "このゆびとまれ"
+  },
+  {
+    "ename": "Force Palm",
+    "jname": "はっけい"
+  },
+  {
+    "ename": "Foresight",
+    "jname": "みやぶる"
+  },
+  {
+    "ename": "Forest's Curse",
+    "jname": "もりののろい"
+  },
+  {
+    "ename": "Foul Play",
+    "jname": "イカサマ"
+  },
+  {
+    "ename": "Freeze Shock",
+    "jname": "フリーズボルト"
+  },
+  {
+    "ename": "Freeze-Dry",
+    "jname": "フリーズドライ"
+  },
+  {
+    "ename": "Frenzy Plant",
+    "jname": "ハードプラント"
+  },
+  {
+    "ename": "Frost Breath",
+    "jname": "こおりのいぶき"
+  },
+  {
+    "ename": "Frustration",
+    "jname": "やつあたり"
+  },
+  {
+    "ename": "Fury Attack",
+    "jname": "みだれづき"
+  },
+  {
+    "ename": "Fury Cutter",
+    "jname": "れんぞくぎり"
+  },
+  {
+    "ename": "Fury Swipes",
+    "jname": "みだれひっかき"
+  },
+  {
+    "ename": "Fusion Bolt",
+    "jname": "クロスサンダー"
+  },
+  {
+    "ename": "Fusion Flare",
+    "jname": "クロスフレイム"
+  },
+  {
+    "ename": "Future Sight",
+    "jname": "みらいよち"
+  },
+  {
+    "ename": "Gastro Acid",
+    "jname": "いえき"
+  },
+  {
+    "ename": "Gear Grind",
+    "jname": "ギアソーサー"
+  },
+  {
+    "ename": "Geomancy",
+    "jname": "ジオコントロール"
+  },
+  {
+    "ename": "Giga Drain",
+    "jname": "ギガドレイン"
+  },
+  {
+    "ename": "Giga Impact",
+    "jname": "ギガインパクト"
+  },
+  {
+    "ename": "Gigaton Hammer",
+    "jname": "デカハンマー"
+  },
+  {
+    "ename": "Glacial Lance",
+    "jname": "ブリザードランス"
+  },
+  {
+    "ename": "Glaciate",
+    "jname": "こごえるせかい"
+  },
+  {
+    "ename": "Glaive Rush",
+    "jname": "きょけんとつげき"
+  },
+  {
+    "ename": "Glare",
+    "jname": "へびにらみ"
+  },
+  {
+    "ename": "Grass Knot",
+    "jname": "くさむすび"
+  },
+  {
+    "ename": "Grass Pledge",
+    "jname": "くさのちかい"
+  },
+  {
+    "ename": "Grass Whistle",
+    "jname": "くさぶえ"
+  },
+  {
+    "ename": "Grassy Glide",
+    "jname": "グラススライダー"
+  },
+  {
+    "ename": "Grassy Terrain",
+    "jname": "グラスフィールド"
+  },
+  {
+    "ename": "Grav Apple",
+    "jname": "Gのちから"
+  },
+  {
+    "ename": "Gravity",
+    "jname": "じゅうりょく"
+  },
+  {
+    "ename": "Growl",
+    "jname": "なきごえ"
+  },
+  {
+    "ename": "Growth",
+    "jname": "せいちょう"
+  },
+  {
+    "ename": "Grudge",
+    "jname": "おんねん"
+  },
+  {
+    "ename": "Guard Split",
+    "jname": "ガードシェア"
+  },
+  {
+    "ename": "Guard Swap",
+    "jname": "ガードスワップ"
+  },
+  {
+    "ename": "Guillotine",
+    "jname": "ハサミギロチン"
+  },
+  {
+    "ename": "Gunk Shot",
+    "jname": "ダストシュート"
+  },
+  {
+    "ename": "Gust",
+    "jname": "かぜおこし"
+  },
+  {
+    "ename": "Gyro Ball",
+    "jname": "ジャイロボール"
+  },
+  {
+    "ename": "Hail",
+    "jname": "あられ"
+  },
+  {
+    "ename": "Hammer Arm",
+    "jname": "アームハンマー"
+  },
+  {
+    "ename": "Happy Hour",
+    "jname": "ハッピータイム"
+  },
+  {
+    "ename": "Hard Press",
+    "jname": "ハードプレス"
+  },
+  {
+    "ename": "Harden",
+    "jname": "かたくなる"
+  },
+  {
+    "ename": "Haze",
+    "jname": "くろいきり"
+  },
+  {
+    "ename": "Head Charge",
+    "jname": "アフロブレイク"
+  },
+  {
+    "ename": "Head Smash",
+    "jname": "もろはのずつき"
+  },
+  {
+    "ename": "Headbutt",
+    "jname": "ずつき"
+  },
+  {
+    "ename": "Heal Bell",
+    "jname": "いやしのすず"
+  },
+  {
+    "ename": "Heal Block",
+    "jname": "かいふくふうじ"
+  },
+  {
+    "ename": "Heal Order",
+    "jname": "かいふくしれい"
+  },
+  {
+    "ename": "Heal Pulse",
+    "jname": "いやしのはどう"
+  },
+  {
+    "ename": "Healing Wish",
+    "jname": "いやしのねがい"
+  },
+  {
+    "ename": "Heart Stamp",
+    "jname": "ハートスタンプ"
+  },
+  {
+    "ename": "Heart Swap",
+    "jname": "ハートスワップ"
+  },
+  {
+    "ename": "Heat Crash",
+    "jname": "ヒートスタンプ"
+  },
+  {
+    "ename": "Heat Wave",
+    "jname": "ねっぷう"
+  },
+  {
+    "ename": "Heavy Slam",
+    "jname": "ヘビーボンバー"
+  },
+  {
+    "ename": "Helping Hand",
+    "jname": "てだすけ"
+  },
+  {
+    "ename": "Hex",
+    "jname": "たたりめ"
+  },
+  {
+    "ename": "Hidden Power",
+    "jname": "めざめるパワー"
+  },
+  {
+    "ename": "High Jump Kick",
+    "jname": "とびひざげり"
+  },
+  {
+    "ename": "Hone Claws",
+    "jname": "つめとぎ"
+  },
+  {
+    "ename": "Horn Attack",
+    "jname": "つのでつく"
+  },
+  {
+    "ename": "Horn Drill",
+    "jname": "つのドリル"
+  },
+  {
+    "ename": "Horn Leech",
+    "jname": "ウッドホーン"
+  },
+  {
+    "ename": "Howl",
+    "jname": "とおぼえ"
+  },
+  {
+    "ename": "Hurricane",
+    "jname": "ぼうふう"
+  },
+  {
+    "ename": "Hydro Cannon",
+    "jname": "ハイドロカノン"
+  },
+  {
+    "ename": "Hydro Pump",
+    "jname": "ハイドロポンプ"
+  },
+  {
+    "ename": "Hyper Beam",
+    "jname": "はかいこうせん"
+  },
+  {
+    "ename": "Hyper Drill",
+    "jname": "ハイパードリル"
+  },
+  {
+    "ename": "Hyper Fang",
+    "jname": "ひっさつまえば"
+  },
+  {
+    "ename": "Hyper Voice",
+    "jname": "ハイパーボイス"
+  },
+  {
+    "ename": "Hyperspace Hole",
+    "jname": "いじげんホール"
+  },
+  {
+    "ename": "Hypnosis",
+    "jname": "さいみんじゅつ"
+  },
+  {
+    "ename": "Ice Ball",
+    "jname": "アイスボール"
+  },
+  {
+    "ename": "Ice Beam",
+    "jname": "れいとうビーム"
+  },
+  {
+    "ename": "Ice Burn",
+    "jname": "コールドフレア"
+  },
+  {
+    "ename": "Ice Fang",
+    "jname": "こおりのキバ"
+  },
+  {
+    "ename": "Ice Punch",
+    "jname": "れいとうパンチ"
+  },
+  {
+    "ename": "Ice Shard",
+    "jname": "こおりのつぶて"
+  },
+  {
+    "ename": "Icicle Crash",
+    "jname": "つららおとし"
+  },
+  {
+    "ename": "Icicle Spear",
+    "jname": "つららばり"
+  },
+  {
+    "ename": "Icy Wind",
+    "jname": "こごえるかぜ"
+  },
+  {
+    "ename": "Imprison",
+    "jname": "ふういん"
+  },
+  {
+    "ename": "Incinerate",
+    "jname": "やきつくす"
+  },
+  {
+    "ename": "Inferno",
+    "jname": "れんごく"
+  },
+  {
+    "ename": "Infestation",
+    "jname": "まとわりつく"
+  },
+  {
+    "ename": "Ingrain",
+    "jname": "ねをはる"
+  },
+  {
+    "ename": "Ion Deluge",
+    "jname": "プラズマシャワー"
+  },
+  {
+    "ename": "Iron Defense",
+    "jname": "てっぺき"
+  },
+  {
+    "ename": "Iron Head",
+    "jname": "アイアンヘッド"
+  },
+  {
+    "ename": "Iron Tail",
+    "jname": "アイアンテール"
+  },
+  {
+    "ename": "Ivy Cudgel",
+    "jname": "ツタこんぼう"
+  },
+  {
+    "ename": "Judgment",
+    "jname": "さばきのつぶて"
+  },
+  {
+    "ename": "Jump Kick",
+    "jname": "とびげり"
+  },
+  {
+    "ename": "Jungle Healing",
+    "jname": "ジャングルヒール"
+  },
+  {
+    "ename": "Karate Chop",
+    "jname": "からてチョップ"
+  },
+  {
+    "ename": "Kinesis",
+    "jname": "スプーンまげ"
+  },
+  {
+    "ename": "King's Shield",
+    "jname": "キングシールド"
+  },
+  {
+    "ename": "Knock Off",
+    "jname": "はたきおとす"
+  },
+  {
+    "ename": "Kowtow Cleave",
+    "jname": "ドゲザン"
+  },
+  {
+    "ename": "Land's Wrath",
+    "jname": "グランドフォース"
+  },
+  {
+    "ename": "Lash Out",
+    "jname": "うっぷんばらし"
+  },
+  {
+    "ename": "Last Resort",
+    "jname": "とっておき"
+  },
+  {
+    "ename": "Lava Plume",
+    "jname": "ふんえん"
+  },
+  {
+    "ename": "Leaf Blade",
+    "jname": "リーフブレード"
+  },
+  {
+    "ename": "Leaf Storm",
+    "jname": "リーフストーム"
+  },
+  {
+    "ename": "Leaf Tornado",
+    "jname": "グラスミキサー"
+  },
+  {
+    "ename": "Leech Life",
+    "jname": "きゅうけつ"
+  },
+  {
+    "ename": "Leech Seed",
+    "jname": "やどりぎのタネ"
+  },
+  {
+    "ename": "Leer",
+    "jname": "にらみつける"
+  },
+  {
+    "ename": "Lick",
+    "jname": "したでなめる"
+  },
+  {
+    "ename": "Life Dew",
+    "jname": "いのちのしずく"
+  },
+  {
+    "ename": "Light Screen",
+    "jname": "ひかりのかべ"
+  },
+  {
+    "ename": "Lock-On",
+    "jname": "ロックオン"
+  },
+  {
+    "ename": "Lovely Kiss",
+    "jname": "あくまのキッス"
+  },
+  {
+    "ename": "Low Kick",
+    "jname": "けたぐり"
+  },
+  {
+    "ename": "Low Sweep",
+    "jname": "ローキック"
+  },
+  {
+    "ename": "Lucky Chant",
+    "jname": "おまじない"
+  },
+  {
+    "ename": "Lunar Dance",
+    "jname": "みかづきのまい"
+  },
+  {
+    "ename": "Luster Purge",
+    "jname": "ラスターパージ"
+  },
+  {
+    "ename": "Mach Punch",
+    "jname": "マッハパンチ"
+  },
+  {
+    "ename": "Magic Coat",
+    "jname": "マジックコート"
+  },
+  {
+    "ename": "Magic Powder",
+    "jname": "こほう"
+  },
+  {
+    "ename": "Magic Room",
+    "jname": "マジックルーム"
+  },
+  {
+    "ename": "Magical Leaf",
+    "jname": "マジカルリーフ"
+  },
+  {
+    "ename": "Magical Torque",
+    "jname": "マジカルアクセル"
+  },
+  {
+    "ename": "Magma Storm",
+    "jname": "マグマストーム"
+  },
+  {
+    "ename": "Magnet Bomb",
+    "jname": "マグネットボム"
+  },
+  {
+    "ename": "Magnet Rise",
+    "jname": "でんじふゆう"
+  },
+  {
+    "ename": "Magnetic Flux",
+    "jname": "じばそうさ"
+  },
+  {
+    "ename": "Magnitude",
+    "jname": "マグニチュード"
+  },
+  {
+    "ename": "Make It Rain",
+    "jname": "ゴールドラッシュ"
+  },
+  {
+    "ename": "Malignant Chain",
+    "jname": "じゃどくのくさり"
+  },
+  {
+    "ename": "Mat Block",
+    "jname": "たたみがえし"
+  },
+  {
+    "ename": "Matcha Gotcha",
+    "jname": "シャカシャカほう"
+  },
+  {
+    "ename": "Me First",
+    "jname": "さきどり"
+  },
+  {
+    "ename": "Mean Look",
+    "jname": "くろいまなざし"
+  },
+  {
+    "ename": "Meditate",
+    "jname": "ヨガのポーズ"
+  },
+  {
+    "ename": "Mega Drain",
+    "jname": "メガドレイン"
+  },
+  {
+    "ename": "Mega Kick",
+    "jname": "メガトンキック"
+  },
+  {
+    "ename": "Mega Punch",
+    "jname": "メガトンパンチ"
+  },
+  {
+    "ename": "Megahorn",
+    "jname": "メガホーン"
+  },
+  {
+    "ename": "Memento",
+    "jname": "おきみやげ"
+  },
+  {
+    "ename": "Metal Burst",
+    "jname": "メタルバースト"
+  },
+  {
+    "ename": "Metal Claw",
+    "jname": "メタルクロー"
+  },
+  {
+    "ename": "Metal Sound",
+    "jname": "きんぞくおん"
+  },
+  {
+    "ename": "Meteor Beam",
+    "jname": "メテオビーム"
+  },
+  {
+    "ename": "Meteor Mash",
+    "jname": "コメットパンチ"
+  },
+  {
+    "ename": "Metronome",
+    "jname": "ゆびをふる"
+  },
+  {
+    "ename": "Mighty Cleave",
+    "jname": "パワフルエッジ"
+  },
+  {
+    "ename": "Milk Drink",
+    "jname": "ミルクのみ"
+  },
+  {
+    "ename": "Mimic",
+    "jname": "ものまね"
+  },
+  {
+    "ename": "Mind Reader",
+    "jname": "こころのめ"
+  },
+  {
+    "ename": "Minimize",
+    "jname": "ちいさくなる"
+  },
+  {
+    "ename": "Miracle Eye",
+    "jname": "ミラクルアイ"
+  },
+  {
+    "ename": "Mirror Coat",
+    "jname": "ミラーコート"
+  },
+  {
+    "ename": "Mirror Move",
+    "jname": "オウムがえし"
+  },
+  {
+    "ename": "Mirror Shot",
+    "jname": "ミラーショット"
+  },
+  {
+    "ename": "Mist",
+    "jname": "しろいきり"
+  },
+  {
+    "ename": "Mist Ball",
+    "jname": "ミストボール"
+  },
+  {
+    "ename": "Misty Explosion",
+    "jname": "ミストバースト"
+  },
+  {
+    "ename": "Misty Terrain",
+    "jname": "ミストフィールド"
+  },
+  {
+    "ename": "Moonblast",
+    "jname": "ムーンフォース"
+  },
+  {
+    "ename": "Moonlight",
+    "jname": "つきのひかり"
+  },
+  {
+    "ename": "Morning Sun",
+    "jname": "あさのひざし"
+  },
+  {
+    "ename": "Mortal Spin",
+    "jname": "キラースピン"
+  },
+  {
+    "ename": "Mud Bomb",
+    "jname": "どろばくだん"
+  },
+  {
+    "ename": "Mud Shot",
+    "jname": "マッドショット"
+  },
+  {
+    "ename": "Mud Sport",
+    "jname": "どろあそび"
+  },
+  {
+    "ename": "Mud-Slap",
+    "jname": "どろかけ"
+  },
+  {
+    "ename": "Muddy Water",
+    "jname": "だくりゅう"
+  },
+  {
+    "ename": "Mystical Fire",
+    "jname": "マジカルフレイム"
+  },
+  {
+    "ename": "Nasty Plot",
+    "jname": "わるだくみ"
+  },
+  {
+    "ename": "Natural Gift",
+    "jname": "しぜんのめぐみ"
+  },
+  {
+    "ename": "Nature Power",
+    "jname": "しぜんのちから"
+  },
+  {
+    "ename": "Needle Arm",
+    "jname": "ニードルアーム"
+  },
+  {
+    "ename": "Night Daze",
+    "jname": "ナイトバースト"
+  },
+  {
+    "ename": "Night Shade",
+    "jname": "ナイトヘッド"
+  },
+  {
+    "ename": "Night Slash",
+    "jname": "つじぎり"
+  },
+  {
+    "ename": "Nightmare",
+    "jname": "あくむ"
+  },
+  {
+    "ename": "Noble Roar",
+    "jname": "おたけび"
+  },
+  {
+    "ename": "Noxious Torque",
+    "jname": "ポイズンアクセル"
+  },
+  {
+    "ename": "Nuzzle",
+    "jname": "ほっぺすりすり"
+  },
+  {
+    "ename": "Oblivion Wing",
+    "jname": "デスウイング"
+  },
+  {
+    "ename": "Obstruct",
+    "jname": "ブロッキング"
+  },
+  {
+    "ename": "Octazooka",
+    "jname": "オクタンほう"
+  },
+  {
+    "ename": "Octolock",
+    "jname": "たこがため"
+  },
+  {
+    "ename": "Odor Sleuth",
+    "jname": "かぎわける"
+  },
+  {
+    "ename": "Ominous Wind",
+    "jname": "あやしいかぜ"
+  },
+  {
+    "ename": "Outrage",
+    "jname": "げきりん"
+  },
+  {
+    "ename": "Overdrive",
+    "jname": "オーバードライブ"
+  },
+  {
+    "ename": "Overheat",
+    "jname": "オーバーヒート"
+  },
+  {
+    "ename": "Pain Split",
+    "jname": "いたみわけ"
+  },
+  {
+    "ename": "Parabolic Charge",
+    "jname": "パラボラチャージ"
+  },
+  {
+    "ename": "Parting Shot",
+    "jname": "すてゼリフ"
+  },
+  {
+    "ename": "Pay Day",
+    "jname": "ネコにこばん"
+  },
+  {
+    "ename": "Payback",
+    "jname": "しっぺがえし"
+  },
+  {
+    "ename": "Peck",
+    "jname": "つつく"
+  },
+  {
+    "ename": "Perish Song",
+    "jname": "ほろびのうた"
+  },
+  {
+    "ename": "Petal Blizzard",
+    "jname": "はなふぶき"
+  },
+  {
+    "ename": "Petal Dance",
+    "jname": "はなびらのまい"
+  },
+  {
+    "ename": "Phantom Force",
+    "jname": "ゴーストダイブ"
+  },
+  {
+    "ename": "Pin Missile",
+    "jname": "ミサイルばり"
+  },
+  {
+    "ename": "Play Nice",
+    "jname": "なかよくする"
+  },
+  {
+    "ename": "Play Rough",
+    "jname": "じゃれつく"
+  },
+  {
+    "ename": "Pluck",
+    "jname": "ついばむ"
+  },
+  {
+    "ename": "Poison Fang",
+    "jname": "どくどくのキバ"
+  },
+  {
+    "ename": "Poison Gas",
+    "jname": "どくガス"
+  },
+  {
+    "ename": "Poison Jab",
+    "jname": "どくづき"
+  },
+  {
+    "ename": "Poison Powder",
+    "jname": "どくのこな"
+  },
+  {
+    "ename": "Poison Sting",
+    "jname": "どくばり"
+  },
+  {
+    "ename": "Poison Tail",
+    "jname": "ポイズンテール"
+  },
+  {
+    "ename": "Poltergeist",
+    "jname": "ポルターガイスト"
+  },
+  {
+    "ename": "Pounce",
+    "jname": "とびつく"
+  },
+  {
+    "ename": "Pound",
+    "jname": "はたく"
+  },
+  {
+    "ename": "Powder",
+    "jname": "ふんじん"
+  },
+  {
+    "ename": "Powder Snow",
+    "jname": "こなゆき"
+  },
+  {
+    "ename": "Power Gem",
+    "jname": "パワージェム"
+  },
+  {
+    "ename": "Power Split",
+    "jname": "パワーシェア"
+  },
+  {
+    "ename": "Power Swap",
+    "jname": "パワースワップ"
+  },
+  {
+    "ename": "Power Trick",
+    "jname": "パワートリック"
+  },
+  {
+    "ename": "Power Whip",
+    "jname": "パワーウィップ"
+  },
+  {
+    "ename": "Power-Up Punch",
+    "jname": "グロウパンチ"
+  },
+  {
+    "ename": "Present",
+    "jname": "プレゼント"
+  },
+  {
+    "ename": "Protect",
+    "jname": "まもる"
+  },
+  {
+    "ename": "Psybeam",
+    "jname": "サイケこうせん"
+  },
+  {
+    "ename": "Psych Up",
+    "jname": "じこあんじ"
+  },
+  {
+    "ename": "Psychic",
+    "jname": "サイコキネシス"
+  },
+  {
+    "ename": "Psychic Noise",
+    "jname": "サイコノイズ"
+  },
+  {
+    "ename": "Psychic Terrain",
+    "jname": "サイコフィールド"
+  },
+  {
+    "ename": "Psycho Boost",
+    "jname": "サイコブースト"
+  },
+  {
+    "ename": "Psycho Cut",
+    "jname": "サイコカッター"
+  },
+  {
+    "ename": "Psycho Shift",
+    "jname": "サイコシフト"
+  },
+  {
+    "ename": "Psyshock",
+    "jname": "サイコショック"
+  },
+  {
+    "ename": "Psystrike",
+    "jname": "サイコブレイク"
+  },
+  {
+    "ename": "Psywave",
+    "jname": "サイコウェーブ"
+  },
+  {
+    "ename": "Punishment",
+    "jname": "おしおき"
+  },
+  {
+    "ename": "Pursuit",
+    "jname": "おいうち"
+  },
+  {
+    "ename": "Pyro Ball",
+    "jname": "かえんボール"
+  },
+  {
+    "ename": "Quash",
+    "jname": "さきおくり"
+  },
+  {
+    "ename": "Quick Attack",
+    "jname": "でんこうせっか"
+  },
+  {
+    "ename": "Quick Guard",
+    "jname": "ファストガード"
+  },
+  {
+    "ename": "Quiver Dance",
+    "jname": "ちょうのまい"
+  },
+  {
+    "ename": "Rage",
+    "jname": "いかり"
+  },
+  {
+    "ename": "Rage Fist",
+    "jname": "ふんどのこぶし"
+  },
+  {
+    "ename": "Rage Powder",
+    "jname": "いかりのこな"
+  },
+  {
+    "ename": "Raging Bull",
+    "jname": "レイジングブル"
+  },
+  {
+    "ename": "Rain Dance",
+    "jname": "あまごい"
+  },
+  {
+    "ename": "Rapid Spin",
+    "jname": "こうそくスピン"
+  },
+  {
+    "ename": "Razor Leaf",
+    "jname": "はっぱカッター"
+  },
+  {
+    "ename": "Razor Shell",
+    "jname": "シェルブレード"
+  },
+  {
+    "ename": "Razor Wind",
+    "jname": "かまいたち"
+  },
+  {
+    "ename": "Recover",
+    "jname": "じこさいせい"
+  },
+  {
+    "ename": "Recycle",
+    "jname": "リサイクル"
+  },
+  {
+    "ename": "Reflect",
+    "jname": "リフレクター"
+  },
+  {
+    "ename": "Reflect Type",
+    "jname": "ミラータイプ"
+  },
+  {
+    "ename": "Refresh",
+    "jname": "リフレッシュ"
+  },
+  {
+    "ename": "Relic Song",
+    "jname": "いにしえのうた"
+  },
+  {
+    "ename": "Rest",
+    "jname": "ねむる"
+  },
+  {
+    "ename": "Retaliate",
+    "jname": "かたきうち"
+  },
+  {
+    "ename": "Return",
+    "jname": "おんがえし"
+  },
+  {
+    "ename": "Revenge",
+    "jname": "リベンジ"
+  },
+  {
+    "ename": "Reversal",
+    "jname": "きしかいせい"
+  },
+  {
+    "ename": "Revival Blessing",
+    "jname": "さいきのいのり"
+  },
+  {
+    "ename": "Rising Voltage",
+    "jname": "ライジングボルト"
+  },
+  {
+    "ename": "Roar",
+    "jname": "ほえる"
+  },
+  {
+    "ename": "Roar of Time",
+    "jname": "ときのほうこう"
+  },
+  {
+    "ename": "Rock Blast",
+    "jname": "ロックブラスト"
+  },
+  {
+    "ename": "Rock Climb",
+    "jname": "ロッククライム"
+  },
+  {
+    "ename": "Rock Polish",
+    "jname": "ロックカット"
+  },
+  {
+    "ename": "Rock Slide",
+    "jname": "いわなだれ"
+  },
+  {
+    "ename": "Rock Smash",
+    "jname": "いわくだき"
+  },
+  {
+    "ename": "Rock Throw",
+    "jname": "いわおとし"
+  },
+  {
+    "ename": "Rock Tomb",
+    "jname": "がんせきふうじ"
+  },
+  {
+    "ename": "Rock Wrecker",
+    "jname": "がんせきほう"
+  },
+  {
+    "ename": "Role Play",
+    "jname": "なりきり"
+  },
+  {
+    "ename": "Rolling Kick",
+    "jname": "まわしげり"
+  },
+  {
+    "ename": "Rollout",
+    "jname": "ころがる"
+  },
+  {
+    "ename": "Roost",
+    "jname": "はねやすめ"
+  },
+  {
+    "ename": "Rototiller",
+    "jname": "たがやす"
+  },
+  {
+    "ename": "Round",
+    "jname": "りんしょう"
+  },
+  {
+    "ename": "Ruination",
+    "jname": "カタストロフィ"
+  },
+  {
+    "ename": "Sacred Fire",
+    "jname": "せいなるほのお"
+  },
+  {
+    "ename": "Sacred Sword",
+    "jname": "せいなるつるぎ"
+  },
+  {
+    "ename": "Safeguard",
+    "jname": "しんぴのまもり"
+  },
+  {
+    "ename": "Salt Cure",
+    "jname": "しおづけ"
+  },
+  {
+    "ename": "Sand Attack",
+    "jname": "すなかけ"
+  },
+  {
+    "ename": "Sand Tomb",
+    "jname": "すなじごく"
+  },
+  {
+    "ename": "Sandstorm",
+    "jname": "すなあらし"
+  },
+  {
+    "ename": "Scald",
+    "jname": "ねっとう"
+  },
+  {
+    "ename": "Scale Shot",
+    "jname": "スケイルショット"
+  },
+  {
+    "ename": "Scary Face",
+    "jname": "こわいかお"
+  },
+  {
+    "ename": "Scorching Sands",
+    "jname": "ねっさのだいち"
+  },
+  {
+    "ename": "Scratch",
+    "jname": "ひっかく"
+  },
+  {
+    "ename": "Screech",
+    "jname": "いやなおと"
+  },
+  {
+    "ename": "Searing Shot",
+    "jname": "かえんだん"
+  },
+  {
+    "ename": "Secret Power",
+    "jname": "ひみつのちから"
+  },
+  {
+    "ename": "Secret Sword",
+    "jname": "しんぴのつるぎ"
+  },
+  {
+    "ename": "Seed Bomb",
+    "jname": "タネばくだん"
+  },
+  {
+    "ename": "Seed Flare",
+    "jname": "シードフレア"
+  },
+  {
+    "ename": "Seismic Toss",
+    "jname": "ちきゅうなげ"
+  },
+  {
+    "ename": "Self-Destruct",
+    "jname": "じばく"
+  },
+  {
+    "ename": "Shadow Ball",
+    "jname": "シャドーボール"
+  },
+  {
+    "ename": "Shadow Claw",
+    "jname": "シャドークロー"
+  },
+  {
+    "ename": "Shadow Force",
+    "jname": "シャドーダイブ"
+  },
+  {
+    "ename": "Shadow Punch",
+    "jname": "シャドーパンチ"
+  },
+  {
+    "ename": "Shadow Sneak",
+    "jname": "かげうち"
+  },
+  {
+    "ename": "Sharpen",
+    "jname": "かくばる"
+  },
+  {
+    "ename": "Shed Tail",
+    "jname": "しっぽきり"
+  },
+  {
+    "ename": "Sheer Cold",
+    "jname": "ぜったいれいど"
+  },
+  {
+    "ename": "Shell Smash",
+    "jname": "からをやぶる"
+  },
+  {
+    "ename": "Shift Gear",
+    "jname": "ギアチェンジ"
+  },
+  {
+    "ename": "Shock Wave",
+    "jname": "でんげきは"
+  },
+  {
+    "ename": "Signal Beam",
+    "jname": "シグナルビーム"
+  },
+  {
+    "ename": "Silver Wind",
+    "jname": "ぎんいろのかぜ"
+  },
+  {
+    "ename": "Simple Beam",
+    "jname": "シンプルビーム"
+  },
+  {
+    "ename": "Sing",
+    "jname": "うたう"
+  },
+  {
+    "ename": "Sketch",
+    "jname": "スケッチ"
+  },
+  {
+    "ename": "Skill Swap",
+    "jname": "スキルスワップ"
+  },
+  {
+    "ename": "Skitter Smack",
+    "jname": "はいよるいちげき"
+  },
+  {
+    "ename": "Skull Bash",
+    "jname": "ロケットずつき"
+  },
+  {
+    "ename": "Sky Attack",
+    "jname": "ゴッドバード"
+  },
+  {
+    "ename": "Sky Drop",
+    "jname": "フリーフォール"
+  },
+  {
+    "ename": "Sky Uppercut",
+    "jname": "スカイアッパー"
+  },
+  {
+    "ename": "Slack Off",
+    "jname": "なまける"
+  },
+  {
+    "ename": "Slam",
+    "jname": "たたきつける"
+  },
+  {
+    "ename": "Slash",
+    "jname": "きりさく"
+  },
+  {
+    "ename": "Sleep Powder",
+    "jname": "ねむりごな"
+  },
+  {
+    "ename": "Sleep Talk",
+    "jname": "ねごと"
+  },
+  {
+    "ename": "Sludge",
+    "jname": "ヘドロこうげき"
+  },
+  {
+    "ename": "Sludge Bomb",
+    "jname": "ヘドロばくだん"
+  },
+  {
+    "ename": "Sludge Wave",
+    "jname": "ヘドロウェーブ"
+  },
+  {
+    "ename": "Smack Down",
+    "jname": "うちおとす"
+  },
+  {
+    "ename": "Smelling Salts",
+    "jname": "きつけ"
+  },
+  {
+    "ename": "Smog",
+    "jname": "スモッグ"
+  },
+  {
+    "ename": "Smokescreen",
+    "jname": "えんまく"
+  },
+  {
+    "ename": "Snap Trap",
+    "jname": "トラバサミ"
+  },
+  {
+    "ename": "Snarl",
+    "jname": "バークアウト"
+  },
+  {
+    "ename": "Snatch",
+    "jname": "よこどり"
+  },
+  {
+    "ename": "Snippet",
+    "jname": "かかとおとし"
+  },
+  {
+    "ename": "Snore",
+    "jname": "いびき"
+  },
+  {
+    "ename": "Snowscape",
+    "jname": "ゆきげしき"
+  },
+  {
+    "ename": "Soak",
+    "jname": "みずびたし"
+  },
+  {
+    "ename": "Soft-Boiled",
+    "jname": "タマゴうみ"
+  },
+  {
+    "ename": "Solar Beam",
+    "jname": "ソーラービーム"
+  },
+  {
+    "ename": "Solar Blade",
+    "jname": "ソーラーブレード"
+  },
+  {
+    "ename": "Sonic Boom",
+    "jname": "ソニックブーム"
+  },
+  {
+    "ename": "Spacial Rend",
+    "jname": "あくうせつだん"
+  },
+  {
+    "ename": "Spark",
+    "jname": "スパーク"
+  },
+  {
+    "ename": "Speed Swap",
+    "jname": "スピードスワップ"
+  },
+  {
+    "ename": "Spider Web",
+    "jname": "クモのす"
+  },
+  {
+    "ename": "Spike Cannon",
+    "jname": "とげキャノン"
+  },
+  {
+    "ename": "Spikes",
+    "jname": "まきびし"
+  },
+  {
+    "ename": "Spiky Shield",
+    "jname": "ニードルガード"
+  },
+  {
+    "ename": "Spirit Break",
+    "jname": "ソウルクラッシュ"
+  },
+  {
+    "ename": "Spit Up",
+    "jname": "はきだす"
+  },
+  {
+    "ename": "Spite",
+    "jname": "うらみ"
+  },
+  {
+    "ename": "Splash",
+    "jname": "はねる"
+  },
+  {
+    "ename": "Spore",
+    "jname": "キノコのほうし"
+  },
+  {
+    "ename": "Stealth Rock",
+    "jname": "ステルスロック"
+  },
+  {
+    "ename": "Steam Eruption",
+    "jname": "スチームバースト"
+  },
+  {
+    "ename": "Steamroller",
+    "jname": "ハードローラー"
+  },
+  {
+    "ename": "Steel Beam",
+    "jname": "てっていこうせん"
+  },
+  {
+    "ename": "Steel Roller",
+    "jname": "アイアンローラー"
+  },
+  {
+    "ename": "Steel Wing",
+    "jname": "はがねのつばさ"
+  },
+  {
+    "ename": "Sticky Web",
+    "jname": "ねばねばネット"
+  },
+  {
+    "ename": "Stockpile",
+    "jname": "たくわえる"
+  },
+  {
+    "ename": "Stomp",
+    "jname": "ふみつけ"
+  },
+  {
+    "ename": "Stone Edge",
+    "jname": "ストーンエッジ"
+  },
+  {
+    "ename": "Stored Power",
+    "jname": "アシストパワー"
+  },
+  {
+    "ename": "Storm Throw",
+    "jname": "やまあらし"
+  },
+  {
+    "ename": "Strange Steam",
+    "jname": "ワンダースチーム"
+  },
+  {
+    "ename": "Strength",
+    "jname": "かいりき"
+  },
+  {
+    "ename": "String Shot",
+    "jname": "いとをはく"
+  },
+  {
+    "ename": "Struggle",
+    "jname": "わるあがき"
+  },
+  {
+    "ename": "Struggle Bug",
+    "jname": "むしのていこう"
+  },
+  {
+    "ename": "Stun Spore",
+    "jname": "しびれごな"
+  },
+  {
+    "ename": "Submission",
+    "jname": "じごくぐるま"
+  },
+  {
+    "ename": "Substitute",
+    "jname": "みがわり"
+  },
+  {
+    "ename": "Sucker Punch",
+    "jname": "ふいうち"
+  },
+  {
+    "ename": "Sunny Day",
+    "jname": "にほんばれ"
+  },
+  {
+    "ename": "Super Fang",
+    "jname": "いかりのまえば"
+  },
+  {
+    "ename": "Supercell Slam",
+    "jname": "サンダーダイブ"
+  },
+  {
+    "ename": "Superpower",
+    "jname": "ばかぢから"
+  },
+  {
+    "ename": "Supersonic",
+    "jname": "ちょうおんぱ"
+  },
+  {
+    "ename": "Surf",
+    "jname": "なみのり"
+  },
+  {
+    "ename": "Surging Strikes",
+    "jname": "すいりゅうれんだ"
+  },
+  {
+    "ename": "Swagger",
+    "jname": "いばる"
+  },
+  {
+    "ename": "Swallow",
+    "jname": "のみこむ"
+  },
+  {
+    "ename": "Sweet Kiss",
+    "jname": "てんしのキッス"
+  },
+  {
+    "ename": "Sweet Scent",
+    "jname": "あまいかおり"
+  },
+  {
+    "ename": "Swift",
+    "jname": "スピードスター"
+  },
+  {
+    "ename": "Switcheroo",
+    "jname": "すりかえ"
+  },
+  {
+    "ename": "Swords Dance",
+    "jname": "つるぎのまい"
+  },
+  {
+    "ename": "Synchronoise",
+    "jname": "シンクロノイズ"
+  },
+  {
+    "ename": "Synthesis",
+    "jname": "こうごうせい"
+  },
+  {
+    "ename": "Syrup Bomb",
+    "jname": "シロップボンバー"
+  },
+  {
+    "ename": "Tachyon Cutter",
+    "jname": "タキオンカッター"
+  },
+  {
+    "ename": "Tackle",
+    "jname": "たいあたり"
+  },
+  {
+    "ename": "Tail Glow",
+    "jname": "ほたるび"
+  },
+  {
+    "ename": "Tail Slap",
+    "jname": "スイープビンタ"
+  },
+  {
+    "ename": "Tail Whip",
+    "jname": "しっぽをふる"
+  },
+  {
+    "ename": "Tailwind",
+    "jname": "おいかぜ"
+  },
+  {
+    "ename": "Take Down",
+    "jname": "とっしん"
+  },
+  {
+    "ename": "Tar Shot",
+    "jname": "タールショット"
+  },
+  {
+    "ename": "Taunt",
+    "jname": "ちょうはつ"
+  },
+  {
+    "ename": "Teatime",
+    "jname": "おちゃかい"
+  },
+  {
+    "ename": "Techno Blast",
+    "jname": "テクノバスター"
+  },
+  {
+    "ename": "Teeter Dance",
+    "jname": "フラフラダンス"
+  },
+  {
+    "ename": "Telekinesis",
+    "jname": "テレキネシス"
+  },
+  {
+    "ename": "Teleport",
+    "jname": "テレポート"
+  },
+  {
+    "ename": "Temper Flare",
+    "jname": "やけっぱち"
+  },
+  {
+    "ename": "Tera Blast",
+    "jname": "テラバースト"
+  },
+  {
+    "ename": "Tera Starstorm",
+    "jname": "テラクラスター"
+  },
+  {
+    "ename": "Terrain Pulse",
+    "jname": "だいちのはどう"
+  },
+  {
+    "ename": "Thief",
+    "jname": "どろぼう"
+  },
+  {
+    "ename": "Thrash",
+    "jname": "あばれる"
+  },
+  {
+    "ename": "Throat Chop",
+    "jname": "じごくづき"
+  },
+  {
+    "ename": "Thunder",
+    "jname": "かみなり"
+  },
+  {
+    "ename": "Thunder Fang",
+    "jname": "かみなりのキバ"
+  },
+  {
+    "ename": "Thunder Punch",
+    "jname": "かみなりパンチ"
+  },
+  {
+    "ename": "Thunder Shock",
+    "jname": "でんきショック"
+  },
+  {
+    "ename": "Thunder Wave",
+    "jname": "でんじは"
+  },
+  {
+    "ename": "Thunderbolt",
+    "jname": "１０まんボルト"
+  },
+  {
+    "ename": "Thunderclap",
+    "jname": "じんらい"
+  },
+  {
+    "ename": "Tickle",
+    "jname": "くすぐる"
+  },
+  {
+    "ename": "Tidy Up",
+    "jname": "おかたづけ"
+  },
+  {
+    "ename": "Topsy-Turvy",
+    "jname": "ひっくりかえす"
+  },
+  {
+    "ename": "Torch Song",
+    "jname": "フレアソング"
+  },
+  {
+    "ename": "Torment",
+    "jname": "いちゃもん"
+  },
+  {
+    "ename": "Toxic",
+    "jname": "どくどく"
+  },
+  {
+    "ename": "Toxic Spikes",
+    "jname": "どくびし"
+  },
+  {
+    "ename": "Trailblaze",
+    "jname": "くさわけ"
+  },
+  {
+    "ename": "Transform",
+    "jname": "へんしん"
+  },
+  {
+    "ename": "Tri Attack",
+    "jname": "トライアタック"
+  },
+  {
+    "ename": "Trick",
+    "jname": "トリック"
+  },
+  {
+    "ename": "Trick Room",
+    "jname": "トリックルーム"
+  },
+  {
+    "ename": "Trick-or-Treat",
+    "jname": "ハロウィン"
+  },
+  {
+    "ename": "Triple Axel",
+    "jname": "トリプルアクセル"
+  },
+  {
+    "ename": "Triple Dive",
+    "jname": "トリプルダイブ"
+  },
+  {
+    "ename": "Triple Kick",
+    "jname": "トリプルキック"
+  },
+  {
+    "ename": "Trump Card",
+    "jname": "きりふだ"
+  },
+  {
+    "ename": "Twin Beam",
+    "jname": "ツインビーム"
+  },
+  {
+    "ename": "Twineedle",
+    "jname": "ダブルニードル"
+  },
+  {
+    "ename": "Twister",
+    "jname": "たつまき"
+  },
+  {
+    "ename": "U-turn",
+    "jname": "とんぼがえり"
+  },
+  {
+    "ename": "Upper Hand",
+    "jname": "はやてがえし"
+  },
+  {
+    "ename": "Uproar",
+    "jname": "さわぐ"
+  },
+  {
+    "ename": "V-create",
+    "jname": "Ｖジェネレート"
+  },
+  {
+    "ename": "Vacuum Wave",
+    "jname": "しんくうは"
+  },
+  {
+    "ename": "Venom Drench",
+    "jname": "ベノムトラップ"
+  },
+  {
+    "ename": "Venoshock",
+    "jname": "ベノムショック"
+  },
+  {
+    "ename": "Vice Grip",
+    "jname": "はさむ"
+  },
+  {
+    "ename": "Vine Whip",
+    "jname": "つるのムチ"
+  },
+  {
+    "ename": "Vital Throw",
+    "jname": "あてみなげ"
+  },
+  {
+    "ename": "Volt Switch",
+    "jname": "ボルトチェンジ"
+  },
+  {
+    "ename": "Volt Tackle",
+    "jname": "ボルテッカー"
+  },
+  {
+    "ename": "Wake-Up Slap",
+    "jname": "めざましビンタ"
+  },
+  {
+    "ename": "Water Gun",
+    "jname": "みずでっぽう"
+  },
+  {
+    "ename": "Water Pledge",
+    "jname": "みずのちかい"
+  },
+  {
+    "ename": "Water Pulse",
+    "jname": "みずのはどう"
+  },
+  {
+    "ename": "Water Shuriken",
+    "jname": "みずしゅりけん"
+  },
+  {
+    "ename": "Water Sport",
+    "jname": "みずあそび"
+  },
+  {
+    "ename": "Water Spout",
+    "jname": "しおふき"
+  },
+  {
+    "ename": "Waterfall",
+    "jname": "たきのぼり"
+  },
+  {
+    "ename": "Weather Ball",
+    "jname": "ウェザーボール"
+  },
+  {
+    "ename": "Whirlpool",
+    "jname": "うずしお"
+  },
+  {
+    "ename": "Whirlwind",
+    "jname": "ふきとばし"
+  },
+  {
+    "ename": "Wicked Blow",
+    "jname": "あんこくきょうだ"
+  },
+  {
+    "ename": "Wicked Torque",
+    "jname": "ダークアクセル"
+  },
+  {
+    "ename": "Wide Guard",
+    "jname": "ワイドガード"
+  },
+  {
+    "ename": "Wild Charge",
+    "jname": "ワイルドボルト"
+  },
+  {
+    "ename": "Will-O-Wisp",
+    "jname": "おにび"
+  },
+  {
+    "ename": "Wing Attack",
+    "jname": "つばさでうつ"
+  },
+  {
+    "ename": "Wish",
+    "jname": "ねがいごと"
+  },
+  {
+    "ename": "Withdraw",
+    "jname": "からにこもる"
+  },
+  {
+    "ename": "Wonder Room",
+    "jname": "ワンダールーム"
+  },
+  {
+    "ename": "Wood Hammer",
+    "jname": "ウッドハンマー"
+  },
+  {
+    "ename": "Work Up",
+    "jname": "ふるいたてる"
+  },
+  {
+    "ename": "Worry Seed",
+    "jname": "なやみのタネ"
+  },
+  {
+    "ename": "Wrap",
+    "jname": "まきつく"
+  },
+  {
+    "ename": "Wring Out",
+    "jname": "しぼりとる"
+  },
+  {
+    "ename": "X-Scissor",
+    "jname": "シザークロス"
+  },
+  {
+    "ename": "Yawn",
+    "jname": "あくび"
+  },
+  {
+    "ename": "Zap Cannon",
+    "jname": "でんじほう"
+  },
+  {
+    "ename": "Zen Headbutt",
+    "jname": "しねんのずつき"
+  }
+]

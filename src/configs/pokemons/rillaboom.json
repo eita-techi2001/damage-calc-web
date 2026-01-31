@@ -1,0 +1,30 @@
+{
+    "species": "Rillaboom",
+    "level": 50,
+    "nature": "Adamant",
+    "ability": "Grassy Surge",
+    "item": "Assault Vest",
+    "evs": {
+        "hp": 252,
+        "atk": 116,
+        "def": 4,
+        "spa": 0,
+        "spd": 60,
+        "spe": 76
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Fire",
+    "moves": [
+        "Grassy Glide",
+        "Wood Hammer",
+        "High Horsepower",
+        "U-turn"
+    ]
+}

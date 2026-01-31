@@ -1,0 +1,29 @@
+{
+    "species": "Calyrex-Ice",
+    "level": 50,
+    "nature": "Adamant",
+    "ability": "As One (Glastrier)",
+    "item": "Clear Amulet",
+    "evs": {
+        "hp": 252,
+        "atk": 252,
+        "def": 4,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Fire",
+    "moves": [
+        "Glacial Lance",
+        "High Horsepower",
+        "Trick Room"
+    ]
+}

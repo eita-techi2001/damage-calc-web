@@ -1,0 +1,28 @@
+{
+    "species": "Tornadus",
+    "level": 50,
+    "nature": "Timid",
+    "ability": "Prankster",
+    "item": "Covert Cloak",
+    "evs": {
+        "hp": 252,
+        "atk": 0,
+        "def": 0,
+        "spa": 100,
+        "spd": 0,
+        "spe": 156
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Ghost",
+    "moves": [
+        "Bleakwind Storm",
+        "Icy Wind"
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "species": "Incineroar",
+    "level": 50,
+    "nature": "Careful",
+    "ability": "Intimidate",
+    "item": "Sitrus Berry",
+    "evs": {
+        "hp": 252,
+        "atk": 0,
+        "def": 156,
+        "spa": 0,
+        "spd": 100,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Grass",
+    "moves": [
+        "Fake Out",
+        "Knock Off",
+        "Flare Blitz"
+    ]
+}

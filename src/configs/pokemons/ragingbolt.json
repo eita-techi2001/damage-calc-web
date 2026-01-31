@@ -1,0 +1,29 @@
+{
+    "species": "Raging Bolt",
+    "level": 50,
+    "nature": "Modest",
+    "ability": "Protosynthesis",
+    "item": "Booster Energy",
+    "evs": {
+        "hp": 252,
+        "atk": 0,
+        "def": 0,
+        "spa": 252,
+        "spd": 0,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Electric",
+    "moves": [
+        "Thunderclap",
+        "Draco Meteor",
+        "Thunderbolt"
+    ]
+}

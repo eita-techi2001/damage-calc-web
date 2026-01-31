@@ -1,0 +1,28 @@
+{
+    "species": "Grimmsnarl",
+    "level": 50,
+    "nature": "Careful",
+    "ability": "Prankster",
+    "item": "Light Clay",
+    "evs": {
+        "hp": 252,
+        "atk": 0,
+        "def": 100,
+        "spa": 0,
+        "spd": 156,
+        "spe": 0
+    },
+    "ivs": {
+        "hp": 31,
+        "atk": 31,
+        "def": 31,
+        "spa": 31,
+        "spd": 31,
+        "spe": 31
+    },
+    "teraType": "Steel",
+    "moves": [
+        "Spirit Break",
+        "Sucker Punch"
+    ]
+}
