@@ -1021,7 +1021,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 </h1>
                 <p className="text-base text-gray-400 max-w-2xl mx-auto">
                     環境上位の主要ポケモンに対するダメージを一括計算し、<br />
-                    最適な<b>攻撃・防御ライン（調整）</b>および<b>素早さライン</b>を効率よく検討するためのツールです。<br />
+                    最適な<b>攻撃・防御ライン（調整）</b>を効率よく検討するためのツールです。<br />
                     <span className="text-sm opacity-80">※登録値・特化・無補正などの条件別ダメージや確定数を一覧で確認できます。</span>
                 </p>
             </div>
