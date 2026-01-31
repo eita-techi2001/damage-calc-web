@@ -29,6 +29,7 @@ export interface UserPokemonConfig {
     teraType?: TypeName;
     boosts?: Partial<PokemonStats>;
     overrides?: any;
+    groupId?: string; // Added for grouping variants
 }
 
 export interface MetaPokemonVariant {
@@ -48,10 +49,10 @@ export interface MetaPokemonVariant {
         isBeadsOfRuinActive?: boolean;
         isTabletsOfRuinActive?: boolean;
         isVesselOfRuinActive?: boolean;
-        // Add others as needed
     };
     overrides?: any;
     boosts?: Partial<PokemonStats>;
+    groupId?: string; // Added for grouping variants
 }
 
 export interface CalculationResult {

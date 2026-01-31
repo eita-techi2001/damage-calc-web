@@ -1109,7 +1109,25 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 `}
                                             >
                                                 <div className="flex items-center gap-3 overflow-hidden cursor-pointer flex-grow"
-                                                    onClick={() => setExcludedIds(prev => prev.includes(o.id) ? prev.filter(i => i !== o.id) : [...prev, o.id])}
+                                                    onClick={() => {
+                                                        const targetGroup = o.groupId;
+                                                        let idsToToggle = [o.id];
+                                                        if (targetGroup) {
+                                                            // Find others with same group
+                                                            idsToToggle = displayList.filter(d => d.groupId === targetGroup).map(d => d.id);
+                                                        }
+                                                        const isCurrentlyExcluded = excludedIds.includes(o.id);
+
+                                                        setExcludedIds(prev => {
+                                                            if (isCurrentlyExcluded) {
+                                                                // Include (Remove from excluded)
+                                                                return prev.filter(id => !idsToToggle.includes(id));
+                                                            } else {
+                                                                // Exclude (Add to excluded)
+                                                                return [...new Set([...prev, ...idsToToggle])];
+                                                            }
+                                                        });
+                                                    }}
                                                 >
                                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!isExcluded ? 'border-green-400 bg-green-400' : 'border-gray-500'}`}>
                                                         {!isExcluded && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
