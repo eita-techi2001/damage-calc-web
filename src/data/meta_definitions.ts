@@ -96,7 +96,7 @@ export const MetaDefinitions: MetaPokemonVariant[] = [
         evs: { hp: 196, atk: 252, def: 4, spa: 0, spd: 4, spe: 52 }, // Bulkier Band build
         moves: ["Extreme Speed", "Outrage", "Stomping Tantrum", "Iron Head"], // User specified: ESpeed, Outrage, Tantrum
         teraType: "Normal",
-        extraLabel: "(マルスなし)" // distinguish in UI if needed, though Ability label handles it
+        extraLabel: "(精神力)" // distinguish in UI if needed, though Ability label handles it
     },
 
     // --- Preserved Legendaries (Previous Default) ---

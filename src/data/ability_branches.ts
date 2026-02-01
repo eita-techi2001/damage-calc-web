@@ -141,7 +141,7 @@ export const AbilityBranches: Record<string, (variant: MetaPokemonVariant) => Me
     ],
     "Multiscale": (base) => [
         { ...base, extraLabel: "(HP満タン)" },
-        { ...base, extraLabel: "(つぶれ)", overrides: { curHP: 1 } }
+        { ...base, extraLabel: "(マルスなし)", overrides: { curHP: 1 } }
     ],
     "Shadow Shield": (base) => [
         { ...base, extraLabel: "(HP満タン)" },
