@@ -45,13 +45,13 @@ export const MetaRankings: Record<string, MetaRanking> = {
         items: ["Choice Specs", "Focus Sash", "Life Orb"]
     },
     "Calyrex-Ice": {
-        items: ["Clear Amulet", "Life Orb"]
+        items: ["Clear Amulet", "Never-Melt Ice"]
     },
     "Miraidon": {
-        items: ["Choice Specs", "Life Orb", "Paralyze Heal"] // Default
+        items: ["Choice Specs", "Life Orb"] // Default
     },
     "Koraidon": {
-        items: ["Clear Amulet", "Life Orb", "Choice Scarf"] // Default
+        items: ["Clear Amulet", "Life Orb"] // Default
     }
     // Removed others (Kyogre, Groudon, Zacian, Terapagos etc.) as per request to "remove defaults"
 };
