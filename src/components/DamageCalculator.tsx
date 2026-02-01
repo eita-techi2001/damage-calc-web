@@ -1042,13 +1042,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                         onClick={() => setEditMode('opponent')}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
                     >
-                        相手の編集
+                        相手ポケモンを追加
                     </button>
                     <button
                         onClick={() => setEditMode('manage')}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
                     >
-                        リスト管理
+                        相手ポケモンリスト
                     </button>
                 </div>
 
