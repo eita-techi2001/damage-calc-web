@@ -1310,13 +1310,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </div>
                                 </div>
                             )}
-                            <button
-                                onClick={handleCalculate}
-                                disabled={!currentConfig || isPending || !currentConfig.moves.some(m => m)}
-                                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 rounded border border-gray-600 whitespace-nowrap"
-                            >
-                                ダメ計 (編集中の相手で計算)
-                            </button>
+
                         </div>
                     )}
 
