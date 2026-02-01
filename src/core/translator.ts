@@ -81,6 +81,9 @@ export const japaneseDict: { [key: string]: string } = {
     "Urshifu-Rapid-Strike": "ウーラオス(れんげき)",
     "Calyrex-Shadow": "バドレックス(こくば)",
     "Calyrex-Ice": "バドレックス(はくば)",
+    "Charizard": "リザードン",
+    "Mega Charizard Y": "メガリザードンY",
+    "Mega Charizard X": "メガリザードンX",
 
     // Items
     "No Item": "持ち物なし",
