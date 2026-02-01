@@ -829,6 +829,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             // 3. Process (Translate Moves)
             const processedOpponents = activeOpps.map(o => ({
                 ...o,
+                species: toEnglish(o.species), // Use English species for calc
                 moves: o.moves.map(m => toEnglish(m))
             }));
 
