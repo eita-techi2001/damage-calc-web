@@ -426,6 +426,8 @@ const FIXED_TRANSLATIONS: { [key: string]: string } = {
     "Oricorio-Pa'u": "オドリドリ(ふらふら)",
     "Oricorio-Pau": "オドリドリ(ふらふら)",
     "Oricorio-Sensu": "オドリドリ(まいまい)",
+    "Calyrex-Ice": "バドレックス(はくば)",
+    "Calyrex-Shadow": "バドレックス(こくば)",
 };
 
 export const reverseJapaneseDict: { [key: string]: string } = {};
