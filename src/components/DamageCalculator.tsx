@@ -1020,7 +1020,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    Pokemon SV Damage Calculator v2.3 (Adjustable)
+                    ダメージ一括計算機 v2.3 (Adjustable)
                 </h1>
                 <p className="text-base text-gray-400 max-w-2xl mx-auto">
                     環境上位の主要ポケモンに対するダメージを一括計算し、<br />
