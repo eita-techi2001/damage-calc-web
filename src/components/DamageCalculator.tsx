@@ -298,6 +298,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [selectedConfig, setSelectedConfig] = useState<string>('');
     const [currentConfig, setCurrentConfig] = useState<UserPokemonConfig | null>(null);
     const [baseStats, setBaseStats] = useState<PokemonStats | null>(null);
+    const [isEnvCollapsed, setIsEnvCollapsed] = useState<boolean>(true); // Default minimized
 
     // Opponent Edit Mode States
     const [editMode, setEditMode] = useState<'user' | 'opponent' | 'manage'>('user');
@@ -1471,184 +1472,192 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
                     {editMode !== 'manage' && (
                         <div className="p-4 bg-gray-900/40 rounded-xl border border-gray-700/30 space-y-4">
-                            <h3 className="text-lg font-semibold text-blue-200 border-b border-gray-700 pb-2">
-                                環境・サポート
-                            </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {/* Weather & Terrain */}
-                                <div className="space-y-4">
-                                    <div className="space-y-1">
-                                        <h4 className="text-sm font-bold text-gray-400">天候</h4>
-                                        <select
-                                            value={globalField.weather || 'None'}
-                                            onChange={(e) => setGlobalField({ ...globalField, weather: e.target.value as any })}
-                                            className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none"
-                                        >
-                                            <option value="None">なし / 自動</option>
-                                            <option value="Sun">晴れ</option>
-                                            <option value="Rain">雨</option>
-                                            <option value="Sand">砂嵐</option>
-                                            <option value="Snow">雪</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <h4 className="text-sm font-bold text-gray-400">フィールド</h4>
-                                        <select
-                                            value={globalField.terrain || 'None'}
-                                            onChange={(e) => setGlobalField({ ...globalField, terrain: e.target.value as any })}
-                                            className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-green-500 focus:outline-none"
-                                        >
-                                            <option value="None">なし / 自動</option>
-                                            <option value="Electric">エレキフィールド</option>
-                                            <option value="Grassy">グラスフィールド</option>
-                                            <option value="Psychic">サイコフィールド</option>
-                                            <option value="Misty">ミストフィールド</option>
-                                        </select>
-                                    </div>
-                                    {/* Spread Damage Rule */}
-                                    <div className="space-y-1 pt-1">
-                                        <h4 className="text-sm font-bold text-gray-400">ルール</h4>
-                                        <label className="flex items-center space-x-2 cursor-pointer bg-gray-700/50 p-2 rounded border border-gray-600">
-                                            <input
-                                                type="checkbox"
-                                                checked={globalField.global.isSpreadDamage ?? true}
-                                                onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSpreadDamage: e.target.checked } })}
-                                                className="rounded bg-gray-700 border-gray-600 text-blue-500 focus:ring-offset-gray-900"
-                                            />
-                                            <span className="text-sm text-gray-300">
-                                                全体技: ダブルダメージ<br />
-                                                (0.75倍補正あり)
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                {/* Ally Side */}
-                                <div className="space-y-2">
-                                    <h4 className="text-sm font-bold text-gray-400">味方側</h4>
-                                    <div className="space-y-1">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.userSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">リフレクター</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.userSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">ひかりのかべ</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.userSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">フレンドガード</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.userSide.isHelpingHand} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isHelpingHand: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">てだすけ</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                {/* Opponent Side */}
-                                <div className="space-y-2">
-                                    <h4 className="text-sm font-bold text-gray-400">相手側</h4>
-                                    <div className="space-y-1">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.opponentSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">リフレクター</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.opponentSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">ひかりのかべ</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.opponentSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">フレンドガード</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                {/* Global Ruins */}
-                                <div className="space-y-2">
-                                    <h4 className="text-sm font-bold text-gray-400">災い</h4>
-                                    <div className="space-y-1">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.global.isSwordOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSwordOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">わざわいのつるぎ (B↓)</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.global.isBeadsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isBeadsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">わざわいのたま (D↓)</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.global.isTabletsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isTabletsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">わざわいのおふだ (A↓)</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input type="checkbox" checked={globalField.global.isVesselOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isVesselOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                            <span className="text-sm text-gray-300">わざわいのうつわ (C↓)</span>
-                                        </label>
-                                    </div>
-                                </div>
+                            <div className="flex items-center justify-between border-b border-gray-700 pb-2 cursor-pointer select-none" onClick={() => setIsEnvCollapsed(prev => !prev)}>
+                                <h3 className="text-lg font-semibold text-blue-200">
+                                    天候・フィールド・詳細設定
+                                </h3>
+                                <span className="text-blue-400 text-sm">
+                                    {isEnvCollapsed ? "▼ 表示する" : "▲ 隠す"}
+                                </span>
                             </div>
+                            {!isEnvCollapsed && (
+                                <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+                                        {/* Weather & Terrain */}
+                                        <div className="space-y-4">
+                                            <div className="space-y-1">
+                                                <h4 className="text-sm font-bold text-gray-400">天候</h4>
+                                                <select
+                                                    value={globalField.weather || 'None'}
+                                                    onChange={(e) => setGlobalField({ ...globalField, weather: e.target.value as any })}
+                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                                                >
+                                                    <option value="None">なし / 自動</option>
+                                                    <option value="Sun">晴れ</option>
+                                                    <option value="Rain">雨</option>
+                                                    <option value="Sand">砂嵐</option>
+                                                    <option value="Snow">雪</option>
+                                                </select>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <h4 className="text-sm font-bold text-gray-400">フィールド</h4>
+                                                <select
+                                                    value={globalField.terrain || 'None'}
+                                                    onChange={(e) => setGlobalField({ ...globalField, terrain: e.target.value as any })}
+                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-green-500 focus:outline-none"
+                                                >
+                                                    <option value="None">なし / 自動</option>
+                                                    <option value="Electric">エレキフィールド</option>
+                                                    <option value="Grassy">グラスフィールド</option>
+                                                    <option value="Psychic">サイコフィールド</option>
+                                                    <option value="Misty">ミストフィールド</option>
+                                                </select>
+                                            </div>
+                                            {/* Spread Damage Rule */}
+                                            <div className="space-y-1 pt-1">
+                                                <h4 className="text-sm font-bold text-gray-400">ルール</h4>
+                                                <label className="flex items-center space-x-2 cursor-pointer bg-gray-700/50 p-2 rounded border border-gray-600">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={globalField.global.isSpreadDamage ?? true}
+                                                        onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSpreadDamage: e.target.checked } })}
+                                                        className="rounded bg-gray-700 border-gray-600 text-blue-500 focus:ring-offset-gray-900"
+                                                    />
+                                                    <span className="text-sm text-gray-300">
+                                                        全体技: ダブルダメージ<br />
+                                                        (0.75倍補正あり)
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
 
-                            {/* Opponent Ranks */}
+                                        {/* Ally Side */}
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-bold text-gray-400">味方側</h4>
+                                            <div className="space-y-1">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.userSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">リフレクター</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.userSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">ひかりのかべ</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.userSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">フレンドガード</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.userSide.isHelpingHand} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isHelpingHand: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">てだすけ</span>
+                                                </label>
+                                            </div>
+                                        </div>
 
-                            {/* Opponent Ranks Restored */}
-                            <div className="border-t border-gray-700 pt-4 mt-2">
-                                <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
-                                <div className="flex w-full gap-2">
-                                    {renderRankSelect('攻撃', 'atk', true)}
-                                    {renderRankSelect('防御', 'def', true)}
-                                    {renderRankSelect('特攻', 'spa', true)}
-                                    {renderRankSelect('特防', 'spd', true)}
+                                        {/* Opponent Side */}
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-bold text-gray-400">相手側</h4>
+                                            <div className="space-y-1">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.opponentSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">リフレクター</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.opponentSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">ひかりのかべ</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.opponentSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">フレンドガード</span>
+                                                </label>
+                                            </div>
+                                        </div>
 
-                                    {renderRankSelect('素早さ', 'spe', true)}
-                                </div>
-                            </div>
-
-                            {/* Detailed Settings Toggle */}
-                            <div className="border-t border-gray-700 pt-4 mt-2">
-                                <h4 className="text-sm font-bold text-gray-400 mb-2">詳細設定 (表示切替)</h4>
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <div className="flex-1 space-y-1">
-                                        <span className="text-xs text-gray-500">特性の分岐</span>
-                                        <select
-                                            value={calcSettings.abilityVariantMode}
-                                            onChange={(e) => setCalcSettings({ ...calcSettings, abilityVariantMode: e.target.value as VariantFilterMode })}
-                                            className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
-                                        >
-                                            <option value="default">すべて (重複は省略)</option>
-                                            <option value="active-only">発動のみ (Active Only)</option>
-                                            <option value="inactive-only">未発動のみ (Inactive Only)</option>
-                                        </select>
+                                        {/* Global Ruins */}
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-bold text-gray-400">災い</h4>
+                                            <div className="space-y-1">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.global.isSwordOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSwordOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">わざわいのつるぎ (B↓)</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.global.isBeadsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isBeadsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">わざわいのたま (D↓)</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.global.isTabletsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isTabletsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">わざわいのおふだ (A↓)</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input type="checkbox" checked={globalField.global.isVesselOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isVesselOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                                    <span className="text-sm text-gray-300">わざわいのうつわ (C↓)</span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 space-y-1">
-                                        <span className="text-xs text-gray-500">テラスタルの分岐</span>
-                                        <select
-                                            value={calcSettings.teraVariantMode}
-                                            onChange={(e) => setCalcSettings({ ...calcSettings, teraVariantMode: e.target.value as VariantFilterMode })}
-                                            className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
-                                        >
-                                            <option value="default">すべて (重複は省略)</option>
-                                            <option value="active-only">テラスタルのみ (Tera Only)</option>
-                                            <option value="inactive-only">テラスタルなし (No Tera)</option>
-                                        </select>
+
+                                    {/* Opponent Ranks */}
+
+                                    {/* Opponent Ranks Restored */}
+                                    <div className="border-t border-gray-700 pt-4 mt-2">
+                                        <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
+                                        <div className="flex w-full gap-2">
+                                            {renderRankSelect('攻撃', 'atk', true)}
+                                            {renderRankSelect('防御', 'def', true)}
+                                            {renderRankSelect('特攻', 'spa', true)}
+                                            {renderRankSelect('特防', 'spd', true)}
+
+                                            {renderRankSelect('素早さ', 'spe', true)}
+                                        </div>
                                     </div>
-                                    <div className="flex-1 space-y-1">
-                                        <span className="text-xs text-gray-500">その他</span>
-                                        <div className="flex items-center h-full">
-                                            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={calcSettings.excludeWeakMoves || false}
-                                                    onChange={(e) => setCalcSettings({ ...calcSettings, excludeWeakMoves: e.target.checked })}
-                                                    className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
-                                                />
-                                                確定3発以下を除外
-                                            </label>
+
+                                    {/* Detailed Settings Toggle */}
+                                    <div className="border-t border-gray-700 pt-4 mt-2">
+                                        <h4 className="text-sm font-bold text-gray-400 mb-2">詳細設定 (表示切替)</h4>
+                                        <div className="flex flex-col sm:flex-row gap-4">
+                                            <div className="flex-1 space-y-1">
+                                                <span className="text-xs text-gray-500">特性の分岐</span>
+                                                <select
+                                                    value={calcSettings.abilityVariantMode}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, abilityVariantMode: e.target.value as VariantFilterMode })}
+                                                    className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                                                >
+                                                    <option value="default">すべて (重複は省略)</option>
+                                                    <option value="active-only">発動のみ (Active Only)</option>
+                                                    <option value="inactive-only">未発動のみ (Inactive Only)</option>
+                                                </select>
+                                            </div>
+                                            <div className="flex-1 space-y-1">
+                                                <span className="text-xs text-gray-500">テラスタルの分岐</span>
+                                                <select
+                                                    value={calcSettings.teraVariantMode}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, teraVariantMode: e.target.value as VariantFilterMode })}
+                                                    className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                                                >
+                                                    <option value="default">すべて (重複は省略)</option>
+                                                    <option value="active-only">テラスタルのみ (Tera Only)</option>
+                                                    <option value="inactive-only">テラスタルなし (No Tera)</option>
+                                                </select>
+                                            </div>
+                                            <div className="flex-1 space-y-1">
+                                                <span className="text-xs text-gray-500">その他</span>
+                                                <div className="flex items-center h-full">
+                                                    <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={calcSettings.excludeWeakMoves || false}
+                                                            onChange={(e) => setCalcSettings({ ...calcSettings, excludeWeakMoves: e.target.checked })}
+                                                            className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
+                                                        />
+                                                        確定3発以下を除外
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            )}
                         </div>
                     )}
                 </div>
