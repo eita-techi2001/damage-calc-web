@@ -67,8 +67,20 @@ export class DamageCalculator {
         const currentField = new Field({ gameType: 'Doubles', ...realFieldOptions });
 
         // Calculate
-        const result = calculate(gen, attacker, defender, move, currentField);
-        return result;
+        // Calculate
+        try {
+            const result = calculate(gen, attacker, defender, move, currentField);
+            return result;
+        } catch (e) {
+            console.error(`Calculation Error (Attacker: ${attackerConfig.species} vs Defender: ${defenderConfig.species}):`, e);
+            // Return a safe dummy result or rethrow?
+            // Returning a dummy result prevents UI crash.
+            // Create a minimal fake Result object
+            // Use 0 damage to indicate failure seamlessly?
+            // Or rethrow to be caught by logic.ts? 
+            // Better to rethrow so logic.ts can skip the entry entirely.
+            throw e;
+        }
     }
 
     // Add more methods for scenarios (e.g., getting hit by meta)

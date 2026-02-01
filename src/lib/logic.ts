@@ -760,11 +760,18 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         }
 
                         // Calculate Damage
-                        const result = calc.calculateDamage(
-                            effectiveUser, effectiveDefender, customMoveName,
-                            isTeraCalc, defenderScenario.isTera,
-                            fieldOptions
-                        );
+                        // Calculate Damage
+                        let result;
+                        try {
+                            result = calc.calculateDamage(
+                                effectiveUser, effectiveDefender, customMoveName,
+                                isTeraCalc, defenderScenario.isTera,
+                                fieldOptions
+                            );
+                        } catch (e) {
+                            console.warn(`Calculation failed for ${defender.species} with ${move}:`, e);
+                            continue;
+                        }
 
                         // STELLAR POST-CALC
                         if (userScenario.isTera && effectiveUser.teraType === 'Stellar') {
