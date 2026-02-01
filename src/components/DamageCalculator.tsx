@@ -806,6 +806,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             // Reverse translate moves for calculation
             const calculationConfig = {
                 ...currentConfig,
+                species: toEnglish(currentConfig.species),
                 moves: currentConfig.moves.map(m => toEnglish(m))
             };
 
