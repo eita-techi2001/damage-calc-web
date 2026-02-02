@@ -1183,10 +1183,25 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '相手持ち物': formatVal(t(attacker.item)),
                             '技': moveNameDisplay,
                             '場の状態': formatVal(fieldState),
-                            '相手攻撃実数': result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa,
-                            'DamagePct': percentageDisplay,
-                            'DamageReal': dmgStr,
-                            '確定数': killDesc,
+                            // Combined "Opponent Stat" (Defender Side): H + B or D
+                            '相手ステータス': (() => {
+                                const statLabel = result.move.category === 'Physical' ? 'B' : 'D';
+                                return `H${realHP} / ${statLabel}${result.move.category === 'Physical' ? realDef : realSpD}`;
+                            })(),
+                            // Combined "User Stat" (Attacker Side): A or C
+                            '自分ステータス': (() => {
+                                const statLabel = result.move.category === 'Physical' ? 'A' : 'C';
+                                const val = result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa;
+                                return `${statLabel}${val}`;
+                            })(),
+                            'ダメージ': `${percentageDisplay} (${range[0]} ~ ${maxDmg})`,
+                            '確定数': (() => {
+                                // Shorten KO Text
+                                return killDesc
+                                    .replace(/確定(\d+)発/, '確$1')
+                                    .replace(/乱数(\d+)発/, '乱$1')
+                                    .replace(/（/g, '(').replace(/）/g, ')');
+                            })(),
                             // New Fields
                             '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),
                             '自分特性': getDisplayAbility(userPoke.ability || '-', variantLabel, userPoke.item, fieldArgs.weather, fieldArgs.terrain),
@@ -1418,12 +1433,22 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     } else if (!lineRes.success) {
                         resStr = '無理';
                     } else {
+                        // Format Short KO
+                        const shortKO = (text: string) => {
+                            return text
+                                .replace(/確定(\d+)発/, '確$1')
+                                .replace(/乱数(\d+)発/, '乱$1')
+                                .replace(/（/g, '(').replace(/）/g, ')');
+                        };
+
                         const evParts = [];
                         if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
-                        if (lineRes.evs.def > 0) evParts.push(`B${lineRes.evs.def}`);
-                        if (lineRes.evs.spd > 0) evParts.push(`D${lineRes.evs.spd}`);
+                        // Compact Stat Logic: If Physical -> B, If Special -> D
+                        if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
+                            evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
+                        }
                         const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
-                        const w = lineRes.thresholdDesc || '耐え';
+                        const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
                         resStr = `${evStr} (${w})`;
                     }
 
@@ -1462,10 +1487,24 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
                     const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
                     const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
+                    // Format Short KO
+                    const shortKO = (text: string) => {
+                        return text
+                            .replace(/確定(\d+)発/, '確$1')
+                            .replace(/乱数(\d+)発/, '乱$1')
+                            .replace(/（/g, '(').replace(/）/g, ')');
+                    };
 
-                    const durability = hp * realStat;
-                    // We want the MAX required durability (hardest tier).
-                    maxNeeded = Math.max(maxNeeded, durability);
+                    const evParts = [];
+                    if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
+                    // Compact Stat Logic: If Physical -> B, If Special -> D
+                    if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
+                        evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
+                    }
+                    const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
+                    const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
+                    resStr = `${evStr} (${w})`;
+
                 } else {
                     // If impossible, treat as very high durability needed?
                     // Or just ignore?
@@ -1473,12 +1512,60 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     // But we might want 'Impossible' grouped together?
                     // Let's set a high value.
                     maxNeeded = Math.max(maxNeeded, 999999);
+                    resStr = '無理';
                 }
 
                 slotIndex++;
             }
             row['_sortVal'] = maxNeeded;
-            if (hasMeaningfulResult) targetList.push(row);
+
+            // Add Combined Compact Columns for Defensive Lines
+            // Opponent (Attacker) Status: A or C
+            // We use the dummyRes or just the known category.
+            // In Defensive Line context, 'attacker' (from ctx) is the Opponent.
+            // Stats are fixed per variant.
+            row['相手ステータス'] = (() => {
+                const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
+                return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
+            })();
+
+            // User (Defender) Status: H and B/D 
+            // Since we have multiple tiers (Registered, Spec, Semi), this is ambiguous.
+            // But usually this column refers to the BASELINE or REGISTERED stats if applicable.
+            // Alternatively, separate columns exist for results.
+            // If the user meant the "Result" text itself (resStr), we updated it above (`Hxxx Bxxx`).
+            // If the user meant the "User Status" column to the left of results...
+            // Let's add it based on the first result (usually Registered or Spec).
+            if (dedupedResults[0]['HP実数']) {
+                row['自分ステータス'] = (() => {
+                    const h = dedupedResults[0]['HP実数'];
+                    const b = dedupedResults[0]['防御実数'];
+                    const d = dedupedResults[0]['特防実数'];
+                    const sLabel = category === 'Physical' ? 'B' : 'D';
+                    const sVal = category === 'Physical' ? b : d;
+                    return `H${h} / ${sLabel}${sVal}`;
+                })();
+            }
+
+            if (hasMeaningfulResult) {
+                // Add Combined Compact Columns for Defensive Lines
+                row['相手ステータス'] = (() => {
+                    const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
+                    return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
+                })();
+
+                if (dedupedResults[0]['HP実数']) {
+                    row['自分ステータス'] = (() => {
+                        const h = dedupedResults[0]['HP実数'];
+                        const b = dedupedResults[0]['防御実数'];
+                        const d = dedupedResults[0]['特防実数'];
+                        const sLabel = category === 'Physical' ? 'B' : 'D';
+                        const sVal = category === 'Physical' ? b : d;
+                        return `H${h} / ${sLabel}${sVal}`;
+                    })();
+                }
+                targetList.push(row);
+            }
         }
     };
 
