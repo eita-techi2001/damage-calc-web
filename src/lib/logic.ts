@@ -1452,6 +1452,29 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     }
                 }
 
+                if (lineRes.success) {
+                    const hp = calcStat('hp', lineRes.evs.hp);
+                    const defOrSpD = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, 1.0); // Simple 1.0 nature for approximate durability sort? Or use real nature?
+                    // Better to use actual resulting stats.
+                    // We calculated realHP/displayDef above only for Registered.
+                    // Let's re-calc for sorting purposes.
+                    const n = lineRes.nature || userPoke.nature;
+                    const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
+                    const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
+                    const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
+
+                    const durability = hp * realStat;
+                    // We want the MAX required durability (hardest tier).
+                    maxNeeded = Math.max(maxNeeded, durability);
+                } else {
+                    // If impossible, treat as very high durability needed?
+                    // Or just ignore?
+                    // If impossible (無理), it's harder than any survivable one.
+                    // But we might want 'Impossible' grouped together?
+                    // Let's set a high value.
+                    maxNeeded = Math.max(maxNeeded, 999999);
+                }
+
                 slotIndex++;
             }
             row['_sortVal'] = maxNeeded;
@@ -1628,7 +1651,24 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 'HB/HD特化': tierResults['HB/HD特化'],
                 '場の状態': r['場の状態'],
                 '_meta': r['_meta'], // Add meta for icons
-                '_sortVal': bestKo // 1 (Easy/OHKO) to 4 (Hard/4HKO+) or 99 (Infinite)
+
+                '_sortVal': (() => {
+                    // Sort by Necessary Actual Value (registeredTierStatStr)
+                    // If '-', it implies either "Already KO" (Easy) or "Impossible" (Hard).
+                    // Usually '-' in this context means "KO with 0 investment" or "Unreachable"?
+                    // Check previous logic:
+                    // registeredTierStatStr comes from:
+                    // 1. findOffensiveLine result.stat
+                    // 2. getBestResult -> if display matches.
+
+                    // If it's "-", it usually means findOffensiveLine failed or wasn't applicable.
+                    // If we can't KO even with max investment, it's effectively Infinity (Hard).
+                    // If we KO with base stats? findOffensiveLine should return something.
+
+                    const num = parseInt(registeredTierStatStr, 10);
+                    if (isNaN(num)) return 0; // Default to 0?
+                    return num;
+                })()
             });
         }
     }
