@@ -1347,140 +1347,155 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </h3>
                             </div>
 
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                {/* Ability Selector */}
-                                <div className="flex flex-col items-start space-y-1">
-                                    <span className="text-xs text-gray-400">特性 (Ability)</span>
-                                    <select
-                                        value={activeConfig.ability || ''}
-                                        onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
-                                    >
-                                        {availableAbilities.length > 0 ? (
-                                            availableAbilities.map((ab, idx) => (
-                                                <option key={`${ab}-${idx}`} value={ab}>{t(ab)}</option>
-                                            ))
-                                        ) : (
-                                            // Fallback if no list available yet
-                                            <option value={activeConfig.ability}>{t(activeConfig.ability)}</option>
-                                        )}
-                                    </select>
+                            <div className="flex flex-col md:flex-row gap-6">
+                                {/* Left: Icon */}
+                                <div className="flex-shrink-0 flex justify-center items-start pt-4">
+                                    <img
+                                        src={getIconUrl(activeConfig.species)}
+                                        alt={activeConfig.species}
+                                        className="w-24 h-24 md:w-32 md:h-32 object-contain pixelated rendering-pixelated drop-shadow-lg"
+                                        onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
+                                    />
                                 </div>
 
-                                {/* Item Selector */}
-                                <div className="flex flex-col items-start space-y-1">
-                                    <span className="text-xs text-gray-400">持ち物 (Item)</span>
-                                    <select
-                                        value={activeConfig.item || ''}
-                                        onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
-                                    >
-                                        {REFINED_ITEMS.map((item) => (
-                                            <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
-                                        ))}
-                                    </select>
+                                {/* Right: Controls */}
+                                <div className="flex-grow space-y-4">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                        {/* Ability Selector */}
+                                        <div className="flex flex-col items-start space-y-1">
+                                            <span className="text-xs text-gray-400">特性 (Ability)</span>
+                                            <select
+                                                value={activeConfig.ability || ''}
+                                                onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
+                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                            >
+                                                {availableAbilities.length > 0 ? (
+                                                    availableAbilities.map((ab, idx) => (
+                                                        <option key={`${ab}-${idx}`} value={ab}>{t(ab)}</option>
+                                                    ))
+                                                ) : (
+                                                    // Fallback if no list available yet
+                                                    <option value={activeConfig.ability}>{t(activeConfig.ability)}</option>
+                                                )}
+                                            </select>
+                                        </div>
+
+                                        {/* Item Selector */}
+                                        <div className="flex flex-col items-start space-y-1">
+                                            <span className="text-xs text-gray-400">持ち物 (Item)</span>
+                                            <select
+                                                value={activeConfig.item || ''}
+                                                onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
+                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                            >
+                                                {REFINED_ITEMS.map((item) => (
+                                                    <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Tera Selector */}
+                                        <div className="flex flex-col items-start space-y-1">
+                                            <span className="text-xs text-gray-400">テラスタイプ</span>
+                                            <select
+                                                value={
+                                                    (activeConfig.species.includes('Terapagos') || activeConfig.species.includes('オーガポン')) // Ogerpon also fixed? User asked for Terapagos.
+                                                        && activeConfig.species.includes('Terapagos') ? 'Stellar' : (activeConfig.teraType || 'Stellar')
+                                                }
+                                                onChange={(e) => updateActiveConfig({ ...activeConfig, teraType: e.target.value })}
+                                                disabled={activeConfig.species.includes('Terapagos')}
+                                                className={`bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full ${activeConfig.species.includes('Terapagos') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            >
+                                                {TERA_TYPES.map((type) => (
+                                                    <option key={type} value={type}>{type === 'Psychic' ? 'エスパー' : t(type)}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Nature Selector */}
+                                        <div className="flex flex-col items-start space-y-1">
+                                            <span className="text-xs text-gray-400">性格 (Nature)</span>
+                                            <select
+                                                value={activeConfig.nature}
+                                                onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
+                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500"
+                                            >
+                                                {[
+                                                    // A Up
+                                                    'Lonely', 'Adamant', 'Naughty', 'Brave',
+                                                    // B Up
+                                                    'Bold', 'Impish', 'Lax', 'Relaxed',
+                                                    // C Up
+                                                    'Modest', 'Mild', 'Rash', 'Quiet',
+                                                    // D Up
+                                                    'Calm', 'Gentle', 'Careful', 'Sassy',
+                                                    // S Up
+                                                    'Timid', 'Hasty', 'Jolly', 'Naive',
+                                                ].map(n => (
+                                                    <option key={n} value={n}>{t(n)}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    {/* Moves Section */}
+                                    <div className="border-t border-gray-700 pt-4">
+                                        <h4 className="text-sm font-bold text-gray-400 mb-2 flex items-center gap-2">
+                                            技構成
+                                            {isThinkingMoves && <span className="text-xs text-gray-500 animate-pulse">Loading learnset...</span>}
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {Array.from({ length: 4 }).map((_, index) => {
+                                                const move = activeConfig?.moves[index] || '';
+                                                // USER REQUEST: White color for all move labels (removed colored classes)
+
+                                                return (
+                                                    <div key={index} className="flex flex-col space-y-1 w-full">
+                                                        <span className={`text-xs font-bold text-gray-400`}>技{index + 1}</span>
+                                                        <AutocompleteInput
+                                                            value={move}
+                                                            onChange={(val) => {
+                                                                const newMoves = [...activeConfig.moves];
+                                                                while (newMoves.length <= index) newMoves.push("");
+                                                                newMoves[index] = val;
+                                                                updateActiveConfig({ ...activeConfig, moves: newMoves });
+                                                            }}
+                                                            onSelect={(val) => {
+                                                                const newMoves = [...activeConfig.moves];
+                                                                while (newMoves.length <= index) newMoves.push("");
+                                                                newMoves[index] = val;
+                                                                updateActiveConfig({ ...activeConfig, moves: newMoves });
+                                                            }}
+                                                            itemList={availableMoves}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                        {/* Datalist removed */}
+                                    </div>
+
+                                    <div className="mb-4 pt-4 border-t border-gray-700">
+                                        <h4 className="text-sm font-bold text-gray-400 mb-2">ランク補正</h4>
+                                        <div className="flex w-full gap-2">
+                                            {renderRankSelect('攻撃', 'atk')}
+                                            {renderRankSelect('防御', 'def')}
+                                            {renderRankSelect('特攻', 'spa')}
+                                            {renderRankSelect('特防', 'spd')}
+                                            {renderRankSelect('素早さ', 'spe')}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                                        {renderStatSlider('HP', 'hp')}
+                                        {renderStatSlider('攻撃', 'atk')}
+                                        {renderStatSlider('防御', 'def')}
+                                        {renderStatSlider('特攻', 'spa')}
+                                        {renderStatSlider('特防', 'spd')}
+                                        {renderStatSlider('素早さ', 'spe')}
+                                    </div>
                                 </div>
-
-                                {/* Tera Selector */}
-                                <div className="flex flex-col items-start space-y-1">
-                                    <span className="text-xs text-gray-400">テラスタイプ</span>
-                                    <select
-                                        value={
-                                            (activeConfig.species.includes('Terapagos') || activeConfig.species.includes('オーガポン')) // Ogerpon also fixed? User asked for Terapagos.
-                                                && activeConfig.species.includes('Terapagos') ? 'Stellar' : (activeConfig.teraType || 'Stellar')
-                                        }
-                                        onChange={(e) => updateActiveConfig({ ...activeConfig, teraType: e.target.value })}
-                                        disabled={activeConfig.species.includes('Terapagos')}
-                                        className={`bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full ${activeConfig.species.includes('Terapagos') ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                        {TERA_TYPES.map((type) => (
-                                            <option key={type} value={type}>{type === 'Psychic' ? 'エスパー' : t(type)}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Nature Selector */}
-                                <div className="flex flex-col items-start space-y-1">
-                                    <span className="text-xs text-gray-400">性格 (Nature)</span>
-                                    <select
-                                        value={activeConfig.nature}
-                                        onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500"
-                                    >
-                                        {[
-                                            // A Up
-                                            'Lonely', 'Adamant', 'Naughty', 'Brave',
-                                            // B Up
-                                            'Bold', 'Impish', 'Lax', 'Relaxed',
-                                            // C Up
-                                            'Modest', 'Mild', 'Rash', 'Quiet',
-                                            // D Up
-                                            'Calm', 'Gentle', 'Careful', 'Sassy',
-                                            // S Up
-                                            'Timid', 'Hasty', 'Jolly', 'Naive',
-                                        ].map(n => (
-                                            <option key={n} value={n}>{t(n)}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-
-                            {/* Moves Section */}
-                            <div className="border-t border-gray-700 pt-4">
-                                <h4 className="text-sm font-bold text-gray-400 mb-2 flex items-center gap-2">
-                                    技構成
-                                    {isThinkingMoves && <span className="text-xs text-gray-500 animate-pulse">Loading learnset...</span>}
-                                </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {Array.from({ length: 4 }).map((_, index) => {
-                                        const move = activeConfig?.moves[index] || '';
-                                        // USER REQUEST: White color for all move labels (removed colored classes)
-
-                                        return (
-                                            <div key={index} className="flex flex-col space-y-1 w-full">
-                                                <span className={`text-xs font-bold text-gray-400`}>技{index + 1}</span>
-                                                <AutocompleteInput
-                                                    value={move}
-                                                    onChange={(val) => {
-                                                        const newMoves = [...activeConfig.moves];
-                                                        while (newMoves.length <= index) newMoves.push("");
-                                                        newMoves[index] = val;
-                                                        updateActiveConfig({ ...activeConfig, moves: newMoves });
-                                                    }}
-                                                    onSelect={(val) => {
-                                                        const newMoves = [...activeConfig.moves];
-                                                        while (newMoves.length <= index) newMoves.push("");
-                                                        newMoves[index] = val;
-                                                        updateActiveConfig({ ...activeConfig, moves: newMoves });
-                                                    }}
-                                                    itemList={availableMoves}
-                                                />
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                                {/* Datalist removed */}
-                            </div>
-
-                            <div className="mb-4 pt-4 border-t border-gray-700">
-                                <h4 className="text-sm font-bold text-gray-400 mb-2">ランク補正</h4>
-                                <div className="flex w-full gap-2">
-                                    {renderRankSelect('攻撃', 'atk')}
-                                    {renderRankSelect('防御', 'def')}
-                                    {renderRankSelect('特攻', 'spa')}
-                                    {renderRankSelect('特防', 'spd')}
-                                    {renderRankSelect('素早さ', 'spe')}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-                                {renderStatSlider('HP', 'hp')}
-                                {renderStatSlider('攻撃', 'atk')}
-                                {renderStatSlider('防御', 'def')}
-                                {renderStatSlider('特攻', 'spa')}
-                                {renderStatSlider('特防', 'spd')}
-                                {renderStatSlider('素早さ', 'spe')}
                             </div>
                         </div>
                     )}
