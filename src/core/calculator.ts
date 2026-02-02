@@ -42,12 +42,12 @@ export class DamageCalculator {
         return new Pokemon(gen, config.species, options);
     }
 
-    public calculateDamage(attackerConfig: UserPokemonConfig, defenderConfig: MetaPokemonVariant, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean } = {}) {
+    public calculateDamage(attackerConfig: UserPokemonConfig, defenderConfig: MetaPokemonVariant, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean } = {}, moveOptions: { hits?: number } = {}) {
         const attacker = this.toCalcPokemon(attackerConfig, false, isAttackerTera);
 
         // Fix for Stellar Defense: Stellar type defensively retains original typing.
         // If we set options.teraType = 'Stellar', the library might treat defensive type as 'Stellar' (losing weaknesses).
-        // So for Defender, if Stellar, we generate the Pokemon WITHOUT setting teraType (isTera=false in builder),
+        // So for Defender, if Stellar, we generated the Pokemon WITHOUT setting teraType (isTera=false in builder),
         // but we still pass isDefenderTera=true to the calculate function.
         const isDefenderStellar = isDefenderTera && defenderConfig.teraType === 'Stellar';
         const defender = this.toCalcPokemon(defenderConfig, false, isDefenderTera && !isDefenderStellar);
@@ -57,10 +57,14 @@ export class DamageCalculator {
         // If FALSE (Single), we override target to 'Normal' to force 1.0x.
         const { isSpreadDamage = true, ...realFieldOptions } = fieldOptions;
 
+        // Determine Hits (Skill Link forces 5, otherwise use manual setting)
+        const finalHits = attacker.ability === 'Skill Link' ? 5 : moveOptions.hits;
+        const finalMoveOptions = finalHits ? { ...moveOptions, hits: finalHits } : moveOptions;
+
         // Check original move target
-        let move = new Move(gen, moveName);
+        let move = new Move(gen, moveName, finalMoveOptions);
         if (isSpreadDamage === false && ['allAdjacent', 'allAdjacentFoes'].includes(move.target)) {
-            move = new Move(gen, moveName, { overrides: { target: 'normal' } });
+            move = new Move(gen, moveName, { ...finalMoveOptions, overrides: { target: 'normal' } });
         }
 
         // Merge default field (Doubles) with overrides

@@ -766,7 +766,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             result = calc.calculateDamage(
                                 effectiveUser, effectiveDefender, customMoveName,
                                 isTeraCalc, defenderScenario.isTera,
-                                fieldOptions
+                                fieldOptions,
+                                { hits: settings?.hitCount } // Pass manual hit count
                             );
                         } catch (e) {
                             console.warn(`Calculation failed for ${defender.species} with ${move}:`, e);

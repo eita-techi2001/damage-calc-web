@@ -314,7 +314,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [allSpeciesList, setAllSpeciesList] = useState<string[]>([]);
     const [excludedIds, setExcludedIds] = useState<string[]>([]); // IDs of opponents to SKIP
     const [filterText, setFilterText] = useState<string>('');
-    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default' });
+    const [hitCount, setHitCount] = useState<number>(5); // Default to 5 (Max) as per user sentiment "forces 5". Or user might want 2-5? 
+    // User said "5回充てるタイプの連続技は回数を指定できるようにしよう".
+    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default', hitCount: 5 });
+
+    // Sync hitCount to calcSettings when hitCount changes
+    useEffect(() => {
+        setCalcSettings(prev => ({ ...prev, hitCount }));
+    }, [hitCount]);
 
     useEffect(() => {
         // Fetch Meta Opponents and All Species on mount

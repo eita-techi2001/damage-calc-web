@@ -93,4 +93,5 @@ export interface CalculationSettings {
     abilityVariantMode: VariantFilterMode;
     teraVariantMode: VariantFilterMode;
     excludeWeakMoves?: boolean;
+    hitCount?: number; // Added for manual multi-hit control (default 3 or 5)
 }
