@@ -317,6 +317,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [hitCount, setHitCount] = useState<number>(5); // Default to 5 (Max) as per user sentiment "forces 5". Or user might want 2-5? 
     // User said "5回充てるタイプの連続技は回数を指定できるようにしよう".
     const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default', hitCount: 5 });
+    const [sortOrder, setSortOrder] = useState<'desc' | 'asc' | 'none'>('none'); // Sorting state
 
     // Sync hitCount to calcSettings when hitCount changes
     useEffect(() => {
@@ -1022,6 +1023,17 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             </div>
         );
     };
+    // Helper for Sorting
+    const getSortedRows = (rows: any[]) => {
+        if (sortOrder === 'none' || !rows) return rows;
+        return [...rows].sort((a, b) => {
+            const valA = a._sortVal ?? 0;
+            const valB = b._sortVal ?? 0;
+            if (sortOrder === 'desc') return valB - valA; // High SortVal (Hardest) first
+            return valA - valB; // Low SortVal (Easiest) first
+        });
+    };
+
     return (
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
             {/* Header Section */}
@@ -1690,20 +1702,42 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {
                 results && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {/* Tabs */}
-                        <div className="flex space-x-1 rounded-xl bg-gray-900/50 p-1">
-                            {(['attack', 'defense', 'offensiveLine', 'defenseLine'] as const).map((tab) => (
-                                <button
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 ${activeTab === tab
-                                        ? 'bg-gray-700 shadow shadow-black/50'
-                                        : 'text-gray-400 hover:bg-white/[0.12] hover:text-white'
-                                        }`}
-                                >
-                                    {tab === 'attack' ? 'Attack (攻)' : tab === 'defense' ? 'Defense (受)' : tab === 'offensiveLine' ? 'Off Lines (攻ライン)' : 'Def Lines (受ライン)'}
-                                </button>
-                            ))}
+                        {/* Tabs and Sort Control */}
+                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-end sm:items-center">
+                            <div className="flex space-x-1 rounded-xl bg-gray-900/50 p-1 w-full sm:w-auto">
+                                {(['attack', 'defense', 'offensiveLine', 'defenseLine'] as const).map((tab) => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => {
+                                            setActiveTab(tab);
+                                            // Reset sort when switching tabs? Or keep?
+                                            // setSortOrder('desc'); 
+                                        }}
+                                        className={`px-4 rounded-lg py-2.5 text-sm font-medium leading-5 text-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 ${activeTab === tab
+                                            ? 'bg-gray-700 shadow shadow-black/50'
+                                            : 'text-gray-400 hover:bg-white/[0.12] hover:text-white'
+                                            }`}
+                                    >
+                                        {tab === 'attack' ? 'Attack (攻)' : tab === 'defense' ? 'Defense (受)' : tab === 'offensiveLine' ? 'Off Lines (攻ライン)' : 'Def Lines (受ライン)'}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Sort Control (Only for Lines) */}
+                            {['offensiveLine', 'defenseLine'].includes(activeTab) && (
+                                <div className="flex items-center space-x-2 bg-gray-900/50 p-1 rounded-lg">
+                                    <span className="text-xs text-gray-400 pl-2">並び替え:</span>
+                                    <select
+                                        value={sortOrder}
+                                        onChange={(e) => setSortOrder(e.target.value as any)}
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-blue-500"
+                                    >
+                                        <option value="none">登録順 (Default)</option>
+                                        <option value="desc">必要努力値が多い順 (Hardest)</option>
+                                        <option value="asc">必要努力値が少ない順 (Easiest)</option>
+                                    </select>
+                                </div>
+                            )}
                         </div>
 
                         {/* Content */}
@@ -1741,7 +1775,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         </p>
                                         <Table
                                             headers={HEADERS_OFF_LINE}
-                                            rows={results.offensiveLine}
+                                            rows={getSortedRows(results.offensiveLine)}
                                         />
                                     </div>
                                 )}
@@ -1751,7 +1785,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">Physical Lines (物理ライン)</h3>
                                             <Table
                                                 headers={HEADERS_DEF_LINE_PHYS}
-                                                rows={results.defenseLine.physical}
+                                                rows={getSortedRows(results.defenseLine.physical)}
                                                 highlightEfficient
                                             />
                                         </div>
@@ -1759,7 +1793,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">Special Lines (特殊ライン)</h3>
                                             <Table
                                                 headers={HEADERS_DEF_LINE_SPEC}
-                                                rows={results.defenseLine.special}
+                                                rows={getSortedRows(results.defenseLine.special)}
                                                 highlightEfficient
                                             />
                                         </div>

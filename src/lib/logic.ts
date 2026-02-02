@@ -1244,11 +1244,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             ];
 
             // Prepare Result Row
+            let maxNeeded = 0; // Track max EVs across tiers for sorting
             const row: any = {
                 // Initial Default Values
                 '実数値1': '-', '結果1': '-',
                 '特化': '-', '結果2': '-',
                 '無補正252': '-', '結果3': '-',
+                '_sortVal': 0, // Sort Value
 
                 // Values from Source
                 'HP実数': r['HP実数'],
@@ -1298,6 +1300,12 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 );
 
                 if (lineRes) {
+                    if (!lineRes.success) maxNeeded = 9999; // Impossible = Hardest
+                    else {
+                        const total = (lineRes.evs.hp || 0) + (lineRes.evs.def || 0) + (lineRes.evs.spd || 0);
+                        maxNeeded = Math.max(maxNeeded, total);
+                    }
+
                     if (lineRes.thresholdDesc !== '高耐久') {
                         hasMeaningfulResult = true;
                     }
@@ -1407,8 +1415,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                 slotIndex++;
             }
+            row['_sortVal'] = maxNeeded;
             if (hasMeaningfulResult) targetList.push(row);
-        };
+        }
     };
 
     processDefensiveLines(finalPhysDefResults, physDefLineResults);
@@ -1573,7 +1582,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 'H252': tierResults['H252'],
                 'HB/HD特化': tierResults['HB/HD特化'],
                 '場の状態': r['場の状態'],
-                '_meta': r['_meta'] // Add meta for icons
+                '_meta': r['_meta'], // Add meta for icons
+                '_sortVal': bestKo // 1 (Easy/OHKO) to 4 (Hard/4HKO+) or 99 (Infinite)
             });
         }
     }
