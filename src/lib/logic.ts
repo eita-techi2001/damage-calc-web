@@ -1033,10 +1033,45 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (globalField.terrain && globalField.terrain !== 'None') fieldArgs.terrain = globalField.terrain;
                         }
 
-                        if (attacker.forcedField) {
-                            if (!fieldArgs.weather && attacker.forcedField.weather) fieldArgs.weather = attacker.forcedField.weather;
-                            if (!fieldArgs.terrain && attacker.forcedField.terrain) fieldArgs.terrain = attacker.forcedField.terrain;
-                        } else if (!fieldArgs.terrain && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
+                        // Helper to detect specific Ability Auto-Setters (for Customs or missing forcedField)
+                        const getAbilityWeather = (ability: string) => {
+                            if (!ability) return null;
+                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            if (a === 'drought' || a === 'orichalcumpulse') return 'Sun';
+                            if (a === 'drizzle') return 'Rain';
+                            if (a === 'sandstream') return 'Sand';
+                            if (a === 'snowwarning') return 'Snow';
+                            return null;
+                        };
+
+                        const getAbilityTerrain = (ability: string) => {
+                            if (!ability) return null;
+                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            if (a === 'grassysurge') return 'Grassy';
+                            if (a === 'electricsurge' || a === 'hadronengine') return 'Electric';
+                            if (a === 'psychicsurge') return 'Psychic';
+                            if (a === 'mistysurge') return 'Misty';
+                            return null;
+                        };
+
+                        // Priorities:
+                        // 1. Manual Global Setting (if not 'None')
+                        // 2. Attacker Ability (forcedField or Auto-Detect)
+
+                        // Check Attacker Ability Weather
+                        const abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
+                        const abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
+
+                        // Apply Weather if global is None/Unset and Ability provides one
+                        if ((!fieldArgs.weather || fieldArgs.weather === 'None') && abilityWeather) {
+                            fieldArgs.weather = abilityWeather;
+                        }
+
+                        // Apply Terrain if global is None/Unset and Ability provides one
+                        if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && abilityTerrain) {
+                            fieldArgs.terrain = abilityTerrain;
+                        } else if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
+                            // Fallback for Rillaboom (though getAbilityTerrain should catch it if Ability is correct)
                             fieldArgs.terrain = 'Grassy';
                         }
 
