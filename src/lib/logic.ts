@@ -47,6 +47,10 @@ const filterVariantsByMode = (variants: any[], mode: VariantFilterMode, getLabel
 };
 
 // ... deduplicateResults ... (unchanged)
+// WARNING: THIS FILE CONTAINS TWO SEPARATE CALCULATION LOOPS (OFFENSE & DEFENSE).
+// IF YOU MODIFY THE OUTPUT ROW STRUCTURE (KEYS/COLUMNS), YOU MUST UPDATE BOTH LOOPS.
+// 1. Offense Loop (calculateDamage for Config) -> attackResults.push
+// 2. Defense Loop (calculateReceivedDamage) -> physDefLineResults / specDefLineResults
 export function deduplicateResults(results: any[], uniqueKeys: string[]): any[] {
     const seen = new Set<string>();
     return results.filter(row => {
@@ -962,10 +966,17 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '場の状態': formatVal(fieldState),
                             // Meta for internal logic (Sorting, Check Mode)
                             '_meta': {
-                                // Hidden Metadata for Deduplication & Reconstruction
-                                userPoke, defender, move,
-                                userScenario, defenderScenario,
-                                fieldArgs, isIntimidate: isIntimidateActive
+                                minDmg, maxDmg,
+                                species: defender.species,
+                                userTera: userScenario.isTera,
+                                defenderTera: defenderScenario.isTera,
+                                formattedName: `${cleanName}${abilityLabel}`,
+                                // Context preservation for Line Calc
+                                context: {
+                                    userPoke, defender, move,
+                                    userScenario, defenderScenario,
+                                    fieldArgs, isIntimidate: isIntimidateActive
+                                }
                             }
                         }
                             });
