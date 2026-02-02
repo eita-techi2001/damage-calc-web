@@ -949,571 +949,585 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '技': moveNameDisplay,
                             '相手': cleanName,
                             '相手特性': oppAbilityDisplay,
-                            '相手テラスタル': teraLabel,
-                            '相手持ち物': t(defender.item),
-                            '相手HP': defMaxHP,
-                            '相手防御実数': cat === 'Physical' ? result.defender.stats.def : result.defender.stats.spd,
-                            'DamagePct': percentage === maxPercentage ? `${percentage}%` : `${percentage}% ~ ${maxPercentage}%`,
-                            '確定数': killDesc,
-                            'DamageReal': dmgStr,
-                            '場の状態': formatVal(fieldState),
-                            // Hidden Metadata
-                            // Hidden Metadata for Deduplication & Reconstruction
-                            '_meta': {
-                                minDmg, maxDmg,
-                                species: defender.species,
-                                userTera: userScenario.isTera,
-                                defenderTera: defenderScenario.isTera,
-                                formattedName: `${cleanName}${abilityLabel}`,
-                                // Context preservation for Line Calc
-                                context: {
-                                    userPoke, defender, move,
-                                    userScenario, defenderScenario,
-                                    fieldArgs, isIntimidate: isIntimidateActive
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        }
-
-        // -------------------------------------------------------------------------
-        // 2. Defense (Receive Damage)
-        // -------------------------------------------------------------------------
-        for (const userScenario of userScenarios) {
-            for (const attacker of targets) {
-                for (const move of attacker.moves) {
-                    const attackerScenarios = [{ isTera: false, label: '' }];
-                    if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${t(attacker.teraType || '')})` });
-
-                    for (const attackerScenario of attackerScenarios) {
-                        // Clone attacker to apply Global Opponent Ranks
-                        let effectiveAttackerBase = JSON.parse(JSON.stringify(attacker)); // We clone base first
-                        if (globalField && globalField.opponentRanks) {
-                            if (!effectiveAttackerBase.boosts) effectiveAttackerBase.boosts = {};
-                            const r = globalField.opponentRanks;
-                            effectiveAttackerBase.boosts.atk = (effectiveAttackerBase.boosts.atk || 0) + (r.atk || 0);
-                            effectiveAttackerBase.boosts.def = (effectiveAttackerBase.boosts.def || 0) + (r.def || 0);
-                            effectiveAttackerBase.boosts.spa = (effectiveAttackerBase.boosts.spa || 0) + (r.spa || 0);
-                            effectiveAttackerBase.boosts.spd = (effectiveAttackerBase.boosts.spd || 0) + (r.spd || 0);
-                            effectiveAttackerBase.boosts.spe = (effectiveAttackerBase.boosts.spe || 0) + (r.spe || 0);
-                        }
-
-                        // Field Setup
-                        const fieldArgs: any = { ...baseFieldArgs, gameType: 'Doubles' };
-
-                        // Apply Global Field State (v2.4) - Defense Context
-                        if (globalField) {
-                            // 1. Global Ruins
-                            if (globalField.global.isSwordOfRuin) fieldArgs.isSwordOfRuin = true;
-                            if (globalField.global.isBeadsOfRuin) fieldArgs.isBeadsOfRuin = true;
-                            if (globalField.global.isTabletsOfRuin) fieldArgs.isTabletsOfRuin = true;
-                            if (globalField.global.isVesselOfRuin) fieldArgs.isVesselOfRuin = true;
-
-                            // 2. Side Logic (Context: Opponent is Attacker, User is Defender)
-                            // User Side -> Defender Side
-                            fieldArgs.defenderSide = {
-                                isReflect: globalField.userSide.isReflect,
-                                isLightScreen: globalField.userSide.isLightScreen,
-                                isFriendGuard: globalField.userSide.isFriendGuard
-                                // User HH doesn't help defense
-                            };
-
-                            // Opponent Side -> Attacker Side
-                            fieldArgs.attackerSide = {
-                                isReflect: globalField.opponentSide.isReflect,
-                                isLightScreen: globalField.opponentSide.isLightScreen,
-                                isFriendGuard: globalField.opponentSide.isFriendGuard
-                                // Helping Hand from Opponent? Not tracked.
-                            };
-
-                            // 3. Weather & Terrain (Priority: Manual > Variant)
-                            if (globalField.weather && globalField.weather !== 'None') fieldArgs.weather = globalField.weather;
-                            if (globalField.terrain && globalField.terrain !== 'None') fieldArgs.terrain = globalField.terrain;
-                        }
-
-                        // Helper to detect specific Ability Auto-Setters (for Customs or missing forcedField)
-                        const getAbilityWeather = (ability: string) => {
-                            if (!ability) return null;
-                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (a === 'drought' || a === 'orichalcumpulse') return 'Sun';
-                            if (a === 'drizzle') return 'Rain';
-                            if (a === 'sandstream') return 'Sand';
-                            if (a === 'snowwarning') return 'Snow';
-                            return null;
-                        };
-
-                        const getAbilityTerrain = (ability: string) => {
-                            if (!ability) return null;
-                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (a === 'grassysurge') return 'Grassy';
-                            if (a === 'electricsurge' || a === 'hadronengine') return 'Electric';
-                            if (a === 'psychicsurge') return 'Psychic';
-                            if (a === 'mistysurge') return 'Misty';
-                            return null;
-                        };
-
-                        // Priorities:
-                        // 1. Manual Global Setting (if not 'None')
-                        // 2. Attacker Ability (forcedField or Auto-Detect)
-
-                        // Check Attacker Ability Weather
-                        const abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
-                        const abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
-
-                        // Apply Weather if global is None/Unset and Ability provides one
-                        if ((!fieldArgs.weather || fieldArgs.weather === 'None') && abilityWeather) {
-                            fieldArgs.weather = abilityWeather;
-                        }
-
-                        // Apply Terrain if global is None/Unset and Ability provides one
-                        if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && abilityTerrain) {
-                            fieldArgs.terrain = abilityTerrain;
-                        } else if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
-                            // Fallback for Rillaboom (though getAbilityTerrain should catch it if Ability is correct)
-                            fieldArgs.terrain = 'Grassy';
-                        }
-
-                        let effectiveAttacker: any = effectiveAttackerBase; // Changed from attacker to effectiveAttackerBase
-                        // Use variant-specific Intimidate flag
-                        if (variant.forcedField?.isDefenderIntimidated) {
-                            effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase)); // Clone base (with ranks)
-                            if (!effectiveAttacker.boosts) effectiveAttacker.boosts = {};
-                            effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
-                        }
-
-                        const result = calc.calculateReceivedDamage(
-                            effectiveAttacker, userPoke, move,
-                            attackerScenario.isTera, userScenario.isTera,
-                            fieldArgs
-                        );
-
-                        const range = result.range();
-                        const maxDmg = range[1];
-                        if (maxDmg === 0) continue; // Filter Immunity
-
-                        const userMaxHP = result.defender.stats.hp;
-                        const minPercentage = Math.floor((range[0] / userMaxHP) * 100);
-                        const maxPercentage = Math.floor((maxDmg / userMaxHP) * 100);
-                        const percentageDisplay = minPercentage === maxPercentage ? `${minPercentage}%` : `${minPercentage} ~ ${maxPercentage}%`;
-
-                        const dmgStr = `${range[0]} ~ ${maxDmg}`;
-                        const ko = calculateBerryAdjustedKO(result, range[0], maxDmg);
-                        const killDesc = translateText(ko.text || '');
-
-                        // Filter Weak Moves (3HKO or worse)
-                        if (settings?.excludeWeakMoves) {
-                            // Revised Filter:
-                            // Keep: Guaranteed 3HKO (確定3発) or better.
-                            // Exclude: Random 3HKO (乱数3発) and anything worse (4HKO+).
-
-                            // Check for 4 hits or more (4-9, 10+)
-                            if (/[4-9]発|\d{2}発/.test(killDesc)) continue;
-
-                            // Check for Random 3 hits (乱数3発)
-                            // "乱数3発" means it's generally 4HKO but has a chance of 3. which is worse than Guaranteed 3HKO.
-                            // "確定3発" is kept.
-                            if (killDesc.includes('乱数3発')) continue;
-                        }
-
-                        const realHP = result.defender.stats.hp || 0;
-                        const realDef = result.defender.stats.def || 0;
-                        const realSpD = result.defender.stats.spd || 0;
-
-                        // Helper to build comprehensive Field State string
-                        const getFieldState = (args: any) => {
-                            const parts = [];
-                            if (args.weather && args.weather !== 'None') parts.push(t(args.weather));
-                            if (args.terrain && args.terrain !== 'None') {
-                                if (args.terrain === 'Electric') parts.push('エレキ');
-                                else if (args.terrain === 'Psychic') parts.push('サイコ');
-                                else parts.push(t(args.terrain));
-                            }
-
-                            // Global Ruins
-                            if (args.isSwordOfRuin) parts.push('つるぎ');
-                            if (args.isBeadsOfRuin) parts.push('たま');
-                            if (args.isTabletsOfRuin) parts.push('おふだ');
-                            if (args.isVesselOfRuin) parts.push('うつわ');
-
-                            // Defender Side (Screens/Guard) - Reducing Damage
-                            const def = args.defenderSide || {};
-                            if (def.isReflect) parts.push('リフレク');
-                            if (def.isLightScreen) parts.push('光の壁');
-                            if (def.isFriendGuard) parts.push('フレガ');
-                            if (def.isAuroraVeil) parts.push('ベール');
-
-                            // Attacker Side (Helping Hand) - Boosting Damage
-                            const att = args.attackerSide || {};
-                            if (att.isHelpingHand) parts.push('手助け');
-                            // Battery? Power Spot? (If implemented in future)
-
-                            return parts.length > 0 ? parts.join(', ') : '-';
-                        };
-
-                        const fieldState = getFieldState(fieldArgs);
-
-                        // Fix: "Psychic" matches both Type (Esper) and Move (Psychic) in translator.
-                        const getTeraDisplay = (val: string) => {
-                            if (val === '-' || !val) return '-';
-                            const type = val.replace(' (テラ: ', '').replace(')', '');
-                            if (type === 'Psychic') return 'エスパー';
-                            return t(type);
-                        };
-
-                        // Detect Spread Override for Display (Defense)
-                        let moveNameDisplay = t(move);
-                        const isSpreadOverride = (globalField?.global?.isSpreadDamage === false);
-                        if (isSpreadOverride && ['allAdjacent', 'allAdjacentFoes'].includes(result.move.target || '')) {
-                            moveNameDisplay += ' (単体)';
-                        }
-
-                        const row: any = { // Explicit any for indexing
-                            'HP実数': realHP,
-                            '防御実数': realDef,
-                            '特防実数': realSpD,
-                            '自分テラスタル': getTeraDisplay(userScenario.label),
-                            '相手': (() => {
-                                const base = t(attacker.species);
-                                const extra = attacker.extraLabel || '';
-                                return base.endsWith(extra) ? base : `${base}${extra}`;
-                            })(),
-                            '相手テラスタル': getTeraDisplay(attackerScenario.label),
-                            '相手持ち物': formatVal(t(attacker.item)),
-                            '技': moveNameDisplay,
-                            '場の状態': formatVal(fieldState),
-                            // Combined "Opponent Stat" (Defender Side): H + B or D
-                            '相手ステータス': (() => {
-                                const statLabel = result.move.category === 'Physical' ? 'B' : 'D';
-                                return `H${realHP} / ${statLabel}${result.move.category === 'Physical' ? realDef : realSpD}`;
-                            })(),
-                            // Combined "User Stat" (Attacker Side): A or C
+                            '相手ステータス': `H${defMaxHP || 0} / ${cat === 'Physical' ? 'B' : 'D'}${(cat === 'Physical' ? result.defender.stats.def : result.defender.stats.spd) || 0}`,
+                            // User Stat: A or C
                             '自分ステータス': (() => {
-                                const statLabel = result.move.category === 'Physical' ? 'A' : 'C';
-                                const val = (result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa) || 0;
-                                return `${statLabel}${val}`;
+                                const s = cat === 'Physical' ? 'A' : 'C';
+                                let statStr = `${s}${rawStat}${statArrow}`;
+                                if (stage !== 0) statStr += ` (${stage > 0 ? '+' : ''}${stage})`;
+                                return statStr;
                             })(),
-                            'ダメージ': `${percentageDisplay} (${range[0]} ~ ${maxDmg})`,
-                            '確定数': (() => {
-                                // Shorten KO Text
-                                return killDesc
-                                    .replace(/確定(\d+)発/, '確$1')
-                                    .replace(/乱数(\d+)発/, '乱$1')
-                                    .replace(/（/g, '(').replace(/）/g, ')');
-                            })(),
-                            // New Fields
-                            '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),
-                            '自分特性': getDisplayAbility(userPoke.ability || '-', variantLabel, userPoke.item, fieldArgs.weather, fieldArgs.terrain),
-                            '自分持ち物': t(userPoke.item || '-'),
+                            'ダメージ': `${percentage === maxPercentage ? `${percentage}%` : `${percentage}% ~ ${maxPercentage}%`} (${dmgStr})`,
+                            '確定数': killDesc.replace(/確定(\d+)発/, '確$1').replace(/乱数(\d+)発/, '乱$1').replace(/（/g, '(').replace(/）/g, ')'),
+                            '場の状態': formatVal(fieldState),
+                            // Meta for internal logic (Sorting, Check Mode)
                             '_meta': {
-
-                                minDmg: range[0],
-                                maxDmg: range[1],
-                                species: attacker.species,
-                                userTera: userScenario.isTera,
-                                attackerTera: attackerScenario.isTera,
-                                formattedName: `${t(attacker.species)}${attacker.extraLabel || ''}`,
-                                // Context preservation for Line Calc
-                                context: {
-                                    userPoke, attacker, move,
-                                    userScenario, attackerScenario,
-                                    fieldArgs
-                                }
+                                // Hidden Metadata for Deduplication & Reconstruction
+                                userPoke, defender, move,
+                                userScenario, defenderScenario,
+                                fieldArgs, isIntimidate: isIntimidateActive
                             }
-                        };
-
-                        if (result.move.category === 'Physical') {
-                            physDefResults.push(row);
-                        } else if (result.move.category === 'Special') {
-                            specDefResults.push(row);
                         }
-                    }
+                            });
                 }
             }
         }
-    } // END VARIANTS LOOP
+    }
 
-    // =========================================================================
-    // PHASE 2: Smart Deduplication
-    // =========================================================================
-    const finalAttackResults = smartDeduplicate(attackResults);
-    const finalPhysDefResults = smartDeduplicate(physDefResults);
-    const finalSpecDefResults = smartDeduplicate(specDefResults);
+    // -------------------------------------------------------------------------
+    // 2. Defense (Receive Damage)
+    // -------------------------------------------------------------------------
+    for (const userScenario of userScenarios) {
+        for (const attacker of targets) {
+            for (const move of attacker.moves) {
+                const attackerScenarios = [{ isTera: false, label: '' }];
+                if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${t(attacker.teraType || '')})` });
 
-    // =========================================================================
-    // PHASE 3: Targeted Line Calculations (Optimized)
-    // =========================================================================
-
-    // Helper: Define Tiers for Defensive Line Analysis
-    const getAttackerTiers = (species: string) => {
-        const fastMons = [
-            'Flutter Mane', 'Chi-Yu', 'Chien-Pao', 'Iron Bundle', 'Koraidon', 'Miraidon',
-            'Calyrex-Shadow', 'Zacian-Crowned', 'Zamazenta-Crowned', 'Dragapult',
-            'Roaring Moon', 'Iron Valiant', 'Spectrier', 'Regieleki', 'Deoxys-Attack',
-            'Ogerpon-Hearthflame', 'Ogerpon-Wellspring', 'Landorus-Therian' // Fast or frequently Scarf/Speed boosted
-        ];
-        const supportMons = [
-            'Amoonguss', 'Clefairy', 'Grimmsnarl', 'Whimsicott', 'Comfey', 'Maushold',
-            'Scream Tail', 'Pachirisu', 'Clefable', 'Farigiraf', 'Indeedee-F',
-            'Murkrow', 'Torkoal', 'Pelipper', 'Ninetales-Alola', 'Politoed'
-        ];
-
-        // Branching Logic
-        if (supportMons.includes(species)) {
-            return [{ label: '4振り', type: '4ev' }];
-        } else if (fastMons.includes(species)) {
-            return [
-                { label: '特化', type: 'Spec' },
-                { label: '準特化', type: 'Semi' }
-            ];
-        } else {
-            return [{ label: '特化', type: 'Spec' }];
-        }
-    };
-
-    // 3.1 Defensive Lines (Based on Deduped Physical/Special Defense Results)
-    const processDefensiveLines = (dedupedResults: any[], targetList: any[]) => {
-        for (const r of dedupedResults) {
-            const ctx = r['_meta'].context;
-            if (!ctx) continue;
-
-            // Re-run the Line Calc finding using the exact scenario from dedup
-            const { attacker, userPoke, move, attackerScenario, userScenario, fieldArgs } = ctx;
-
-            if (move === 'Fake Out' || move === 'ねこだまし') continue;
-
-            // Basic Check & Get Category
-            const dummyRes = calc.calculateDamage(attacker, userPoke, move, attackerScenario.isTera, userScenario.isTera, fieldArgs);
-            const category = dummyRes.move.category;
-            if (category === 'Status') continue;
-
-            // Filter 0 Damage (Immunity)
-            if (dummyRes.range()[1] === 0) continue;
-
-            const tiers = [
-                { type: 'Registered', label: '登録値' },
-                { type: 'Spec', label: '特化' },
-                { type: 'Semi', label: '無補正252' }
-            ];
-
-            // Prepare Result Row
-            let maxNeeded = 0; // Track max EVs across tiers for sorting
-            const row: any = {
-                // Initial Default Values
-                '実数値1': '-', '結果1': '-',
-                '特化': '-', '結果2': '-',
-                '無補正252': '-', '結果3': '-',
-                '_sortVal': 0, // Sort Value
-
-                // Values from Source
-                'HP実数': r['HP実数'],
-                '防御実数': r['防御実数'],
-                '特防実数': r['特防実数'],
-                '自分テラスタル': r['自分テラスタル'],
-                '自分特性': r['自分特性'],
-                '自分持ち物': r['自分持ち物'],
-                '相手': r['相手'],
-                '相手テラスタル': r['相手テラスタル'],
-                '相手持ち物': r['相手持ち物'],
-                '技': r['技'],
-                '場の状態': r['場の状態'],
-                '_meta': r['_meta'] // Ensure meta is passed for icons
-            };
-
-            // Get Opponent Base Stats for Real Stat display
-            const attackerRawStats = calcLib.Generations.get(gen).species.get(calcLib.toID(attacker.species))?.baseStats;
-
-            let slotIndex = 1;
-            let hasMeaningfulResult = false;
-
-            for (const tier of tiers) {
-                // Configure Attacker for Tier
-                const tierAttacker = JSON.parse(JSON.stringify(attacker));
-                // const tierLabel = tier.label; // Label no longer used in column
-
-                // Set Nature and EVs
-                const statKey = category === 'Physical' ? 'atk' : 'spa';
-
-                if (tier.type === 'Spec') {
-                    tierAttacker.evs[statKey] = 252;
-                    tierAttacker.nature = category === 'Physical' ? 'Adamant' : 'Modest';
-                } else if (tier.type === 'Semi') {
-                    tierAttacker.evs[statKey] = 252;
-                    tierAttacker.nature = category === 'Physical' ? 'Jolly' : 'Timid';
-                } else if (tier.type === 'Registered') {
-                    // Use existing attacker config (already cloned into tierAttacker)
-                    // No changes needed
-                }
-
-                // Run Line Explorer
-                const lineRes = explorer.findDefensiveLine(
-                    tierAttacker, userPoke, move, category as 'Physical' | 'Special',
-                    attackerScenario.isTera, userScenario.isTera,
-                    fieldArgs
-                );
-
-                if (lineRes) {
-                    if (!lineRes.success) maxNeeded = 9999; // Impossible = Hardest
-                    else {
-                        const total = (lineRes.evs.hp || 0) + (lineRes.evs.def || 0) + (lineRes.evs.spd || 0);
-                        maxNeeded = Math.max(maxNeeded, total);
+                for (const attackerScenario of attackerScenarios) {
+                    // Clone attacker to apply Global Opponent Ranks
+                    let effectiveAttackerBase = JSON.parse(JSON.stringify(attacker)); // We clone base first
+                    if (globalField && globalField.opponentRanks) {
+                        if (!effectiveAttackerBase.boosts) effectiveAttackerBase.boosts = {};
+                        const r = globalField.opponentRanks;
+                        effectiveAttackerBase.boosts.atk = (effectiveAttackerBase.boosts.atk || 0) + (r.atk || 0);
+                        effectiveAttackerBase.boosts.def = (effectiveAttackerBase.boosts.def || 0) + (r.def || 0);
+                        effectiveAttackerBase.boosts.spa = (effectiveAttackerBase.boosts.spa || 0) + (r.spa || 0);
+                        effectiveAttackerBase.boosts.spd = (effectiveAttackerBase.boosts.spd || 0) + (r.spd || 0);
+                        effectiveAttackerBase.boosts.spe = (effectiveAttackerBase.boosts.spe || 0) + (r.spe || 0);
                     }
 
-                    if (lineRes.thresholdDesc !== '高耐久') {
-                        hasMeaningfulResult = true;
-                    }
+                    // Field Setup
+                    const fieldArgs: any = { ...baseFieldArgs, gameType: 'Doubles' };
 
-                    // Populate User Real Stats (HP/Def/SpD) if Success (Only for first slot needed? Or consistently?)
-                    // Logic was `if (slotIndex === 1 && lineRes.success)`. 
-                    // Now Slot 1 is "Registered". This is fine. Use it as baseline.
-                    if (slotIndex === 1 && lineRes.success) {
-                        const nature = lineRes.nature || userPoke.nature;
-                        const natureBoosts: { [key: string]: string } = {
-                            'Bold': 'def', 'Calm': 'spd', 'Impish': 'def', 'Careful': 'spd',
-                            'Modest': 'atk', 'Adamant': 'atk', 'Timid': 'spe', 'Jolly': 'spe'
+                    // Apply Global Field State (v2.4) - Defense Context
+                    if (globalField) {
+                        // 1. Global Ruins
+                        if (globalField.global.isSwordOfRuin) fieldArgs.isSwordOfRuin = true;
+                        if (globalField.global.isBeadsOfRuin) fieldArgs.isBeadsOfRuin = true;
+                        if (globalField.global.isTabletsOfRuin) fieldArgs.isTabletsOfRuin = true;
+                        if (globalField.global.isVesselOfRuin) fieldArgs.isVesselOfRuin = true;
+
+                        // 2. Side Logic (Context: Opponent is Attacker, User is Defender)
+                        // User Side -> Defender Side
+                        fieldArgs.defenderSide = {
+                            isReflect: globalField.userSide.isReflect,
+                            isLightScreen: globalField.userSide.isLightScreen,
+                            isFriendGuard: globalField.userSide.isFriendGuard
+                            // User HH doesn't help defense
                         };
-                        const boostedStat = natureBoosts[nature];
-                        const getMult = (s: string) => s === boostedStat ? 1.1 : 1.0;
-                        const realHP = calcStat('hp', lineRes.evs.hp);
-                        const displayDef = calcStat('def', lineRes.evs.def || 0, 31, getMult('def'));
-                        const displaySpD = calcStat('spd', lineRes.evs.spd || 0, 31, getMult('spd'));
-                        let defText = displayDef.toString();
-                        let spdText = displaySpD.toString();
-                        if (category === 'Physical' && nature === 'Bold' && userPoke.nature !== 'Bold') defText += '↑';
-                        if (category === 'Special' && nature === 'Calm' && userPoke.nature !== 'Calm') spdText += '↑';
 
-                        row['HP実数'] = realHP;
-                        row['防御実数'] = defText;
-                        row['特防実数'] = spdText;
+                        // Opponent Side -> Attacker Side
+                        fieldArgs.attackerSide = {
+                            isReflect: globalField.opponentSide.isReflect,
+                            isLightScreen: globalField.opponentSide.isLightScreen,
+                            isFriendGuard: globalField.opponentSide.isFriendGuard
+                            // Helping Hand from Opponent? Not tracked.
+                        };
+
+                        // 3. Weather & Terrain (Priority: Manual > Variant)
+                        if (globalField.weather && globalField.weather !== 'None') fieldArgs.weather = globalField.weather;
+                        if (globalField.terrain && globalField.terrain !== 'None') fieldArgs.terrain = globalField.terrain;
                     }
 
-                    // Calculate Opponent Real Stat
+                    // Helper to detect specific Ability Auto-Setters (for Customs or missing forcedField)
+                    const getAbilityWeather = (ability: string) => {
+                        if (!ability) return null;
+                        const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (a === 'drought' || a === 'orichalcumpulse') return 'Sun';
+                        if (a === 'drizzle') return 'Rain';
+                        if (a === 'sandstream') return 'Sand';
+                        if (a === 'snowwarning') return 'Snow';
+                        return null;
+                    };
 
-                    const baseStatVal = attackerRawStats ? attackerRawStats[statKey] : 0;
-                    // For registered, we need actual mult.
-                    let oppNatureMult = 1.0;
-                    if (tier.type === 'Registered') {
-                        // Calc from tierAttacker.nature
-                        // ... logic ...
-                        const n = tierAttacker.nature;
-                        const plus: any = { 'Adamant': 'atk', 'Modest': 'spa', 'Jolly': 'spe', 'Timid': 'spe', 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
-                        const minus: any = { 'Modest': 'atk', 'Timid': 'atk', 'Adamant': 'spa', 'Jolly': 'spa' };
-                        // Simplified check for Atk/SpA
-                        if ((category === 'Physical' && plus[n] === 'atk') || (category === 'Special' && plus[n] === 'spa')) oppNatureMult = 1.1;
-                        else if ((category === 'Physical' && minus[n] === 'atk') || (category === 'Special' && minus[n] === 'spa')) oppNatureMult = 0.9;
-                    } else {
-                        // As before
-                        oppNatureMult =
-                            (tierAttacker.nature === 'Jolly' && category === 'Physical' && statKey === 'atk') ||
-                                (tierAttacker.nature === 'Timid' && category === 'Special' && statKey === 'spa')
-                                ? 1.0 : (
-                                    (tierAttacker.nature === 'Adamant' && category === 'Physical') ||
-                                        (tierAttacker.nature === 'Modest' && category === 'Special')
-                                        ? 1.1 : (
-                                            (tierAttacker.nature === 'Modest' && category === 'Physical') ||
-                                                (tierAttacker.nature === 'Timid' && category === 'Physical') ||
-                                                (tierAttacker.nature === 'Adamant' && category === 'Special') ||
-                                                (tierAttacker.nature === 'Jolly' && category === 'Special')
-                                                ? 0.9 : 1.0
-                                        )
-                                );
+                    const getAbilityTerrain = (ability: string) => {
+                        if (!ability) return null;
+                        const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (a === 'grassysurge') return 'Grassy';
+                        if (a === 'electricsurge' || a === 'hadronengine') return 'Electric';
+                        if (a === 'psychicsurge') return 'Psychic';
+                        if (a === 'mistysurge') return 'Misty';
+                        return null;
+                    };
+
+                    // Priorities:
+                    // 1. Manual Global Setting (if not 'None')
+                    // 2. Attacker Ability (forcedField or Auto-Detect)
+
+                    // Check Attacker Ability Weather
+                    const abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
+                    const abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
+
+                    // Apply Weather if global is None/Unset and Ability provides one
+                    if ((!fieldArgs.weather || fieldArgs.weather === 'None') && abilityWeather) {
+                        fieldArgs.weather = abilityWeather;
                     }
 
+                    // Apply Terrain if global is None/Unset and Ability provides one
+                    if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && abilityTerrain) {
+                        fieldArgs.terrain = abilityTerrain;
+                    } else if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
+                        // Fallback for Rillaboom (though getAbilityTerrain should catch it if Ability is correct)
+                        fieldArgs.terrain = 'Grassy';
+                    }
 
-                    const oppRealStat = calcRealStatWithBase(baseStatVal, tierAttacker.evs[statKey], 31, oppNatureMult, false);
-                    let oppArrow = '';
-                    if (oppNatureMult > 1.0) oppArrow = '↑';
-                    else if (oppNatureMult < 1.0) oppArrow = '↓';
+                    let effectiveAttacker: any = effectiveAttackerBase; // Changed from attacker to effectiveAttackerBase
+                    // Use variant-specific Intimidate flag
+                    if (variant.forcedField?.isDefenderIntimidated) {
+                        effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase)); // Clone base (with ranks)
+                        if (!effectiveAttacker.boosts) effectiveAttacker.boosts = {};
+                        effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
+                    }
 
-                    let resStr = '';
-                    if (!lineRes.success && lineRes['thresholdDesc']) {
-                        if (lineRes['thresholdDesc'] === '解なし') resStr = '無理';
-                        else resStr = lineRes['thresholdDesc'];
-                    } else if (!lineRes.success) {
-                        resStr = '無理';
-                    } else {
-                        // Format Short KO
-                        const shortKO = (text: string) => {
-                            return text
+                    const result = calc.calculateReceivedDamage(
+                        effectiveAttacker, userPoke, move,
+                        attackerScenario.isTera, userScenario.isTera,
+                        fieldArgs
+                    );
+
+                    const range = result.range();
+                    const maxDmg = range[1];
+                    if (maxDmg === 0) continue; // Filter Immunity
+
+                    const userMaxHP = result.defender.stats.hp;
+                    const minPercentage = Math.floor((range[0] / userMaxHP) * 100);
+                    const maxPercentage = Math.floor((maxDmg / userMaxHP) * 100);
+                    const percentageDisplay = minPercentage === maxPercentage ? `${minPercentage}%` : `${minPercentage} ~ ${maxPercentage}%`;
+
+                    const dmgStr = `${range[0]} ~ ${maxDmg}`;
+                    const ko = calculateBerryAdjustedKO(result, range[0], maxDmg);
+                    const killDesc = translateText(ko.text || '');
+
+                    // Filter Weak Moves (3HKO or worse)
+                    if (settings?.excludeWeakMoves) {
+                        // Revised Filter:
+                        // Keep: Guaranteed 3HKO (確定3発) or better.
+                        // Exclude: Random 3HKO (乱数3発) and anything worse (4HKO+).
+
+                        // Check for 4 hits or more (4-9, 10+)
+                        if (/[4-9]発|\d{2}発/.test(killDesc)) continue;
+
+                        // Check for Random 3 hits (乱数3発)
+                        // "乱数3発" means it's generally 4HKO but has a chance of 3. which is worse than Guaranteed 3HKO.
+                        // "確定3発" is kept.
+                        if (killDesc.includes('乱数3発')) continue;
+                    }
+
+                    const realHP = result.defender.stats.hp || 0;
+                    const realDef = result.defender.stats.def || 0;
+                    const realSpD = result.defender.stats.spd || 0;
+
+                    // Helper to build comprehensive Field State string
+                    const getFieldState = (args: any) => {
+                        const parts = [];
+                        if (args.weather && args.weather !== 'None') parts.push(t(args.weather));
+                        if (args.terrain && args.terrain !== 'None') {
+                            if (args.terrain === 'Electric') parts.push('エレキ');
+                            else if (args.terrain === 'Psychic') parts.push('サイコ');
+                            else parts.push(t(args.terrain));
+                        }
+
+                        // Global Ruins
+                        if (args.isSwordOfRuin) parts.push('つるぎ');
+                        if (args.isBeadsOfRuin) parts.push('たま');
+                        if (args.isTabletsOfRuin) parts.push('おふだ');
+                        if (args.isVesselOfRuin) parts.push('うつわ');
+
+                        // Defender Side (Screens/Guard) - Reducing Damage
+                        const def = args.defenderSide || {};
+                        if (def.isReflect) parts.push('リフレク');
+                        if (def.isLightScreen) parts.push('光の壁');
+                        if (def.isFriendGuard) parts.push('フレガ');
+                        if (def.isAuroraVeil) parts.push('ベール');
+
+                        // Attacker Side (Helping Hand) - Boosting Damage
+                        const att = args.attackerSide || {};
+                        if (att.isHelpingHand) parts.push('手助け');
+                        // Battery? Power Spot? (If implemented in future)
+
+                        return parts.length > 0 ? parts.join(', ') : '-';
+                    };
+
+                    const fieldState = getFieldState(fieldArgs);
+
+                    // Fix: "Psychic" matches both Type (Esper) and Move (Psychic) in translator.
+                    const getTeraDisplay = (val: string) => {
+                        if (val === '-' || !val) return '-';
+                        const type = val.replace(' (テラ: ', '').replace(')', '');
+                        if (type === 'Psychic') return 'エスパー';
+                        return t(type);
+                    };
+
+                    // Detect Spread Override for Display (Defense)
+                    let moveNameDisplay = t(move);
+                    const isSpreadOverride = (globalField?.global?.isSpreadDamage === false);
+                    if (isSpreadOverride && ['allAdjacent', 'allAdjacentFoes'].includes(result.move.target || '')) {
+                        moveNameDisplay += ' (単体)';
+                    }
+
+                    const row: any = { // Explicit any for indexing
+                        'HP実数': realHP,
+                        '防御実数': realDef,
+                        '特防実数': realSpD,
+                        '自分テラスタル': getTeraDisplay(userScenario.label),
+                        '相手': (() => {
+                            const base = t(attacker.species);
+                            const extra = attacker.extraLabel || '';
+                            return base.endsWith(extra) ? base : `${base}${extra}`;
+                        })(),
+                        '相手テラスタル': getTeraDisplay(attackerScenario.label),
+                        '相手持ち物': formatVal(t(attacker.item)),
+                        '技': moveNameDisplay,
+                        '場の状態': formatVal(fieldState),
+                        // Combined "Opponent Stat" (Defender Side): H + B or D
+                        '相手ステータス': (() => {
+                            const statLabel = result.move.category === 'Physical' ? 'B' : 'D';
+                            return `H${realHP} / ${statLabel}${result.move.category === 'Physical' ? realDef : realSpD}`;
+                        })(),
+                        // Combined "User Stat" (Attacker Side): A or C
+                        '自分ステータス': (() => {
+                            const statLabel = result.move.category === 'Physical' ? 'A' : 'C';
+                            const val = (result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa) || 0;
+                            return `${statLabel}${val}`;
+                        })(),
+                        'ダメージ': `${percentageDisplay} (${range[0]} ~ ${maxDmg})`,
+                        '確定数': (() => {
+                            // Shorten KO Text
+                            return killDesc
                                 .replace(/確定(\d+)発/, '確$1')
                                 .replace(/乱数(\d+)発/, '乱$1')
                                 .replace(/（/g, '(').replace(/）/g, ')');
-                        };
+                        })(),
+                        // New Fields
+                        '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),
+                        '自分特性': getDisplayAbility(userPoke.ability || '-', variantLabel, userPoke.item, fieldArgs.weather, fieldArgs.terrain),
+                        '自分持ち物': t(userPoke.item || '-'),
+                        '_meta': {
 
-                        const evParts = [];
-                        if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
-                        // Compact Stat Logic: If Physical -> B, If Special -> D
-                        if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
-                            evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
+                            minDmg: range[0],
+                            maxDmg: range[1],
+                            species: attacker.species,
+                            userTera: userScenario.isTera,
+                            attackerTera: attackerScenario.isTera,
+                            formattedName: `${t(attacker.species)}${attacker.extraLabel || ''}`,
+                            // Context preservation for Line Calc
+                            context: {
+                                userPoke, attacker, move,
+                                userScenario, attackerScenario,
+                                fieldArgs
+                            }
                         }
-                        const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
-                        const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
-                        resStr = `${evStr} (${w})`;
-                    }
+                    };
 
-                    // Map to new Columns based on Tier
-                    if (tier.type === 'Registered') {
-                        row['実数値1'] = `${oppRealStat}${oppArrow}`;
-                        row['結果1'] = resStr;
-                    } else if (tier.type === 'Spec') {
-                        row['特化'] = `${oppRealStat}${oppArrow}`;
-                        row['結果2'] = resStr;
-                    } else if (tier.type === 'Semi') {
-                        row['無補正252'] = `${oppRealStat}${oppArrow}`;
-                        row['結果3'] = resStr;
-                    }
-
-                } else {
-                    if (tier.type === 'Registered') {
-                        row['実数値1'] = '-';
-                        row['結果1'] = '無理';
-                    } else if (tier.type === 'Spec') {
-                        row['特化'] = '-';
-                        row['結果2'] = '無理';
-                    } else if (tier.type === 'Semi') {
-                        row['無補正252'] = '-';
-                        row['結果3'] = '無理';
+                    if (result.move.category === 'Physical') {
+                        physDefResults.push(row);
+                    } else if (result.move.category === 'Special') {
+                        specDefResults.push(row);
                     }
                 }
-
-                if (lineRes.success) {
-                    const hp = calcStat('hp', lineRes.evs.hp);
-                    // Better to use actual resulting stats.
-                    const n = lineRes.nature || userPoke.nature;
-                    const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
-                    const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
-                    const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
-
-                    const durability = hp * realStat;
-                    // We want the MAX required durability (hardest tier).
-                    maxNeeded = Math.max(maxNeeded, durability);
-                } else {
-                    // If impossible, treat as very high durability needed?
-                    maxNeeded = Math.max(maxNeeded, 999999);
-                }
-
-                slotIndex++;
             }
-            row['_sortVal'] = maxNeeded;
+        }
+    }
+} // END VARIANTS LOOP
 
+// =========================================================================
+// PHASE 2: Smart Deduplication
+// =========================================================================
+const finalAttackResults = smartDeduplicate(attackResults);
+const finalPhysDefResults = smartDeduplicate(physDefResults);
+const finalSpecDefResults = smartDeduplicate(specDefResults);
+
+// =========================================================================
+// PHASE 3: Targeted Line Calculations (Optimized)
+// =========================================================================
+
+// Helper: Define Tiers for Defensive Line Analysis
+const getAttackerTiers = (species: string) => {
+    const fastMons = [
+        'Flutter Mane', 'Chi-Yu', 'Chien-Pao', 'Iron Bundle', 'Koraidon', 'Miraidon',
+        'Calyrex-Shadow', 'Zacian-Crowned', 'Zamazenta-Crowned', 'Dragapult',
+        'Roaring Moon', 'Iron Valiant', 'Spectrier', 'Regieleki', 'Deoxys-Attack',
+        'Ogerpon-Hearthflame', 'Ogerpon-Wellspring', 'Landorus-Therian' // Fast or frequently Scarf/Speed boosted
+    ];
+    const supportMons = [
+        'Amoonguss', 'Clefairy', 'Grimmsnarl', 'Whimsicott', 'Comfey', 'Maushold',
+        'Scream Tail', 'Pachirisu', 'Clefable', 'Farigiraf', 'Indeedee-F',
+        'Murkrow', 'Torkoal', 'Pelipper', 'Ninetales-Alola', 'Politoed'
+    ];
+
+    // Branching Logic
+    if (supportMons.includes(species)) {
+        return [{ label: '4振り', type: '4ev' }];
+    } else if (fastMons.includes(species)) {
+        return [
+            { label: '特化', type: 'Spec' },
+            { label: '準特化', type: 'Semi' }
+        ];
+    } else {
+        return [{ label: '特化', type: 'Spec' }];
+    }
+};
+
+// 3.1 Defensive Lines (Based on Deduped Physical/Special Defense Results)
+const processDefensiveLines = (dedupedResults: any[], targetList: any[]) => {
+    for (const r of dedupedResults) {
+        const ctx = r['_meta'].context;
+        if (!ctx) continue;
+
+        // Re-run the Line Calc finding using the exact scenario from dedup
+        const { attacker, userPoke, move, attackerScenario, userScenario, fieldArgs } = ctx;
+
+        if (move === 'Fake Out' || move === 'ねこだまし') continue;
+
+        // Basic Check & Get Category
+        const dummyRes = calc.calculateDamage(attacker, userPoke, move, attackerScenario.isTera, userScenario.isTera, fieldArgs);
+        const category = dummyRes.move.category;
+        if (category === 'Status') continue;
+
+        // Filter 0 Damage (Immunity)
+        if (dummyRes.range()[1] === 0) continue;
+
+        const tiers = [
+            { type: 'Registered', label: '登録値' },
+            { type: 'Spec', label: '特化' },
+            { type: 'Semi', label: '無補正252' }
+        ];
+
+        // Prepare Result Row
+        let maxNeeded = 0; // Track max EVs across tiers for sorting
+        const row: any = {
+            // Initial Default Values
+            '実数値1': '-', '結果1': '-',
+            '特化': '-', '結果2': '-',
+            '無補正252': '-', '結果3': '-',
+            '_sortVal': 0, // Sort Value
+
+            // Values from Source
+            'HP実数': r['HP実数'],
+            '防御実数': r['防御実数'],
+            '特防実数': r['特防実数'],
+            '自分テラスタル': r['自分テラスタル'],
+            '自分特性': r['自分特性'],
+            '自分持ち物': r['自分持ち物'],
+            '相手': r['相手'],
+            '相手テラスタル': r['相手テラスタル'],
+            '相手持ち物': r['相手持ち物'],
+            '技': r['技'],
+            '場の状態': r['場の状態'],
+            '_meta': r['_meta'] // Ensure meta is passed for icons
+        };
+
+        // Get Opponent Base Stats for Real Stat display
+        const attackerRawStats = calcLib.Generations.get(gen).species.get(calcLib.toID(attacker.species))?.baseStats;
+
+        let slotIndex = 1;
+        let hasMeaningfulResult = false;
+
+        for (const tier of tiers) {
+            // Configure Attacker for Tier
+            const tierAttacker = JSON.parse(JSON.stringify(attacker));
+            // const tierLabel = tier.label; // Label no longer used in column
+
+            // Set Nature and EVs
+            const statKey = category === 'Physical' ? 'atk' : 'spa';
+
+            if (tier.type === 'Spec') {
+                tierAttacker.evs[statKey] = 252;
+                tierAttacker.nature = category === 'Physical' ? 'Adamant' : 'Modest';
+            } else if (tier.type === 'Semi') {
+                tierAttacker.evs[statKey] = 252;
+                tierAttacker.nature = category === 'Physical' ? 'Jolly' : 'Timid';
+            } else if (tier.type === 'Registered') {
+                // Use existing attacker config (already cloned into tierAttacker)
+                // No changes needed
+            }
+
+            // Run Line Explorer
+            const lineRes = explorer.findDefensiveLine(
+                tierAttacker, userPoke, move, category as 'Physical' | 'Special',
+                attackerScenario.isTera, userScenario.isTera,
+                fieldArgs
+            );
+
+            if (lineRes) {
+                if (!lineRes.success) maxNeeded = 9999; // Impossible = Hardest
+                else {
+                    const total = (lineRes.evs.hp || 0) + (lineRes.evs.def || 0) + (lineRes.evs.spd || 0);
+                    maxNeeded = Math.max(maxNeeded, total);
+                }
+
+                if (lineRes.thresholdDesc !== '高耐久') {
+                    hasMeaningfulResult = true;
+                }
+
+                // Populate User Real Stats (HP/Def/SpD) if Success (Only for first slot needed? Or consistently?)
+                // Logic was `if (slotIndex === 1 && lineRes.success)`. 
+                // Now Slot 1 is "Registered". This is fine. Use it as baseline.
+                if (slotIndex === 1 && lineRes.success) {
+                    const nature = lineRes.nature || userPoke.nature;
+                    const natureBoosts: { [key: string]: string } = {
+                        'Bold': 'def', 'Calm': 'spd', 'Impish': 'def', 'Careful': 'spd',
+                        'Modest': 'atk', 'Adamant': 'atk', 'Timid': 'spe', 'Jolly': 'spe'
+                    };
+                    const boostedStat = natureBoosts[nature];
+                    const getMult = (s: string) => s === boostedStat ? 1.1 : 1.0;
+                    const realHP = calcStat('hp', lineRes.evs.hp);
+                    const displayDef = calcStat('def', lineRes.evs.def || 0, 31, getMult('def'));
+                    const displaySpD = calcStat('spd', lineRes.evs.spd || 0, 31, getMult('spd'));
+                    let defText = displayDef.toString();
+                    let spdText = displaySpD.toString();
+                    if (category === 'Physical' && nature === 'Bold' && userPoke.nature !== 'Bold') defText += '↑';
+                    if (category === 'Special' && nature === 'Calm' && userPoke.nature !== 'Calm') spdText += '↑';
+
+                    row['HP実数'] = realHP;
+                    row['防御実数'] = defText;
+                    row['特防実数'] = spdText;
+                }
+
+                // Calculate Opponent Real Stat
+
+                const baseStatVal = attackerRawStats ? attackerRawStats[statKey] : 0;
+                // For registered, we need actual mult.
+                let oppNatureMult = 1.0;
+                if (tier.type === 'Registered') {
+                    // Calc from tierAttacker.nature
+                    // ... logic ...
+                    const n = tierAttacker.nature;
+                    const plus: any = { 'Adamant': 'atk', 'Modest': 'spa', 'Jolly': 'spe', 'Timid': 'spe', 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
+                    const minus: any = { 'Modest': 'atk', 'Timid': 'atk', 'Adamant': 'spa', 'Jolly': 'spa' };
+                    // Simplified check for Atk/SpA
+                    if ((category === 'Physical' && plus[n] === 'atk') || (category === 'Special' && plus[n] === 'spa')) oppNatureMult = 1.1;
+                    else if ((category === 'Physical' && minus[n] === 'atk') || (category === 'Special' && minus[n] === 'spa')) oppNatureMult = 0.9;
+                } else {
+                    // As before
+                    oppNatureMult =
+                        (tierAttacker.nature === 'Jolly' && category === 'Physical' && statKey === 'atk') ||
+                            (tierAttacker.nature === 'Timid' && category === 'Special' && statKey === 'spa')
+                            ? 1.0 : (
+                                (tierAttacker.nature === 'Adamant' && category === 'Physical') ||
+                                    (tierAttacker.nature === 'Modest' && category === 'Special')
+                                    ? 1.1 : (
+                                        (tierAttacker.nature === 'Modest' && category === 'Physical') ||
+                                            (tierAttacker.nature === 'Timid' && category === 'Physical') ||
+                                            (tierAttacker.nature === 'Adamant' && category === 'Special') ||
+                                            (tierAttacker.nature === 'Jolly' && category === 'Special')
+                                            ? 0.9 : 1.0
+                                    )
+                            );
+                }
+
+
+                const oppRealStat = calcRealStatWithBase(baseStatVal, tierAttacker.evs[statKey], 31, oppNatureMult, false);
+                let oppArrow = '';
+                if (oppNatureMult > 1.0) oppArrow = '↑';
+                else if (oppNatureMult < 1.0) oppArrow = '↓';
+
+                let resStr = '';
+                if (!lineRes.success && lineRes['thresholdDesc']) {
+                    if (lineRes['thresholdDesc'] === '解なし') resStr = '無理';
+                    else resStr = lineRes['thresholdDesc'];
+                } else if (!lineRes.success) {
+                    resStr = '無理';
+                } else {
+                    // Format Short KO
+                    const shortKO = (text: string) => {
+                        return text
+                            .replace(/確定(\d+)発/, '確$1')
+                            .replace(/乱数(\d+)発/, '乱$1')
+                            .replace(/（/g, '(').replace(/）/g, ')');
+                    };
+
+                    const evParts = [];
+                    if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
+                    // Compact Stat Logic: If Physical -> B, If Special -> D
+                    if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
+                        evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
+                    }
+                    const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
+                    const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
+                    resStr = `${evStr} (${w})`;
+                }
+
+                // Map to new Columns based on Tier
+                if (tier.type === 'Registered') {
+                    row['実数値1'] = `${oppRealStat}${oppArrow}`;
+                    row['結果1'] = resStr;
+                } else if (tier.type === 'Spec') {
+                    row['特化'] = `${oppRealStat}${oppArrow}`;
+                    row['結果2'] = resStr;
+                } else if (tier.type === 'Semi') {
+                    row['無補正252'] = `${oppRealStat}${oppArrow}`;
+                    row['結果3'] = resStr;
+                }
+
+            } else {
+                if (tier.type === 'Registered') {
+                    row['実数値1'] = '-';
+                    row['結果1'] = '無理';
+                } else if (tier.type === 'Spec') {
+                    row['特化'] = '-';
+                    row['結果2'] = '無理';
+                } else if (tier.type === 'Semi') {
+                    row['無補正252'] = '-';
+                    row['結果3'] = '無理';
+                }
+            }
+
+            if (lineRes.success) {
+                const hp = calcStat('hp', lineRes.evs.hp);
+                // Better to use actual resulting stats.
+                const n = lineRes.nature || userPoke.nature;
+                const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
+                const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
+                const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
+
+                const durability = hp * realStat;
+                // We want the MAX required durability (hardest tier).
+                maxNeeded = Math.max(maxNeeded, durability);
+            } else {
+                // If impossible, treat as very high durability needed?
+                maxNeeded = Math.max(maxNeeded, 999999);
+            }
+
+            slotIndex++;
+        }
+        row['_sortVal'] = maxNeeded;
+
+        // Add Combined Compact Columns for Defensive Lines
+        // Opponent (Attacker) Status: A or C
+        // We use the dummyRes or just the known category.
+        // In Defensive Line context, 'attacker' (from ctx) is the Opponent.
+        // Stats are fixed per variant.
+        row['相手ステータス'] = (() => {
+            const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
+            return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
+        })();
+
+        // User (Defender) Status: H and B/D 
+        // Since we have multiple tiers (Registered, Spec, Semi), this is ambiguous.
+        // But usually this column refers to the BASELINE or REGISTERED stats if applicable.
+        // Alternatively, separate columns exist for results.
+        // If the user meant the "Result" text itself (resStr), we updated it above (`Hxxx Bxxx`).
+        // If the user meant the "User Status" column to the left of results...
+        // Let's add it based on the first result (usually Registered or Spec).
+        if (dedupedResults[0]['HP実数']) {
+            row['自分ステータス'] = (() => {
+                const h = dedupedResults[0]['HP実数'];
+                const b = dedupedResults[0]['防御実数'];
+                const d = dedupedResults[0]['特防実数'];
+                const sLabel = category === 'Physical' ? 'B' : 'D';
+                const sVal = category === 'Physical' ? b : d;
+                return `H${h} / ${sLabel}${sVal}`;
+            })();
+        }
+
+        if (hasMeaningfulResult) {
             // Add Combined Compact Columns for Defensive Lines
-            // Opponent (Attacker) Status: A or C
-            // We use the dummyRes or just the known category.
-            // In Defensive Line context, 'attacker' (from ctx) is the Opponent.
-            // Stats are fixed per variant.
             row['相手ステータス'] = (() => {
                 const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
                 return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
             })();
 
-            // User (Defender) Status: H and B/D 
-            // Since we have multiple tiers (Registered, Spec, Semi), this is ambiguous.
-            // But usually this column refers to the BASELINE or REGISTERED stats if applicable.
-            // Alternatively, separate columns exist for results.
-            // If the user meant the "Result" text itself (resStr), we updated it above (`Hxxx Bxxx`).
-            // If the user meant the "User Status" column to the left of results...
-            // Let's add it based on the first result (usually Registered or Spec).
             if (dedupedResults[0]['HP実数']) {
                 row['自分ステータス'] = (() => {
                     const h = dedupedResults[0]['HP実数'];
@@ -1524,249 +1538,231 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     return `H${h} / ${sLabel}${sVal}`;
                 })();
             }
-
-            if (hasMeaningfulResult) {
-                // Add Combined Compact Columns for Defensive Lines
-                row['相手ステータス'] = (() => {
-                    const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
-                    return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
-                })();
-
-                if (dedupedResults[0]['HP実数']) {
-                    row['自分ステータス'] = (() => {
-                        const h = dedupedResults[0]['HP実数'];
-                        const b = dedupedResults[0]['防御実数'];
-                        const d = dedupedResults[0]['特防実数'];
-                        const sLabel = category === 'Physical' ? 'B' : 'D';
-                        const sVal = category === 'Physical' ? b : d;
-                        return `H${h} / ${sLabel}${sVal}`;
-                    })();
-                }
-                targetList.push(row);
-            }
+            targetList.push(row);
         }
-    };
+    }
+};
 
-    processDefensiveLines(finalPhysDefResults, physDefLineResults);
-    processDefensiveLines(finalSpecDefResults, specDefLineResults);
+processDefensiveLines(finalPhysDefResults, physDefLineResults);
+processDefensiveLines(finalSpecDefResults, specDefLineResults);
 
-    // 3.2 Offensive Lines
-    for (const r of finalAttackResults) {
-        const ctx = r['_meta'].context;
-        if (!ctx) continue;
-        const { userPoke, defender, move, userScenario, defenderScenario, fieldArgs } = ctx;
+// 3.2 Offensive Lines
+for (const r of finalAttackResults) {
+    const ctx = r['_meta'].context;
+    if (!ctx) continue;
+    const { userPoke, defender, move, userScenario, defenderScenario, fieldArgs } = ctx;
 
-        const isMainMove = move === mainMove;
+    const isMainMove = move === mainMove;
 
-        // Revised Tiers for Offensive Line
-        const tiers = [
-            { label: '登録値', evs: defender.evs, nature: defender.nature }, // New
-            { label: 'H4', evs: { hp: 4, def: 0, spd: 0 }, nature: 'Hardy' },
-            { label: 'H252', evs: { hp: 252, def: 0, spd: 0 }, nature: 'Hardy' },
-            { label: 'HB/HD特化', evs: { hp: 252 }, nature: 'Benefit' }
-        ];
-        const tierResults: { [key: string]: string } = {};
+    // Revised Tiers for Offensive Line
+    const tiers = [
+        { label: '登録値', evs: defender.evs, nature: defender.nature }, // New
+        { label: 'H4', evs: { hp: 4, def: 0, spd: 0 }, nature: 'Hardy' },
+        { label: 'H252', evs: { hp: 252, def: 0, spd: 0 }, nature: 'Hardy' },
+        { label: 'HB/HD特化', evs: { hp: 252 }, nature: 'Benefit' }
+    ];
+    const tierResults: { [key: string]: string } = {};
 
-        const dummyRes = calc.calculateDamage(userPoke, defender, move, userScenario.isTera, defenderScenario.isTera, fieldArgs);
-        const category = dummyRes.move.category;
-        if (category === 'Status') continue;
+    const dummyRes = calc.calculateDamage(userPoke, defender, move, userScenario.isTera, defenderScenario.isTera, fieldArgs);
+    const category = dummyRes.move.category;
+    if (category === 'Status') continue;
 
-        // Filter 0 Damage (Immunity)
-        if (dummyRes.range()[1] === 0) continue;
+    // Filter 0 Damage (Immunity)
+    if (dummyRes.range()[1] === 0) continue;
 
-        let registeredTierStatStr = '-'; // Store required stat for Registered Case
+    let registeredTierStatStr = '-'; // Store required stat for Registered Case
 
-        for (const tier of tiers) {
-            const target = JSON.parse(JSON.stringify(defender));
-            // Apply Tier Config
-            if (tier.label === '登録値') {
-                // Use defender as is
-            } else {
-                target.evs = tier.evs;
-                if (tier.label === 'HB/HD特化') {
-                    if (category === 'Physical') {
-                        target.evs.def = 252;
-                        target.nature = 'Bold';
-                    } else {
-                        target.evs.spd = 252;
-                        target.nature = 'Calm';
-                    }
+    for (const tier of tiers) {
+        const target = JSON.parse(JSON.stringify(defender));
+        // Apply Tier Config
+        if (tier.label === '登録値') {
+            // Use defender as is
+        } else {
+            target.evs = tier.evs;
+            if (tier.label === 'HB/HD特化') {
+                if (category === 'Physical') {
+                    target.evs.def = 252;
+                    target.nature = 'Bold';
                 } else {
-                    target.nature = tier.nature;
+                    target.evs.spd = 252;
+                    target.nature = 'Calm';
                 }
-            }
-
-            // Try to find threshold in order of difficulty
-            const thresholds = ['OHKO', '2HKO', '3HKO', '4HKO'];
-            let foundLine = false;
-
-            const statLabel = category === 'Physical' ? 'A' : 'C';
-            const sKey = category === 'Physical' ? 'atk' : 'spa';
-
-            for (const th of thresholds) {
-                const res = explorer.findOffensiveLine(userPoke, target, move, th as any, userScenario.isTera, defenderScenario.isTera, fieldArgs);
-                if (res.success) {
-                    // Extract number from OHKO/2HKO/3HKO/4HKO
-                    const koNum = th === 'OHKO' ? 1 : th[0];
-                    tierResults[tier.label] = `確${koNum}: ${statLabel}${res.evs[sKey]}`;
-                    foundLine = true;
-
-                    if (tier.label === '登録値' && res.stat) {
-                        registeredTierStatStr = res.stat.toString();
-                    }
-                    break;
-                }
-            }
-
-            if (!foundLine) {
-                tierResults[tier.label] = '-';
+            } else {
+                target.nature = tier.nature;
             }
         }
 
-        const getBestResult = (targetConfig: any) => {
-            const bestUser = JSON.parse(JSON.stringify(userPoke));
-            const bestNature = category === 'Physical' ? 'Adamant' : 'Modest';
-            const natureSymbol = category === 'Physical' ? 'A↑' : 'C↑';
-            bestUser.nature = bestNature;
-            const statKey = category === 'Physical' ? 'atk' : 'spa';
-            bestUser.evs[statKey] = 252;
-            const res = calc.calculateDamage(bestUser, targetConfig, move, userScenario.isTera, defenderScenario.isTera, fieldArgs);
-            const range = res.range();
-            const minDmg = range[0];
-            const maxDmg = range[1];
-            const targetHP = res.defender.stats.hp;
+        // Try to find threshold in order of difficulty
+        const thresholds = ['OHKO', '2HKO', '3HKO', '4HKO'];
+        let foundLine = false;
 
-            // Guaranteed Check
-            if (minDmg >= targetHP) return { ko: 1, desc: `確1: ${natureSymbol} 252`, display: true };
-            if (minDmg * 2 >= targetHP) return { ko: 2, desc: `確2: ${natureSymbol} 252`, display: true };
-            if (minDmg * 3 >= targetHP) return { ko: 3, desc: `確3: ${natureSymbol} 252`, display: true };
-            if (minDmg * 4 >= targetHP) return { ko: 4, desc: `確4: ${natureSymbol} 252`, display: true };
+        const statLabel = category === 'Physical' ? 'A' : 'C';
+        const sKey = category === 'Physical' ? 'atk' : 'spa';
 
-            // Start Probabilistic Check (Random)
-            // If Max roll can kill in X hits
-            if (maxDmg >= targetHP) return { ko: 1, desc: `乱数1発: ${natureSymbol} 252`, display: true };
-            if (maxDmg * 2 >= targetHP) return { ko: 2, desc: `乱数2発: ${natureSymbol} 252`, display: true };
-            if (maxDmg * 3 >= targetHP) return { ko: 3, desc: `乱数3発: ${natureSymbol} 252`, display: true };
-            if (maxDmg * 4 >= targetHP) return { ko: 4, desc: `乱数4発: ${natureSymbol} 252`, display: true };
+        for (const th of thresholds) {
+            const res = explorer.findOffensiveLine(userPoke, target, move, th as any, userScenario.isTera, defenderScenario.isTera, fieldArgs);
+            if (res.success) {
+                // Extract number from OHKO/2HKO/3HKO/4HKO
+                const koNum = th === 'OHKO' ? 1 : th[0];
+                tierResults[tier.label] = `確${koNum}: ${statLabel}${res.evs[sKey]}`;
+                foundLine = true;
 
-            return { ko: 5, desc: '無理', display: false };
-        };
-
-        let bestKo = 99;
-        for (const tier of tiers) {
-            if (tierResults[tier.label] !== '-') {
-                if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, 2);
-                continue;
-            }
-            const target = JSON.parse(JSON.stringify(defender));
-            // Apply Tier Config again for BestResult calc
-            if (tier.label === '登録値') {
-                // Keep
-            } else {
-                target.evs = tier.evs;
-                if (tier.label === 'HB/HD特化') {
-                    if (category === 'Physical') { target.evs.def = 252; target.nature = 'Bold'; }
-                    else { target.evs.spd = 252; target.nature = 'Calm'; }
-                } else target.nature = tier.nature;
-            }
-
-            const best = getBestResult(target);
-            if (best.display) {
-                if (isMainMove) {
-                    tierResults[tier.label] = best.desc;
-                    if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, best.ko);
-
-                    // Fallback stat for Registered if main calc failed but BestResult works
-                    if (tier.label === '登録値' && registeredTierStatStr === '-') {
-                        // Extract stat from best.desc? "確1: ... (183)"
-                        const m = best.desc.match(/\((\d+)\)$/);
-                        if (m) registeredTierStatStr = m[1];
-                    }
+                if (tier.label === '登録値' && res.stat) {
+                    registeredTierStatStr = res.stat.toString();
                 }
-            } else {
-                if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, 4);
+                break;
             }
         }
 
-        const anyCellFilled = Object.values(tierResults).some(val => val !== '-');
-        if (anyCellFilled) {
-            offensiveLines.push({
-                '状況': r['状況'],
-                '必要実数値': registeredTierStatStr, // Renamed from 自分実数値 to match Header
-                '自分特性': r['自分特性'],
-                '自分テラスタル': r['自分テラスタル'],
-                '自分持ち物': r['自分持ち物'],
-                '技': t(move),
-                'MT': r['自分持ち物'], // Temp workaround if needed, but r has it.
-                '相手': (() => {
-                    const base = r['相手'] || ''; // r['相手'] might already be formatted if copied? No, logic.ts builds it.
-                    // Wait, r['相手'] in processAttackLines comes from WHERE?
-                    // Ah, it comes from analyzeAttack which returns '相手' formatted.
-                    // Let's check line 1055 analyzeAttack.
-                    return r['相手'];
-                })(),
-                '相手特性': r['相手特性'],
-                '相手テラスタル': r['相手テラスタル'],
-                '相手持ち物': r['相手持ち物'],
-                '相手HP': r['相手HP'],
-                '相手耐久': category === 'Physical' ? `B${dummyRes.defender.stats.def}` : `D${dummyRes.defender.stats.spd}`,
-                '登録値': tierResults['登録値'],
-                'H4': tierResults['H4'],
-                'H252': tierResults['H252'],
-                'HB/HD特化': tierResults['HB/HD特化'],
-                '場の状態': r['場の状態'],
-                '_meta': r['_meta'], // Add meta for icons
-
-                '_sortVal': (() => {
-                    // Sort by Necessary Actual Value (registeredTierStatStr)
-                    // If '-', it implies either "Already KO" (Easy) or "Impossible" (Hard).
-                    // Usually '-' in this context means "KO with 0 investment" or "Unreachable"?
-                    // Check previous logic:
-                    // registeredTierStatStr comes from:
-                    // 1. findOffensiveLine result.stat
-                    // 2. getBestResult -> if display matches.
-
-                    // If it's "-", it usually means findOffensiveLine failed or wasn't applicable.
-                    // If we can't KO even with max investment, it's effectively Infinity (Hard).
-                    // If we KO with base stats? findOffensiveLine should return something.
-
-                    const num = parseInt(registeredTierStatStr, 10);
-                    if (isNaN(num)) return 0; // Default to 0?
-                    return num;
-                })()
-            });
+        if (!foundLine) {
+            tierResults[tier.label] = '-';
         }
     }
 
-    // Deduplicate Results for Line (Keep existing simple Deduplication for LINES because we generated them from deduped sources,
-    // but multiple Attack Scenarios (e.g. user variants) might still yield similar Lines?
-    // Actually, simple dedup is still good safe-guard.)
-    // New Headers for Split Columns
-    const defLineHeadersPhys = ['HP実数', '防御実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
-    const defLineHeadersSpec = ['HP実数', '特防実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
+    const getBestResult = (targetConfig: any) => {
+        const bestUser = JSON.parse(JSON.stringify(userPoke));
+        const bestNature = category === 'Physical' ? 'Adamant' : 'Modest';
+        const natureSymbol = category === 'Physical' ? 'A↑' : 'C↑';
+        bestUser.nature = bestNature;
+        const statKey = category === 'Physical' ? 'atk' : 'spa';
+        bestUser.evs[statKey] = 252;
+        const res = calc.calculateDamage(bestUser, targetConfig, move, userScenario.isTera, defenderScenario.isTera, fieldArgs);
+        const range = res.range();
+        const minDmg = range[0];
+        const maxDmg = range[1];
+        const targetHP = res.defender.stats.hp;
 
-    let physLineUnique = deduplicateResults(physDefLineResults, defLineHeadersPhys);
-    let specLineUnique = deduplicateResults(specDefLineResults, defLineHeadersSpec);
+        // Guaranteed Check
+        if (minDmg >= targetHP) return { ko: 1, desc: `確1: ${natureSymbol} 252`, display: true };
+        if (minDmg * 2 >= targetHP) return { ko: 2, desc: `確2: ${natureSymbol} 252`, display: true };
+        if (minDmg * 3 >= targetHP) return { ko: 3, desc: `確3: ${natureSymbol} 252`, display: true };
+        if (minDmg * 4 >= targetHP) return { ko: 4, desc: `確4: ${natureSymbol} 252`, display: true };
 
-    // We can also reuse smartDeduplicate for Offensive Lines if we wanted, but sticking to existing helper is fine.
+        // Start Probabilistic Check (Random)
+        // If Max roll can kill in X hits
+        if (maxDmg >= targetHP) return { ko: 1, desc: `乱数1発: ${natureSymbol} 252`, display: true };
+        if (maxDmg * 2 >= targetHP) return { ko: 2, desc: `乱数2発: ${natureSymbol} 252`, display: true };
+        if (maxDmg * 3 >= targetHP) return { ko: 3, desc: `乱数3発: ${natureSymbol} 252`, display: true };
+        if (maxDmg * 4 >= targetHP) return { ko: 4, desc: `乱数4発: ${natureSymbol} 252`, display: true };
 
-    const physLineFiltered = filterRedundantSameResult(physLineUnique);
-    const specLineFiltered = filterRedundantSameResult(specLineUnique);
-
-    if (finalAttackResults.length > 0) {
-        console.log('[DEBUG] First Attack Detail:', finalAttackResults[0]['詳細']);
-    }
-
-    return {
-        attack: finalAttackResults,
-        defense: {
-            physical: finalPhysDefResults,
-            special: finalSpecDefResults
-        },
-        defenseLine: {
-            physical: physLineFiltered,
-            special: specLineFiltered
-        },
-        offensiveLine: offensiveLines
+        return { ko: 5, desc: '無理', display: false };
     };
+
+    let bestKo = 99;
+    for (const tier of tiers) {
+        if (tierResults[tier.label] !== '-') {
+            if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, 2);
+            continue;
+        }
+        const target = JSON.parse(JSON.stringify(defender));
+        // Apply Tier Config again for BestResult calc
+        if (tier.label === '登録値') {
+            // Keep
+        } else {
+            target.evs = tier.evs;
+            if (tier.label === 'HB/HD特化') {
+                if (category === 'Physical') { target.evs.def = 252; target.nature = 'Bold'; }
+                else { target.evs.spd = 252; target.nature = 'Calm'; }
+            } else target.nature = tier.nature;
+        }
+
+        const best = getBestResult(target);
+        if (best.display) {
+            if (isMainMove) {
+                tierResults[tier.label] = best.desc;
+                if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, best.ko);
+
+                // Fallback stat for Registered if main calc failed but BestResult works
+                if (tier.label === '登録値' && registeredTierStatStr === '-') {
+                    // Extract stat from best.desc? "確1: ... (183)"
+                    const m = best.desc.match(/\((\d+)\)$/);
+                    if (m) registeredTierStatStr = m[1];
+                }
+            }
+        } else {
+            if (tier.label === 'HB/HD特化') bestKo = Math.min(bestKo, 4);
+        }
+    }
+
+    const anyCellFilled = Object.values(tierResults).some(val => val !== '-');
+    if (anyCellFilled) {
+        offensiveLines.push({
+            '状況': r['状況'],
+            '必要実数値': registeredTierStatStr, // Renamed from 自分実数値 to match Header
+            '自分特性': r['自分特性'],
+            '自分テラスタル': r['自分テラスタル'],
+            '自分持ち物': r['自分持ち物'],
+            '技': t(move),
+            'MT': r['自分持ち物'], // Temp workaround if needed, but r has it.
+            '相手': (() => {
+                const base = r['相手'] || ''; // r['相手'] might already be formatted if copied? No, logic.ts builds it.
+                // Wait, r['相手'] in processAttackLines comes from WHERE?
+                // Ah, it comes from analyzeAttack which returns '相手' formatted.
+                // Let's check line 1055 analyzeAttack.
+                return r['相手'];
+            })(),
+            '相手特性': r['相手特性'],
+            '相手テラスタル': r['相手テラスタル'],
+            '相手持ち物': r['相手持ち物'],
+            '相手HP': r['相手HP'],
+            '相手耐久': category === 'Physical' ? `B${dummyRes.defender.stats.def}` : `D${dummyRes.defender.stats.spd}`,
+            '登録値': tierResults['登録値'],
+            'H4': tierResults['H4'],
+            'H252': tierResults['H252'],
+            'HB/HD特化': tierResults['HB/HD特化'],
+            '場の状態': r['場の状態'],
+            '_meta': r['_meta'], // Add meta for icons
+
+            '_sortVal': (() => {
+                // Sort by Necessary Actual Value (registeredTierStatStr)
+                // If '-', it implies either "Already KO" (Easy) or "Impossible" (Hard).
+                // Usually '-' in this context means "KO with 0 investment" or "Unreachable"?
+                // Check previous logic:
+                // registeredTierStatStr comes from:
+                // 1. findOffensiveLine result.stat
+                // 2. getBestResult -> if display matches.
+
+                // If it's "-", it usually means findOffensiveLine failed or wasn't applicable.
+                // If we can't KO even with max investment, it's effectively Infinity (Hard).
+                // If we KO with base stats? findOffensiveLine should return something.
+
+                const num = parseInt(registeredTierStatStr, 10);
+                if (isNaN(num)) return 0; // Default to 0?
+                return num;
+            })()
+        });
+    }
+}
+
+// Deduplicate Results for Line (Keep existing simple Deduplication for LINES because we generated them from deduped sources,
+// but multiple Attack Scenarios (e.g. user variants) might still yield similar Lines?
+// Actually, simple dedup is still good safe-guard.)
+// New Headers for Split Columns
+const defLineHeadersPhys = ['HP実数', '防御実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
+const defLineHeadersSpec = ['HP実数', '特防実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
+
+let physLineUnique = deduplicateResults(physDefLineResults, defLineHeadersPhys);
+let specLineUnique = deduplicateResults(specDefLineResults, defLineHeadersSpec);
+
+// We can also reuse smartDeduplicate for Offensive Lines if we wanted, but sticking to existing helper is fine.
+
+const physLineFiltered = filterRedundantSameResult(physLineUnique);
+const specLineFiltered = filterRedundantSameResult(specLineUnique);
+
+if (finalAttackResults.length > 0) {
+    console.log('[DEBUG] First Attack Detail:', finalAttackResults[0]['詳細']);
+}
+
+return {
+    attack: finalAttackResults,
+    defense: {
+        physical: finalPhysDefResults,
+        special: finalSpecDefResults
+    },
+    defenseLine: {
+        physical: physLineFiltered,
+        special: specLineFiltered
+    },
+    offensiveLine: offensiveLines
+};
 }
