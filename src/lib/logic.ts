@@ -1117,9 +1117,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (killDesc.includes('乱数3発')) continue;
                         }
 
-                        const realHP = result.defender.stats.hp;
-                        const realDef = result.defender.stats.def;
-                        const realSpD = result.defender.stats.spd;
+                        const realHP = result.defender.stats.hp || 0;
+                        const realDef = result.defender.stats.def || 0;
+                        const realSpD = result.defender.stats.spd || 0;
 
                         // Helper to build comprehensive Field State string
                         const getFieldState = (args: any) => {
@@ -1191,7 +1191,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             // Combined "User Stat" (Attacker Side): A or C
                             '自分ステータス': (() => {
                                 const statLabel = result.move.category === 'Physical' ? 'A' : 'C';
-                                const val = result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa;
+                                const val = (result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa) || 0;
                                 return `${statLabel}${val}`;
                             })(),
                             'ダメージ': `${percentageDisplay} (${range[0]} ~ ${maxDmg})`,
