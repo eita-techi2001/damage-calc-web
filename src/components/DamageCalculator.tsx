@@ -1532,6 +1532,21 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     </span>
                                                 </label>
                                             </div>
+
+                                            <div className="space-y-1">
+                                                <h4 className="text-sm font-bold text-gray-400">連続技ヒット数</h4>
+                                                <select
+                                                    value={hitCount}
+                                                    onChange={(e) => setHitCount(Number(e.target.value))}
+                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-yellow-500 focus:outline-none"
+                                                >
+                                                    <option value={2}>2回</option>
+                                                    <option value={3}>3回</option>
+                                                    <option value={4}>4回</option>
+                                                    <option value={5}>5回</option>
+                                                </select>
+                                                <p className="text-xs text-gray-500">※スキルリンクは常に5回</p>
+                                            </div>
                                         </div>
 
                                         {/* Ally Side */}
