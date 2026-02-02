@@ -1479,40 +1479,18 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                 if (lineRes.success) {
                     const hp = calcStat('hp', lineRes.evs.hp);
-                    const defOrSpD = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, 1.0); // Simple 1.0 nature for approximate durability sort? Or use real nature?
                     // Better to use actual resulting stats.
-                    // We calculated realHP/displayDef above only for Registered.
-                    // Let's re-calc for sorting purposes.
                     const n = lineRes.nature || userPoke.nature;
                     const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
                     const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
                     const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
-                    // Format Short KO
-                    const shortKO = (text: string) => {
-                        return text
-                            .replace(/確定(\d+)発/, '確$1')
-                            .replace(/乱数(\d+)発/, '乱$1')
-                            .replace(/（/g, '(').replace(/）/g, ')');
-                    };
 
-                    const evParts = [];
-                    if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
-                    // Compact Stat Logic: If Physical -> B, If Special -> D
-                    if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
-                        evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
-                    }
-                    const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
-                    const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
-                    resStr = `${evStr} (${w})`;
-
+                    const durability = hp * realStat;
+                    // We want the MAX required durability (hardest tier).
+                    maxNeeded = Math.max(maxNeeded, durability);
                 } else {
                     // If impossible, treat as very high durability needed?
-                    // Or just ignore?
-                    // If impossible (無理), it's harder than any survivable one.
-                    // But we might want 'Impossible' grouped together?
-                    // Let's set a high value.
                     maxNeeded = Math.max(maxNeeded, 999999);
-                    resStr = '無理';
                 }
 
                 slotIndex++;
