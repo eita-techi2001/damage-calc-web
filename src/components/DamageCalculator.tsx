@@ -52,6 +52,14 @@ const getIconUrl = (speciesName: string) => {
     if (slug === 'calyrex-shadow') slug = 'calyrex-shadow-rider';
     if (slug === 'calyrex-ice') slug = 'calyrex-ice-rider';
 
+    // Regional Forms
+    if (slug.endsWith('-alola')) slug = slug.replace(/-alola$/, '-alolan');
+    if (slug.endsWith('-galar')) slug = slug.replace(/-galar$/, '-galarian');
+    if (slug.endsWith('-hisui')) slug = slug.replace(/-hisui$/, '-hisuian');
+    if (slug.endsWith('-paldea')) slug = slug.replace(/-paldea$/, '-paldean');
+    if (slug === 'indeedee-f') slug = 'indeedee-female';
+    if (slug === 'basculegion-f') slug = 'basculegion-female'; // Just in case
+
     return `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
 };
 

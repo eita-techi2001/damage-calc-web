@@ -1139,7 +1139,11 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '防御実数': realDef,
                             '特防実数': realSpD,
                             '自分テラスタル': getTeraDisplay(userScenario.label),
-                            '相手': `${t(attacker.species)}${attacker.extraLabel || ''}`,
+                            '相手': (() => {
+                                const base = t(attacker.species);
+                                const extra = attacker.extraLabel || '';
+                                return base.endsWith(extra) ? base : `${base}${extra}`;
+                            })(),
                             '相手テラスタル': getTeraDisplay(attackerScenario.label),
                             '相手持ち物': formatVal(t(attacker.item)),
                             '技': moveNameDisplay,
@@ -1571,7 +1575,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 '自分持ち物': r['自分持ち物'],
                 '技': t(move),
                 'MT': r['自分持ち物'], // Temp workaround if needed, but r has it.
-                '相手': r['相手'],
+                '相手': (() => {
+                    const base = r['相手'] || ''; // r['相手'] might already be formatted if copied? No, logic.ts builds it.
+                    // Wait, r['相手'] in processAttackLines comes from WHERE?
+                    // Ah, it comes from analyzeAttack which returns '相手' formatted.
+                    // Let's check line 1055 analyzeAttack.
+                    return r['相手'];
+                })(),
                 '相手特性': r['相手特性'],
                 '相手テラスタル': r['相手テラスタル'],
                 '相手持ち物': r['相手持ち物'],
