@@ -71,6 +71,11 @@ const getItemIconUrl = (itemName: string) => {
 
 const getTypeIconUrl = (typeName: string) => {
     if (!typeName || typeName === '-' || typeName === 'Terastal') return '';
+
+    // Fix: "Ghost" (Type) and "Haunter" (Pokemon) both translate to "ゴースト".
+    // toEnglish("ゴースト") returns "Haunter", which is not a valid type.
+    if (typeName === 'Haunter') typeName = 'Ghost';
+
     // Use Showdown for all types including Stellar (Stellar.png exists on Showdown)
     return `https://play.pokemonshowdown.com/sprites/types/${typeName}.png`;
 };
