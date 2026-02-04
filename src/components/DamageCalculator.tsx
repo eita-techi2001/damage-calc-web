@@ -162,10 +162,10 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
     // We assume sticky columns are ALWAYS the first N columns
     // And we map their widths based on header name (fallback logic)
     const getColWidth = (header: string) => {
-        if (header === '相手') return 160;
-        if (header === '技') return 140;
-        if (header === 'ダメージ') return 100;
-        if (header === '確定数') return 100;
+        if (header === '相手') return 200; // Increased from 160
+        if (header === '技') return 160;   // Increased from 140
+        if (header === 'ダメージ') return 220; // Increased from 100 significantly for ranges
+        if (header === '確定数') return 140; // Increased from 100
         return 100; // default for unknown sticky cols?
     };
 
