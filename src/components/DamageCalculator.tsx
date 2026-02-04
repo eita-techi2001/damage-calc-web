@@ -1021,8 +1021,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     <input
                         type="number"
                         min="0" max="252" step="4"
-                        value={ev}
-                        onChange={(e) => updateEV(stat, Number(e.target.value))}
+                        value={ev === 0 ? '' : ev}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '') updateEV(stat, 0);
+                            else {
+                                const num = Number(val);
+                                if (!isNaN(num)) updateEV(stat, num);
+                            }
+                        }}
                         className="w-16 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-center text-white focus:border-pink-500 focus:outline-none"
                     />
                 </div>
