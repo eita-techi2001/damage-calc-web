@@ -80,7 +80,7 @@ const getTypeIconUrl = (typeName: string) => {
     return `https://play.pokemonshowdown.com/sprites/types/${typeName}.png`;
 };
 
-const Table = memo(function Table({ headers, rows, highlightEfficient }: { headers: string[], rows: any[], highlightEfficient?: boolean }) {
+const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCount = 0 }: { headers: string[], rows: any[], highlightEfficient?: boolean, stickyCount?: number }) {
     const [displayLimit, setDisplayLimit] = useState(50);
 
     // Reset limit when data changes (e.g. calculation update or tab switch if rows ref changes)
@@ -158,55 +158,56 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
         return translateText(String(val));
     };
 
+    // Pre-calculate sticky configs to avoid repeated lookups
+    // We assume sticky columns are ALWAYS the first N columns
+    // And we map their widths based on header name (fallback logic)
+    const getColWidth = (header: string) => {
+        if (header === '相手') return 160;
+        if (header === '技') return 140;
+        if (header === 'ダメージ') return 100;
+        if (header === '確定数') return 100;
+        return 100; // default for unknown sticky cols?
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <div className="overflow-x-auto border border-gray-700/50 rounded-lg">
                 <table className="min-w-max divide-y divide-gray-700 table-auto w-full">
                     <thead>
                         <tr>
-                            <tr>
-                                {headers.map((h, hIdx) => {
-                                    const isSticky = ['相手', '技', 'ダメージ', '確定数'].includes(h);
-                                    const stickyLeft = headers.slice(0, hIdx).reduce((acc, prev) => {
-                                        if (['相手', '技', 'ダメージ', '確定数'].includes(prev)) {
-                                            const w = prev === '相手' ? 160 : prev === '技' ? 140 : prev === 'ダメージ' ? 100 : 100;
-                                            return acc + w;
-                                        }
-                                        return acc;
-                                    }, 0);
-                                    const width = h === '相手' ? 160 : h === '技' ? 140 : h === 'ダメージ' ? 100 : h === '確定数' ? 100 : undefined;
+                            {headers.map((h, hIdx) => {
+                                const isSticky = hIdx < stickyCount;
+                                const stickyLeft = isSticky
+                                    ? headers.slice(0, hIdx).reduce((acc, prev) => acc + getColWidth(prev), 0)
+                                    : 0;
+                                const width = isSticky ? getColWidth(h) : undefined;
 
-                                    return (
-                                        <th
-                                            key={h}
-                                            className={`px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 backdrop-blur-sm whitespace-nowrap border-b border-gray-600 ${isSticky ? 'sticky z-30 bg-gray-900' : 'sticky top-0'}`}
-                                            style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px`, top: 0 } : { top: 0 }}
-                                        >
-                                            {translateText(h)}
-                                        </th>
-                                    );
-                                })}
-                            </tr>
+                                return (
+                                    <th
+                                        key={h}
+                                        className={`px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 backdrop-blur-sm whitespace-nowrap border-b border-gray-600 ${isSticky ? 'sticky z-30 !bg-gray-900' : 'sticky top-0'}`}
+                                        style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px`, top: 0 } : { top: 0 }}
+                                    >
+                                        {translateText(h)}
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700 bg-transparent">
                         {visibleRows.map((row, idx) => (
                             <tr key={idx} className={`group hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
                                 {headers.map((h, hIdx) => {
-                                    const isSticky = ['相手', '技', 'ダメージ', '確定数'].includes(h);
-                                    const stickyLeft = headers.slice(0, hIdx).reduce((acc, prev) => {
-                                        if (['相手', '技', 'ダメージ', '確定数'].includes(prev)) {
-                                            const w = prev === '相手' ? 160 : prev === '技' ? 140 : prev === 'ダメージ' ? 100 : 100;
-                                            return acc + w;
-                                        }
-                                        return acc;
-                                    }, 0);
-                                    const width = h === '相手' ? 160 : h === '技' ? 140 : h === 'ダメージ' ? 100 : h === '確定数' ? 100 : undefined;
+                                    const isSticky = hIdx < stickyCount;
+                                    const stickyLeft = isSticky
+                                        ? headers.slice(0, hIdx).reduce((acc, prev) => acc + getColWidth(prev), 0)
+                                        : 0;
+                                    const width = isSticky ? getColWidth(h) : undefined;
 
                                     return (
                                         <td
                                             key={h}
-                                            className={`px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0 ${isSticky ? 'sticky z-20 bg-[#111827] group-hover:bg-[#1a2333]' : ''}`}
+                                            className={`px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0 ${isSticky ? 'sticky z-20 !bg-[#111827] group-hover:!bg-[#1a2333]' : ''}`}
                                             style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px` } : {}}
                                         >
                                             <div className="flex justify-center items-center h-full overflow-hidden text-ellipsis">
@@ -1810,6 +1811,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     <Table
                                         headers={HEADERS_ATTACK}
                                         rows={results.attack}
+                                        stickyCount={4}
                                     />
                                 )}
                                 {activeTab === 'defense' && (
@@ -1819,6 +1821,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <Table
                                                 headers={HEADERS_DEF_PHYS}
                                                 rows={results.defense.physical}
+                                                stickyCount={4}
                                             />
                                         </div>
                                         <div>
@@ -1826,6 +1829,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <Table
                                                 headers={HEADERS_DEF_SPEC}
                                                 rows={results.defense.special}
+                                                stickyCount={4}
                                             />
                                         </div>
                                     </div>
