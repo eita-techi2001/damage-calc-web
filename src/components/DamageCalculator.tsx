@@ -162,26 +162,46 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
     const [stickyOffsets, setStickyOffsets] = useState<number[]>([]);
     const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);
 
-    // Measure widths after render to determine sticky offsets
+    // Measure widths and watch for resize to update sticky offsets robustly
     useEffect(() => {
         if (stickyCount <= 0 || !headerRefs.current.length) {
             setStickyOffsets([]);
             return;
         }
 
-        const offsets: number[] = [];
-        let currentOffset = 0;
+        const updateOffsets = () => {
+            const offsets: number[] = [];
+            let currentOffset = 0;
 
-        // Calculate offsets for sticky columns (0 to stickyCount - 1)
-        for (let i = 0; i < stickyCount; i++) {
-            offsets.push(currentOffset);
-            const el = headerRefs.current[i];
-            if (el) {
-                currentOffset += el.offsetWidth;
+            // Calculate offsets for sticky columns (0 to stickyCount - 1)
+            for (let i = 0; i < stickyCount; i++) {
+                offsets.push(currentOffset);
+                const el = headerRefs.current[i];
+                if (el) {
+                    currentOffset += el.offsetWidth;
+                }
             }
+            setStickyOffsets(offsets);
+        };
+
+        // Initial Calculation
+        updateOffsets();
+
+        // Use ResizeObserver to handle dynamic width changes (fonts, content loading)
+        const observer = new ResizeObserver(() => {
+            // Debounce or just run? Running directly is usually fine for UI updates unless huge table.
+            // RequestAnimationFrame can prevent thrashing.
+            requestAnimationFrame(updateOffsets);
+        });
+
+        // Observe all sticky headers
+        for (let i = 0; i < stickyCount; i++) {
+            const el = headerRefs.current[i];
+            if (el) observer.observe(el);
         }
-        setStickyOffsets(offsets);
-    }, [headers, rows, stickyCount, displayLimit]); // Re-calculate when data changes
+
+        return () => observer.disconnect();
+    }, [headers, rows, stickyCount, displayLimit]); // Re-attach when data structure changes
 
     return (
         <div className="flex flex-col gap-4">
