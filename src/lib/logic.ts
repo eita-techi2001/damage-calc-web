@@ -1530,20 +1530,15 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             })();
 
             // User (Defender) Status: H and B/D 
-            // Since we have multiple tiers (Registered, Spec, Semi), this is ambiguous.
-            // But usually this column refers to the BASELINE or REGISTERED stats if applicable.
-            // Alternatively, separate columns exist for results.
-            // If the user meant the "Result" text itself (resStr), we updated it above (`Hxxx Bxxx`).
-            // If the user meant the "User Status" column to the left of results...
-            // Let's add it based on the first result (usually Registered or Spec).
-            if (dedupedResults[0]['HP実数']) {
-                row['自分ステータス'] = (() => {
-                    const h = dedupedResults[0]['HP実数'];
-                    const b = dedupedResults[0]['防御実数'];
-                    const d = dedupedResults[0]['特防実数'];
+            // Use the calculated result for the 'Registered' tier (Slot 1)
+            if (row['HP実数']) {
+                row['必要ステータス'] = (() => {
+                    const h = row['HP実数'];
+                    const b = row['防御実数'];
+                    const d = row['特防実数'];
                     const sLabel = category === 'Physical' ? 'B' : 'D';
                     const sVal = category === 'Physical' ? b : d;
-                    return `H${h} / ${sLabel}${sVal}`;
+                    return `H${h} ${sLabel}${sVal}`;
                 })();
             }
 
@@ -1554,14 +1549,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
                 })();
 
-                if (dedupedResults[0]['HP実数']) {
-                    row['自分ステータス'] = (() => {
-                        const h = dedupedResults[0]['HP実数'];
-                        const b = dedupedResults[0]['防御実数'];
-                        const d = dedupedResults[0]['特防実数'];
+                if (row['HP実数']) {
+                    row['必要ステータス'] = (() => {
+                        const h = row['HP実数'];
+                        const b = row['防御実数'];
+                        const d = row['特防実数'];
                         const sLabel = category === 'Physical' ? 'B' : 'D';
                         const sVal = category === 'Physical' ? b : d;
-                        return `H${h} / ${sLabel}${sVal}`;
+                        return `H${h} ${sLabel}${sVal}`;
                     })();
                 }
                 targetList.push(row);
