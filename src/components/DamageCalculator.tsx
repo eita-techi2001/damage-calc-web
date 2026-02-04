@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect, useMemo, memo } from 'react';
+import React, { useState, useTransition, useEffect, useMemo, memo, useRef } from 'react';
 import { getAllMoves, loadConfig, calculateCustom, getMetaOpponents, getAllSpecies, getPokemonData, getTranslationData } from '@/app/actions';
 import { PokemonStats, UserPokemonConfig, GlobalFieldState, CalculationSettings, VariantFilterMode } from '@/types';
 import { t, translateText, toEnglish } from '@/core/translator';
@@ -158,16 +158,30 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
         return translateText(String(val));
     };
 
-    // Pre-calculate sticky configs to avoid repeated lookups
-    // We assume sticky columns are ALWAYS the first N columns
-    // And we map their widths based on header name (fallback logic)
-    const getColWidth = (header: string) => {
-        if (header === '相手') return 200; // Increased from 160
-        if (header === '技') return 160;   // Increased from 140
-        if (header === 'ダメージ') return 220; // Increased from 100 significantly for ranges
-        if (header === '確定数') return 140; // Increased from 100
-        return 100; // default for unknown sticky cols?
-    };
+    // State to store left offsets for sticky columns
+    const [stickyOffsets, setStickyOffsets] = useState<number[]>([]);
+    const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);
+
+    // Measure widths after render to determine sticky offsets
+    useEffect(() => {
+        if (stickyCount <= 0 || !headerRefs.current.length) {
+            setStickyOffsets([]);
+            return;
+        }
+
+        const offsets: number[] = [];
+        let currentOffset = 0;
+
+        // Calculate offsets for sticky columns (0 to stickyCount - 1)
+        for (let i = 0; i < stickyCount; i++) {
+            offsets.push(currentOffset);
+            const el = headerRefs.current[i];
+            if (el) {
+                currentOffset += el.offsetWidth;
+            }
+        }
+        setStickyOffsets(offsets);
+    }, [headers, rows, stickyCount, displayLimit]); // Re-calculate when data changes
 
     return (
         <div className="flex flex-col gap-4">
@@ -177,16 +191,14 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
                         <tr>
                             {headers.map((h, hIdx) => {
                                 const isSticky = hIdx < stickyCount;
-                                const stickyLeft = isSticky
-                                    ? headers.slice(0, hIdx).reduce((acc, prev) => acc + getColWidth(prev), 0)
-                                    : 0;
-                                const width = isSticky ? getColWidth(h) : undefined;
+                                const stickyLeft = isSticky ? (stickyOffsets[hIdx] || 0) : undefined;
 
                                 return (
                                     <th
                                         key={h}
+                                        ref={(el) => { headerRefs.current[hIdx] = el; }}
                                         className={`px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 backdrop-blur-sm whitespace-nowrap border-b border-gray-600 ${isSticky ? 'sticky z-30 !bg-gray-900' : 'sticky top-0'}`}
-                                        style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px`, top: 0 } : { top: 0 }}
+                                        style={isSticky ? { left: `${stickyLeft}px`, top: 0 } : { top: 0 }}
                                     >
                                         {translateText(h)}
                                     </th>
@@ -199,16 +211,13 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
                             <tr key={idx} className={`group hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
                                 {headers.map((h, hIdx) => {
                                     const isSticky = hIdx < stickyCount;
-                                    const stickyLeft = isSticky
-                                        ? headers.slice(0, hIdx).reduce((acc, prev) => acc + getColWidth(prev), 0)
-                                        : 0;
-                                    const width = isSticky ? getColWidth(h) : undefined;
+                                    const stickyLeft = isSticky ? (stickyOffsets[hIdx] || 0) : undefined;
 
                                     return (
                                         <td
                                             key={h}
                                             className={`px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0 ${isSticky ? 'sticky z-20 !bg-[#111827] group-hover:!bg-[#1a2333]' : ''}`}
-                                            style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px` } : {}}
+                                            style={isSticky ? { left: `${stickyLeft}px` } : {}}
                                         >
                                             <div className="flex justify-center items-center h-full overflow-hidden text-ellipsis">
                                                 {renderCell(h, String(row[h]), row)}
