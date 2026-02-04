@@ -164,23 +164,57 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
                 <table className="min-w-max divide-y divide-gray-700 table-auto w-full">
                     <thead>
                         <tr>
-                            {headers.map((h) => (
-                                <th key={h} className="px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 sticky top-0 backdrop-blur-sm whitespace-nowrap border-b border-gray-600">
-                                    {translateText(h)}
-                                </th>
-                            ))}
+                            <tr>
+                                {headers.map((h, hIdx) => {
+                                    const isSticky = ['相手', '技', 'ダメージ', '確定数'].includes(h);
+                                    const stickyLeft = headers.slice(0, hIdx).reduce((acc, prev) => {
+                                        if (['相手', '技', 'ダメージ', '確定数'].includes(prev)) {
+                                            const w = prev === '相手' ? 160 : prev === '技' ? 140 : prev === 'ダメージ' ? 100 : 100;
+                                            return acc + w;
+                                        }
+                                        return acc;
+                                    }, 0);
+                                    const width = h === '相手' ? 160 : h === '技' ? 140 : h === 'ダメージ' ? 100 : h === '確定数' ? 100 : undefined;
+
+                                    return (
+                                        <th
+                                            key={h}
+                                            className={`px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 backdrop-blur-sm whitespace-nowrap border-b border-gray-600 ${isSticky ? 'sticky z-30 bg-gray-900' : 'sticky top-0'}`}
+                                            style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px`, top: 0 } : { top: 0 }}
+                                        >
+                                            {translateText(h)}
+                                        </th>
+                                    );
+                                })}
+                            </tr>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700 bg-transparent">
                         {visibleRows.map((row, idx) => (
-                            <tr key={idx} className={`hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
-                                {headers.map((h) => (
-                                    <td key={h} className="px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0">
-                                        <div className="flex justify-center items-center h-full">
-                                            {renderCell(h, String(row[h]), row)}
-                                        </div>
-                                    </td>
-                                ))}
+                            <tr key={idx} className={`group hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
+                                {headers.map((h, hIdx) => {
+                                    const isSticky = ['相手', '技', 'ダメージ', '確定数'].includes(h);
+                                    const stickyLeft = headers.slice(0, hIdx).reduce((acc, prev) => {
+                                        if (['相手', '技', 'ダメージ', '確定数'].includes(prev)) {
+                                            const w = prev === '相手' ? 160 : prev === '技' ? 140 : prev === 'ダメージ' ? 100 : 100;
+                                            return acc + w;
+                                        }
+                                        return acc;
+                                    }, 0);
+                                    const width = h === '相手' ? 160 : h === '技' ? 140 : h === 'ダメージ' ? 100 : h === '確定数' ? 100 : undefined;
+
+                                    return (
+                                        <td
+                                            key={h}
+                                            className={`px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0 ${isSticky ? 'sticky z-20 bg-[#111827] group-hover:bg-[#1a2333]' : ''}`}
+                                            style={isSticky ? { left: `${stickyLeft}px`, minWidth: `${width}px`, maxWidth: `${width}px` } : {}}
+                                        >
+                                            <div className="flex justify-center items-center h-full overflow-hidden text-ellipsis">
+                                                {renderCell(h, String(row[h]), row)}
+                                            </div>
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         ))}
                     </tbody>
