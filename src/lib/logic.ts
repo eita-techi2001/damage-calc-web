@@ -1714,8 +1714,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 '相手特性': r['相手特性'],
                 '相手テラスタル': r['相手テラスタル'],
                 '相手持ち物': r['相手持ち物'],
-                '相手HP': r['相手HP'],
-                '相手耐久': category === 'Physical' ? `B${dummyRes.defender.stats.def}` : `D${dummyRes.defender.stats.spd}`,
+                '相手実数値': r['相手ステータス'] || (() => {
+                    // Fallback using context if r['相手ステータス'] is missing (integrity check)
+                    const ctx = r['_meta']?.context;
+                    if (!ctx) return 'H- B-';
+                    const s = ctx.defender.stats;
+                    const c = ctx.move.category;
+                    return `H${s?.hp || 0} ${c === 'Physical' ? 'B' : 'D'}${c === 'Physical' ? s?.def : s?.spd}`;
+                })(),
                 '登録値': tierResults['登録値'],
                 'H4': tierResults['H4'],
                 'H252': tierResults['H252'],
