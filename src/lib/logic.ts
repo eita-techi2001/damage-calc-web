@@ -978,8 +978,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                                     fieldArgs, isIntimidate: isIntimidateActive
                                 }
                             }
-                        }
-                            });
+                        });
+                    }
                 }
             }
         }
