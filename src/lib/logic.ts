@@ -953,6 +953,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '技': moveNameDisplay,
                             '相手': cleanName,
                             '相手特性': oppAbilityDisplay,
+                            '相手テラスタル': teraLabel,
+                            '相手持ち物': t(defender.item),
                             '相手ステータス': `H${Number(defMaxHP) || 0} / ${cat === 'Physical' ? 'B' : 'D'}${Number(cat === 'Physical' ? result.defender.stats?.def : result.defender.stats?.spd) || 0}`,
                             // User Stat: A or C
                             '自分ステータス': (() => {
