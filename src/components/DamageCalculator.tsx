@@ -121,21 +121,20 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
             const itemUrl = getItemIconUrl(oppItem);
 
             return (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 justify-center" title={t(row._meta.species)}>
                     <img
                         src={getIconUrl(row._meta.species)}
                         alt={val}
-                        className="w-8 h-6 object-contain pixelated"
+                        className="w-8 h-8 object-contain pixelated"
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    <span>{t(row._meta.species)}</span>
-                    <div className="flex items-center gap-1 ml-1 opacity-80">
+                    <div className="flex flex-col gap-0.5 ml-0.5 opacity-90">
                         {teraUrl && (
                             <img
                                 src={teraUrl}
                                 alt={oppTera}
-                                className="w-8 h-4 object-contain"
+                                className="w-5 h-3 object-contain"
                                 title={`Tera: ${oppTera}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -145,7 +144,7 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
                             <img
                                 src={itemUrl}
                                 alt={oppItem}
-                                className="w-5 h-5 object-contain"
+                                className="w-4 h-4 object-contain"
                                 title={`Item: ${oppItem}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
