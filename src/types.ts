@@ -91,7 +91,8 @@ export type VariantFilterMode = 'default' | 'active-only' | 'inactive-only';
 
 export interface CalculationSettings {
     abilityVariantMode: VariantFilterMode;
-    teraVariantMode: VariantFilterMode;
-    excludeWeakMoves?: boolean;
+    teraVariantMode?: 'default' | 'active-only' | 'inactive-only'; // Tera Display Mode
+    defenseLineMode?: 'standard' | 'optimal'; // Defense Line Logic: H-based (standard) or Efficiency-based (optimal)
+    excludeWeakMoves?: boolean; // Filter weak moves
     hitCount?: number; // Added for manual multi-hit control (default 3 or 5)
 }

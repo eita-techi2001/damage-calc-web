@@ -1371,7 +1371,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 const lineRes = explorer.findDefensiveLine(
                     tierAttacker, userPoke, move, category as 'Physical' | 'Special',
                     attackerScenario.isTera, userScenario.isTera,
-                    fieldArgs
+                    fieldArgs,
+                    settings?.defenseLineMode // Pass Global Setting
                 );
 
                 if (lineRes) {

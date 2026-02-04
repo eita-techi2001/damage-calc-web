@@ -324,7 +324,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [filterText, setFilterText] = useState<string>('');
     const [hitCount, setHitCount] = useState<number>(5); // Default to 5 (Max) as per user sentiment "forces 5". Or user might want 2-5? 
     // User said "5回充てるタイプの連続技は回数を指定できるようにしよう".
-    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default', hitCount: 5 });
+    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default', hitCount: 5, defenseLineMode: 'standard' });
     const [sortOrder, setSortOrder] = useState<'desc' | 'asc' | 'none'>('none'); // Sorting state
 
     // Sync hitCount to calcSettings when hitCount changes
@@ -872,20 +872,8 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         // 1. Enforce Max 252 (and min 0)
         let newValue = Math.max(0, Math.min(252, value));
 
-        // 2. Snap to efficient Level 50 EVs (0, 4, 12, 20, 28...)
-        if (newValue !== 0) {
-            // If close to 0 (e.g. 1-2), go to 0. 
-            // Logic: 0 -> next is 4. Midpoint is 2.
-            if (newValue <= 2) {
-                newValue = 0;
-            } else {
-                // Formula: 4 + 8k. k = round((val - 4)/8).
-                const k = Math.round((newValue - 4) / 8);
-                newValue = 4 + 8 * k;
-                // Clamp again just in case snap pushed it over (e.g. 252 -> 252 is ok. 4+8*31 = 252. perfect.)
-                newValue = Math.max(4, Math.min(252, newValue));
-            }
-        }
+        // 2. Snap to efficient Level 50 EVs (REMOVED: logic fights user input)
+        // if (newValue !== 0) { ... }
 
         // 3. Enforce Global 510 Limit
         const currentTotal = getTotalEVs();
@@ -1581,6 +1569,19 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     <option value={5}>5回</option>
                                                 </select>
                                                 <p className="text-xs text-gray-500">※スキルリンクは常に5回</p>
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <h4 className="text-sm font-bold text-gray-400">防御ライン計算ロジック</h4>
+                                                <select
+                                                    value={calcSettings.defenseLineMode || 'standard'}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, defenseLineMode: e.target.value as any })}
+                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                                                >
+                                                    <option value="standard">H振りベース (標準)</option>
+                                                    <option value="optimal">高効率調整 (最適)</option>
+                                                </select>
+                                                <p className="text-xs text-gray-500">※「最適」は総合耐久指数を効率化</p>
                                             </div>
                                         </div>
 
