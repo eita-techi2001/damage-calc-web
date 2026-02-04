@@ -1047,7 +1047,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    ダメージ一括計算機 Version 0.9.2
+                    ダメージ一括計算機 Version 0.9.3
                 </h1>
                 <p className="text-base text-gray-400 max-w-2xl mx-auto">
                     環境上位の主要ポケモンに対するダメージを一括計算し、<br />
