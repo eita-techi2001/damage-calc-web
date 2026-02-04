@@ -1067,8 +1067,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         // 2. Attacker Ability (forcedField or Auto-Detect)
 
                         // Check Attacker Ability Weather
-                        const abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
-                        const abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
+                        // Check Attacker Ability Weather
+                        let abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
+                        let abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
+
+                        // FIX: Also check User (Defender) Ability for Weather/Terrain Auto-Set
+                        if (!abilityWeather) abilityWeather = getAbilityWeather(userPoke.ability);
+                        if (!abilityTerrain) abilityTerrain = getAbilityTerrain(userPoke.ability);
 
                         // Apply Weather if global is None/Unset and Ability provides one
                         if ((!fieldArgs.weather || fieldArgs.weather === 'None') && abilityWeather) {
@@ -1129,6 +1134,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const realDef = result.defender.stats.def || 0;
                         const realSpD = result.defender.stats.spd || 0;
 
+                        // Helper to format values (Shared Logic)
+                        const formatVal = (val: string | string[]) => {
+                            if (!val) return '-';
+                            if (Array.isArray(val)) return val.length > 0 ? val.join(', ') : '-';
+                            return val;
+                        };
+
                         // Helper to build comprehensive Field State string
                         const getFieldState = (args: any) => {
                             const parts = [];
@@ -1181,13 +1193,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             'HP実数': realHP,
                             '防御実数': realDef,
                             '特防実数': realSpD,
-                            '自分テラスタル': getTeraDisplay(userScenario.label),
+
+                            '自分テラスタル': userScenario.isTera ? (t(userPoke.teraType || '') || 'Terastal') : '-',
                             '相手': (() => {
                                 const base = t(attacker.species);
                                 const extra = attacker.extraLabel || '';
                                 return base.endsWith(extra) ? base : `${base}${extra}`;
                             })(),
-                            '相手テラスタル': getTeraDisplay(attackerScenario.label),
+                            '相手テラスタル': attackerScenario.isTera ? (t(attacker.teraType || '') || 'Terastal') : '-',
                             '相手持ち物': formatVal(t(attacker.item)),
                             '技': moveNameDisplay,
                             '場の状態': formatVal(fieldState),
