@@ -29,7 +29,6 @@ export interface UserPokemonConfig {
     teraType?: TypeName;
     boosts?: Partial<PokemonStats>;
     overrides?: any;
-    groupId?: string; // Added for grouping variants
 }
 
 export interface MetaPokemonVariant {
@@ -49,10 +48,10 @@ export interface MetaPokemonVariant {
         isBeadsOfRuinActive?: boolean;
         isTabletsOfRuinActive?: boolean;
         isVesselOfRuinActive?: boolean;
+        // Add others as needed
     };
     overrides?: any;
     boosts?: Partial<PokemonStats>;
-    groupId?: string; // Added for grouping variants
 }
 
 export interface CalculationResult {
@@ -91,8 +90,6 @@ export type VariantFilterMode = 'default' | 'active-only' | 'inactive-only';
 
 export interface CalculationSettings {
     abilityVariantMode: VariantFilterMode;
-    teraVariantMode?: 'default' | 'active-only' | 'inactive-only'; // Tera Display Mode
-    defenseLineMode?: 'standard' | 'optimal'; // Defense Line Logic: H-based (standard) or Efficiency-based (optimal)
-    excludeWeakMoves?: boolean; // Filter weak moves
-    hitCount?: number; // Added for manual multi-hit control (default 3 or 5)
+    teraVariantMode: VariantFilterMode;
+    excludeWeakMoves?: boolean;
 }

@@ -1,0 +1,23 @@
+{
+  "sitrusDragonClaw": {
+    "attacker": "Garchomp",
+    "defender": "Rotom-Wash",
+    "hp": 304,
+    "damageRange": [
+      148,
+      175
+    ],
+    "koText": "94.9% chance to 2HKO",
+    "koChance": 0.94921875
+  },
+  "sitrusOutrage": {
+    "damageRange": [
+      222,
+      262
+    ],
+    "koText": "guaranteed 2HKO"
+  },
+  "leftovers": {
+    "koText": "49.2% chance to 2HKO after Leftovers recovery"
+  }
+}

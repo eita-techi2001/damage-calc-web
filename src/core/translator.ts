@@ -81,55 +81,6 @@ export const japaneseDict: { [key: string]: string } = {
     "Urshifu-Rapid-Strike": "ウーラオス(れんげき)",
     "Calyrex-Shadow": "バドレックス(こくば)",
     "Calyrex-Ice": "バドレックス(はくば)",
-    "Charizard": "リザードン",
-    "Mega Charizard Y": "メガリザードンY",
-    "Mega Charizard X": "メガリザードンX",
-    "Mega Venusaur": "メガフシギバナ",
-    "Mega Blastoise": "メガカメックス",
-    "Mega Beedrill": "メガスピアー",
-    "Mega Pidgeot": "メガピジョット",
-    "Mega Alakazam": "メガフーディン",
-    "Mega Slowbro": "メガヤドラン",
-    "Mega Gengar": "メガゲンガー",
-    "Mega Kangaskhan": "メガガルーラ",
-    "Mega Pinsir": "メガカイロス",
-    "Mega Gyarados": "メガギャラドス",
-    "Mega Aerodactyl": "メガプテラ",
-    "Mega Mewtwo X": "メガミュウツーX",
-    "Mega Mewtwo Y": "メガミュウツーY",
-    "Mega Ampharos": "メガデンリュウ",
-    "Mega Steelix": "メガハガネール",
-    "Mega Scizor": "メガハッサム",
-    "Mega Heracross": "メガヘラクロス",
-    "Mega Houndoom": "メガヘルガー",
-    "Mega Tyranitar": "メガバンギラス",
-    "Mega Sceptile": "メガジュカイン",
-    "Mega Blaziken": "メガバシャーモ",
-    "Mega Swampert": "メガラグラージ",
-    "Mega Gardevoir": "メガサーナイト",
-    "Mega Sableye": "メガヤミラミ",
-    "Mega Mawile": "メガクチート",
-    "Mega Aggron": "メガボスゴドラ",
-    "Mega Medicham": "メガチャーレム",
-    "Mega Manectric": "メガライボルト",
-    "Mega Sharpedo": "メガサメハダー",
-    "Mega Camerupt": "メガバクーダ",
-    "Mega Altaria": "メガチルタリス",
-    "Mega Banette": "メガジュペッタ",
-    "Mega Absol": "メガアブソル",
-    "Mega Glalie": "メガオニゴーリ",
-    "Mega Salamence": "メガボーマンダ",
-    "Mega Metagross": "メガメタグロス",
-    "Mega Latias": "メガラティアス",
-    "Mega Latios": "メガラティオス",
-    "Mega Rayquaza": "メガレックウザ",
-    "Mega Lopunny": "メガミミロップ",
-    "Mega Garchomp": "メガガブリアス",
-    "Mega Lucario": "メガルカリオ",
-    "Mega Abomasnow": "メガユキノオー",
-    "Mega Gallade": "メガエルレイド",
-    "Mega Audino": "メガタブンネ",
-    "Mega Diancie": "メガディアンシー",
 
     // Items
     "No Item": "持ち物なし",
@@ -426,8 +377,6 @@ const FIXED_TRANSLATIONS: { [key: string]: string } = {
     "Oricorio-Pa'u": "オドリドリ(ふらふら)",
     "Oricorio-Pau": "オドリドリ(ふらふら)",
     "Oricorio-Sensu": "オドリドリ(まいまい)",
-    "Calyrex-Ice": "バドレックス(はくば)",
-    "Calyrex-Shadow": "バドレックス(こくば)",
 };
 
 export const reverseJapaneseDict: { [key: string]: string } = {};
@@ -476,20 +425,11 @@ export function translateText(text: string): string {
     const sortedKeys = Object.keys(japaneseDict).sort((a, b) => b.length - a.length);
 
     for (const key of sortedKeys) {
-        // Skip short keys that might be substrings of common words (e.g. "def", "ice", "bug")
-        // Unless they are explicitly handled or we use word boundaries.
-        // For safety, if key length < 4, use word boundary check.
-        if (key.length < 4) {
-            // Escape key for regex
-            const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`\\b${escaped}\\b`, 'g'); // 'i'? Keys are usually case sensitive in Dict? Dict has "def", "atk".
-            // Actually japaneseDict keys are often capitalized in source but "def" is lowercase in line 359?
-            // "def": "防御" is lowercase.
-            translated = translated.replace(regex, japaneseDict[key]);
-        } else {
-            if (translated.includes(key)) {
-                translated = translated.split(key).join(japaneseDict[key]);
-            }
+        // Regex to replace whole words or specific phrases if possible
+        // For now simple string replace
+        // Escaping regex characters in key might be needed if they contain specials
+        if (translated.includes(key)) {
+            translated = translated.split(key).join(japaneseDict[key]);
         }
     }
 

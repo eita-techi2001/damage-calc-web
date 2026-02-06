@@ -47,10 +47,6 @@ const filterVariantsByMode = (variants: any[], mode: VariantFilterMode, getLabel
 };
 
 // ... deduplicateResults ... (unchanged)
-// WARNING: THIS FILE CONTAINS TWO SEPARATE CALCULATION LOOPS (OFFENSE & DEFENSE).
-// IF YOU MODIFY THE OUTPUT ROW STRUCTURE (KEYS/COLUMNS), YOU MUST UPDATE BOTH LOOPS.
-// 1. Offense Loop (calculateDamage for Config) -> attackResults.push
-// 2. Defense Loop (calculateReceivedDamage) -> physDefLineResults / specDefLineResults
 export function deduplicateResults(results: any[], uniqueKeys: string[]): any[] {
     const seen = new Set<string>();
     return results.filter(row => {
@@ -764,19 +760,11 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         }
 
                         // Calculate Damage
-                        // Calculate Damage
-                        let result;
-                        try {
-                            result = calc.calculateDamage(
-                                effectiveUser, effectiveDefender, customMoveName,
-                                isTeraCalc, defenderScenario.isTera,
-                                fieldOptions,
-                                { hits: settings?.hitCount } // Pass manual hit count
-                            );
-                        } catch (e) {
-                            console.warn(`Calculation failed for ${defender.species} with ${move}:`, e);
-                            continue;
-                        }
+                        const result = calc.calculateDamage(
+                            effectiveUser, effectiveDefender, customMoveName,
+                            isTeraCalc, defenderScenario.isTera,
+                            fieldOptions
+                        );
 
                         // STELLAR POST-CALC
                         if (userScenario.isTera && effectiveUser.teraType === 'Stellar') {
@@ -910,7 +898,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const oppAbilityDisplay = getDisplayAbility(defender.ability || '-', defender.extraLabel || '', defender.item, fieldArgs.weather, fieldArgs.terrain);
 
                         // Helper to build comprehensive Field State string
-                        const getFieldState = (args: any) => {
+                        const getFieldState = (args: any, isIntimidate?: boolean) => {
                             const parts = [];
                             if (args.weather && args.weather !== 'None') parts.push(t(args.weather));
                             if (args.terrain && args.terrain !== 'None') {
@@ -937,10 +925,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (att.isHelpingHand) parts.push('手助け');
                             // Battery? Power Spot? (If implemented in future)
 
+                            // Intimidate
+                            if (isIntimidate) parts.push('いかく');
+
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
 
-                        const fieldState = getFieldState(fieldArgs);
+                        const fieldState = getFieldState(fieldArgs, isIntimidateActive);
 
                         const teraLabel = defenderScenario.isTera ? (t(defender.teraType || '') || 'Terastal') : '-';
 
@@ -955,18 +946,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '相手特性': oppAbilityDisplay,
                             '相手テラスタル': teraLabel,
                             '相手持ち物': t(defender.item),
-                            '相手ステータス': `H${Number(defMaxHP) || 0} / ${cat === 'Physical' ? 'B' : 'D'}${Number(cat === 'Physical' ? result.defender.stats?.def : result.defender.stats?.spd) || 0}`,
-                            // User Stat: A or C
-                            '自分ステータス': (() => {
-                                const s = cat === 'Physical' ? 'A' : 'C';
-                                let statStr = `${s}${rawStat}${statArrow}`;
-                                if (stage !== 0) statStr += ` (${stage > 0 ? '+' : ''}${stage})`;
-                                return statStr;
-                            })(),
-                            'ダメージ': `${percentage === maxPercentage ? `${percentage}%` : `${percentage}% ~ ${maxPercentage}%`} (${dmgStr})`,
-                            '確定数': killDesc.replace(/確定(\d+)発/, '確$1').replace(/乱数(\d+)発/, '乱$1').replace(/（/g, '(').replace(/）/g, ')'),
+                            '相手HP': defMaxHP,
+                            '相手防御実数': cat === 'Physical' ? result.defender.stats.def : result.defender.stats.spd,
+                            'DamagePct': percentage === maxPercentage ? `${percentage}%` : `${percentage}% ~ ${maxPercentage}%`,
+                            '確定数': killDesc,
+                            'DamageReal': dmgStr,
                             '場の状態': formatVal(fieldState),
-                            // Meta for internal logic (Sorting, Check Mode)
+                            // Hidden Metadata
+                            // Hidden Metadata for Deduplication & Reconstruction
                             '_meta': {
                                 minDmg, maxDmg,
                                 species: defender.species,
@@ -1041,56 +1028,17 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (globalField.terrain && globalField.terrain !== 'None') fieldArgs.terrain = globalField.terrain;
                         }
 
-                        // Helper to detect specific Ability Auto-Setters (for Customs or missing forcedField)
-                        const getAbilityWeather = (ability: string) => {
-                            if (!ability) return null;
-                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (a === 'drought' || a === 'orichalcumpulse') return 'Sun';
-                            if (a === 'drizzle') return 'Rain';
-                            if (a === 'sandstream') return 'Sand';
-                            if (a === 'snowwarning') return 'Snow';
-                            return null;
-                        };
-
-                        const getAbilityTerrain = (ability: string) => {
-                            if (!ability) return null;
-                            const a = ability.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (a === 'grassysurge') return 'Grassy';
-                            if (a === 'electricsurge' || a === 'hadronengine') return 'Electric';
-                            if (a === 'psychicsurge') return 'Psychic';
-                            if (a === 'mistysurge') return 'Misty';
-                            return null;
-                        };
-
-                        // Priorities:
-                        // 1. Manual Global Setting (if not 'None')
-                        // 2. Attacker Ability (forcedField or Auto-Detect)
-
-                        // Check Attacker Ability Weather
-                        // Check Attacker Ability Weather
-                        let abilityWeather = attacker.forcedField?.weather || getAbilityWeather(attacker.ability);
-                        let abilityTerrain = attacker.forcedField?.terrain || getAbilityTerrain(attacker.ability);
-
-                        // FIX: Also check User (Defender) Ability for Weather/Terrain Auto-Set
-                        if (!abilityWeather) abilityWeather = getAbilityWeather(userPoke.ability);
-                        if (!abilityTerrain) abilityTerrain = getAbilityTerrain(userPoke.ability);
-
-                        // Apply Weather if global is None/Unset and Ability provides one
-                        if ((!fieldArgs.weather || fieldArgs.weather === 'None') && abilityWeather) {
-                            fieldArgs.weather = abilityWeather;
-                        }
-
-                        // Apply Terrain if global is None/Unset and Ability provides one
-                        if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && abilityTerrain) {
-                            fieldArgs.terrain = abilityTerrain;
-                        } else if ((!fieldArgs.terrain || fieldArgs.terrain === 'None') && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
-                            // Fallback for Rillaboom (though getAbilityTerrain should catch it if Ability is correct)
+                        if (attacker.forcedField) {
+                            if (!fieldArgs.weather && attacker.forcedField.weather) fieldArgs.weather = attacker.forcedField.weather;
+                            if (!fieldArgs.terrain && attacker.forcedField.terrain) fieldArgs.terrain = attacker.forcedField.terrain;
+                        } else if (!fieldArgs.terrain && attacker.species === 'Rillaboom' && !attacker.extraLabel) {
                             fieldArgs.terrain = 'Grassy';
                         }
 
                         let effectiveAttacker: any = effectiveAttackerBase; // Changed from attacker to effectiveAttackerBase
                         // Use variant-specific Intimidate flag
-                        if (variant.forcedField?.isDefenderIntimidated) {
+                        const isIntimidateActive = variant.forcedField?.isDefenderIntimidated || false;
+                        if (isIntimidateActive) {
                             effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase)); // Clone base (with ranks)
                             if (!effectiveAttacker.boosts) effectiveAttacker.boosts = {};
                             effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
@@ -1130,19 +1078,12 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (killDesc.includes('乱数3発')) continue;
                         }
 
-                        const realHP = result.defender.stats.hp || 0;
-                        const realDef = result.defender.stats.def || 0;
-                        const realSpD = result.defender.stats.spd || 0;
-
-                        // Helper to format values (Shared Logic)
-                        const formatVal = (val: string | string[]) => {
-                            if (!val) return '-';
-                            if (Array.isArray(val)) return val.length > 0 ? val.join(', ') : '-';
-                            return val;
-                        };
+                        const realHP = result.defender.stats.hp;
+                        const realDef = result.defender.stats.def;
+                        const realSpD = result.defender.stats.spd;
 
                         // Helper to build comprehensive Field State string
-                        const getFieldState = (args: any) => {
+                        const getFieldState = (args: any, isIntimidate?: boolean) => {
                             const parts = [];
                             if (args.weather && args.weather !== 'None') parts.push(t(args.weather));
                             if (args.terrain && args.terrain !== 'None') {
@@ -1169,10 +1110,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             if (att.isHelpingHand) parts.push('手助け');
                             // Battery? Power Spot? (If implemented in future)
 
+                            // Intimidate
+                            if (isIntimidate) parts.push('いかく');
+
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
 
-                        const fieldState = getFieldState(fieldArgs);
+                        const fieldState = getFieldState(fieldArgs, isIntimidateActive);
 
                         // Fix: "Psychic" matches both Type (Esper) and Move (Psychic) in translator.
                         const getTeraDisplay = (val: string) => {
@@ -1193,36 +1137,16 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             'HP実数': realHP,
                             '防御実数': realDef,
                             '特防実数': realSpD,
-
-                            '自分テラスタル': userScenario.isTera ? (t(userPoke.teraType || '') || 'Terastal') : '-',
-                            '相手': (() => {
-                                const base = t(attacker.species);
-                                const extra = attacker.extraLabel || '';
-                                return base.endsWith(extra) ? base : `${base}${extra}`;
-                            })(),
-                            '相手テラスタル': attackerScenario.isTera ? (t(attacker.teraType || '') || 'Terastal') : '-',
+                            '自分テラスタル': getTeraDisplay(userScenario.label),
+                            '相手': `${t(attacker.species)}${attacker.extraLabel || ''}`,
+                            '相手テラスタル': getTeraDisplay(attackerScenario.label),
                             '相手持ち物': formatVal(t(attacker.item)),
                             '技': moveNameDisplay,
                             '場の状態': formatVal(fieldState),
-                            // Combined "Opponent Stat" (Defender Side): H + B or D
-                            '相手ステータス': (() => {
-                                const statLabel = result.move.category === 'Physical' ? 'B' : 'D';
-                                return `H${realHP} / ${statLabel}${result.move.category === 'Physical' ? realDef : realSpD}`;
-                            })(),
-                            // Combined "User Stat" (Attacker Side): A or C
-                            '自分ステータス': (() => {
-                                const statLabel = result.move.category === 'Physical' ? 'A' : 'C';
-                                const val = (result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa) || 0;
-                                return `${statLabel}${val}`;
-                            })(),
-                            'ダメージ': `${percentageDisplay} (${range[0]} ~ ${maxDmg})`,
-                            '確定数': (() => {
-                                // Shorten KO Text
-                                return killDesc
-                                    .replace(/確定(\d+)発/, '確$1')
-                                    .replace(/乱数(\d+)発/, '乱$1')
-                                    .replace(/（/g, '(').replace(/）/g, ')');
-                            })(),
+                            '相手攻撃実数': result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa,
+                            'DamagePct': percentageDisplay,
+                            'DamageReal': dmgStr,
+                            '確定数': killDesc,
                             // New Fields
                             '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),
                             '自分特性': getDisplayAbility(userPoke.ability || '-', variantLabel, userPoke.item, fieldArgs.weather, fieldArgs.terrain),
@@ -1319,13 +1243,11 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             ];
 
             // Prepare Result Row
-            let maxNeeded = 0; // Track max EVs across tiers for sorting
             const row: any = {
                 // Initial Default Values
                 '実数値1': '-', '結果1': '-',
                 '特化': '-', '結果2': '-',
                 '無補正252': '-', '結果3': '-',
-                '_sortVal': 0, // Sort Value
 
                 // Values from Source
                 'HP実数': r['HP実数'],
@@ -1371,17 +1293,10 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 const lineRes = explorer.findDefensiveLine(
                     tierAttacker, userPoke, move, category as 'Physical' | 'Special',
                     attackerScenario.isTera, userScenario.isTera,
-                    fieldArgs,
-                    settings?.defenseLineMode // Pass Global Setting
+                    fieldArgs
                 );
 
                 if (lineRes) {
-                    if (!lineRes.success) maxNeeded = 9999; // Impossible = Hardest
-                    else {
-                        const total = (lineRes.evs.hp || 0) + (lineRes.evs.def || 0) + (lineRes.evs.spd || 0);
-                        maxNeeded = Math.max(maxNeeded, total);
-                    }
-
                     if (lineRes.thresholdDesc !== '高耐久') {
                         hasMeaningfulResult = true;
                     }
@@ -1455,22 +1370,12 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     } else if (!lineRes.success) {
                         resStr = '無理';
                     } else {
-                        // Format Short KO
-                        const shortKO = (text: string) => {
-                            return text
-                                .replace(/確定(\d+)発/, '確$1')
-                                .replace(/乱数(\d+)発/, '乱$1')
-                                .replace(/（/g, '(').replace(/）/g, ')');
-                        };
-
                         const evParts = [];
                         if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
-                        // Compact Stat Logic: If Physical -> B, If Special -> D
-                        if ((category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd) > 0) {
-                            evParts.push(`${category === 'Physical' ? 'B' : 'D'}${category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd}`);
-                        }
+                        if (lineRes.evs.def > 0) evParts.push(`B${lineRes.evs.def}`);
+                        if (lineRes.evs.spd > 0) evParts.push(`D${lineRes.evs.spd}`);
                         const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
-                        const w = lineRes.thresholdDesc ? shortKO(lineRes.thresholdDesc) : '耐え';
+                        const w = lineRes.thresholdDesc || '耐え';
                         resStr = `${evStr} (${w})`;
                     }
 
@@ -1499,69 +1404,10 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     }
                 }
 
-                if (lineRes.success) {
-                    const hp = calcStat('hp', lineRes.evs.hp);
-                    // Better to use actual resulting stats.
-                    const n = lineRes.nature || userPoke.nature;
-                    const boostMap: any = { 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
-                    const isBoosted = boostMap[n] === (category === 'Physical' ? 'def' : 'spd');
-                    const realStat = calcStat(category === 'Physical' ? 'def' : 'spd', category === 'Physical' ? lineRes.evs.def : lineRes.evs.spd, 31, isBoosted ? 1.1 : 1.0);
-
-                    const durability = hp * realStat;
-                    // We want the MAX required durability (hardest tier).
-                    maxNeeded = Math.max(maxNeeded, durability);
-                } else {
-                    // If impossible, treat as very high durability needed?
-                    maxNeeded = Math.max(maxNeeded, 999999);
-                }
-
                 slotIndex++;
             }
-            row['_sortVal'] = maxNeeded;
-
-            // Add Combined Compact Columns for Defensive Lines
-            // Opponent (Attacker) Status: A or C
-            // We use the dummyRes or just the known category.
-            // In Defensive Line context, 'attacker' (from ctx) is the Opponent.
-            // Stats are fixed per variant.
-            row['相手ステータス'] = (() => {
-                const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
-                return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
-            })();
-
-            // User (Defender) Status: H and B/D 
-            // Use the calculated result for the 'Registered' tier (Slot 1)
-            if (row['HP実数']) {
-                row['必要ステータス'] = (() => {
-                    const h = row['HP実数'];
-                    const b = row['防御実数'];
-                    const d = row['特防実数'];
-                    const sLabel = category === 'Physical' ? 'B' : 'D';
-                    const sVal = category === 'Physical' ? b : d;
-                    return `H${h} ${sLabel}${sVal}`;
-                })();
-            }
-
-            if (hasMeaningfulResult) {
-                // Add Combined Compact Columns for Defensive Lines
-                row['相手ステータス'] = (() => {
-                    const aStat = category === 'Physical' ? dummyRes.attacker.stats.atk : dummyRes.attacker.stats.spa;
-                    return `${category === 'Physical' ? 'A' : 'C'}${aStat}`;
-                })();
-
-                if (row['HP実数']) {
-                    row['必要ステータス'] = (() => {
-                        const h = row['HP実数'];
-                        const b = row['防御実数'];
-                        const d = row['特防実数'];
-                        const sLabel = category === 'Physical' ? 'B' : 'D';
-                        const sVal = category === 'Physical' ? b : d;
-                        return `H${h} ${sLabel}${sVal}`;
-                    })();
-                }
-                targetList.push(row);
-            }
-        }
+            if (hasMeaningfulResult) targetList.push(row);
+        };
     };
 
     processDefensiveLines(finalPhysDefResults, physDefLineResults);
@@ -1715,48 +1561,18 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 '自分持ち物': r['自分持ち物'],
                 '技': t(move),
                 'MT': r['自分持ち物'], // Temp workaround if needed, but r has it.
-                '相手': (() => {
-                    const base = r['相手'] || ''; // r['相手'] might already be formatted if copied? No, logic.ts builds it.
-                    // Wait, r['相手'] in processAttackLines comes from WHERE?
-                    // Ah, it comes from analyzeAttack which returns '相手' formatted.
-                    // Let's check line 1055 analyzeAttack.
-                    return r['相手'];
-                })(),
+                '相手': r['相手'],
                 '相手特性': r['相手特性'],
                 '相手テラスタル': r['相手テラスタル'],
                 '相手持ち物': r['相手持ち物'],
-                '相手実数値': r['相手ステータス'] || (() => {
-                    // Fallback using context if r['相手ステータス'] is missing (integrity check)
-                    const ctx = r['_meta']?.context;
-                    if (!ctx) return 'H- B-';
-                    const s = ctx.defender.stats;
-                    const c = ctx.move.category;
-                    return `H${s?.hp || 0} ${c === 'Physical' ? 'B' : 'D'}${c === 'Physical' ? s?.def : s?.spd}`;
-                })(),
+                '相手HP': r['相手HP'],
+                '相手耐久': category === 'Physical' ? `B${dummyRes.defender.stats.def}` : `D${dummyRes.defender.stats.spd}`,
                 '登録値': tierResults['登録値'],
                 'H4': tierResults['H4'],
                 'H252': tierResults['H252'],
                 'HB/HD特化': tierResults['HB/HD特化'],
                 '場の状態': r['場の状態'],
-                '_meta': r['_meta'], // Add meta for icons
-
-                '_sortVal': (() => {
-                    // Sort by Necessary Actual Value (registeredTierStatStr)
-                    // If '-', it implies either "Already KO" (Easy) or "Impossible" (Hard).
-                    // Usually '-' in this context means "KO with 0 investment" or "Unreachable"?
-                    // Check previous logic:
-                    // registeredTierStatStr comes from:
-                    // 1. findOffensiveLine result.stat
-                    // 2. getBestResult -> if display matches.
-
-                    // If it's "-", it usually means findOffensiveLine failed or wasn't applicable.
-                    // If we can't KO even with max investment, it's effectively Infinity (Hard).
-                    // If we KO with base stats? findOffensiveLine should return something.
-
-                    const num = parseInt(registeredTierStatStr, 10);
-                    if (isNaN(num)) return 0; // Default to 0?
-                    return num;
-                })()
+                '_meta': r['_meta'] // Add meta for icons
             });
         }
     }

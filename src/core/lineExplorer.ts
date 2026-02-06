@@ -112,8 +112,7 @@ export class LineExplorer {
         category: 'Physical' | 'Special',
         isTargetTera: boolean = false,
         isUserTera: boolean = false,
-        fieldArgs: any = {},
-        mode: 'standard' | 'optimal' = 'standard'
+        fieldArgs: any = {}
     ): LineResult & { thresholdDesc?: string } {
         const defKey = category === 'Physical' ? 'def' : 'spd';
 
@@ -281,26 +280,19 @@ export class LineExplorer {
                 });
                 const efficientResult = validResults[0];
 
+                const defLimit = 20;
+                const hFocusedCandidates = validResults.filter(r => r.def <= defLimit);
                 let bestResult;
 
-                if (mode === 'optimal') {
-                    // Efficiency Optimization
-                    bestResult = efficientResult;
+                if (hFocusedCandidates.length > 0) {
+                    hFocusedCandidates.sort((a, b) => {
+                        if (a.total !== b.total) return a.total - b.total;
+                        return b.hp - a.hp;
+                    });
+                    bestResult = hFocusedCandidates[0];
                 } else {
-                    // Standard Logic: Prioritize HP (H-Based) with flexibility for small Def usage
-                    const defLimit = 20;
-                    const hFocusedCandidates = validResults.filter(r => r.def <= defLimit);
-
-                    if (hFocusedCandidates.length > 0) {
-                        hFocusedCandidates.sort((a, b) => {
-                            if (a.total !== b.total) return a.total - b.total;
-                            return b.hp - a.hp;
-                        });
-                        bestResult = hFocusedCandidates[0];
-                    } else {
-                        validResults.sort((a, b) => b.hp - a.hp);
-                        bestResult = validResults[0];
-                    }
+                    validResults.sort((a, b) => b.hp - a.hp);
+                    bestResult = validResults[0];
                 }
 
                 return {

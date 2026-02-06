@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition, useEffect, useMemo, memo, useRef } from 'react';
+import { useState, useTransition, useEffect, useMemo, memo } from 'react';
 import { getAllMoves, loadConfig, calculateCustom, getMetaOpponents, getAllSpecies, getPokemonData, getTranslationData } from '@/app/actions';
 import { PokemonStats, UserPokemonConfig, GlobalFieldState, CalculationSettings, VariantFilterMode } from '@/types';
 import { t, translateText, toEnglish } from '@/core/translator';
@@ -21,13 +21,13 @@ const hiraganaToKatakana = (src: string) => {
 
 // Header Constants
 // Header Constants
-const HEADERS_ATTACK = ['相手', '技', 'ダメージ', '確定数', '相手ステータス', '相手特性', '自分ステータス', '自分特性', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_DEF_PHYS = ['相手', '技', 'ダメージ', '確定数', '相手ステータス', '相手特性', '自分ステータス', '自分特性', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_DEF_SPEC = ['相手', '技', 'ダメージ', '確定数', '相手ステータス', '相手特性', '自分ステータス', '自分特性', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_OFF_LINE = ['必要実数値', '登録値', '自分特性', '自分テラスタル', '自分持ち物', '技', '相手', '相手特性', '相手実数値', 'H4', 'H252', 'HB/HD特化', '場の状態'];
+const HEADERS_ATTACK = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手HP', '相手防御実数', '自分実数値', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_DEF_PHYS = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手攻撃実数', 'HP実数', '防御実数', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_DEF_SPEC = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手攻撃実数', 'HP実数', '特防実数', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_OFF_LINE = ['必要実数値', '登録値', '自分テラスタル', '自分持ち物', '技', '相手', '相手HP', '相手耐久', 'H4', 'H252', 'HB/HD特化', '場の状態'];
 
-const HEADERS_DEF_LINE_PHYS = ['必要ステータス', '結果1', '自分特性', '自分テラスタル', '自分持ち物', '相手', '相手ステータス', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
-const HEADERS_DEF_LINE_SPEC = ['必要ステータス', '結果1', '自分特性', '自分テラスタル', '自分持ち物', '相手', '相手ステータス', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
+const HEADERS_DEF_LINE_PHYS = ['HP実数', '防御実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
+const HEADERS_DEF_LINE_SPEC = ['HP実数', '特防実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
 
 const REFINED_ITEMS = [
     '',
@@ -52,14 +52,6 @@ const getIconUrl = (speciesName: string) => {
     if (slug === 'calyrex-shadow') slug = 'calyrex-shadow-rider';
     if (slug === 'calyrex-ice') slug = 'calyrex-ice-rider';
 
-    // Regional Forms
-    if (slug.endsWith('-alola')) slug = slug.replace(/-alola$/, '-alolan');
-    if (slug.endsWith('-galar')) slug = slug.replace(/-galar$/, '-galarian');
-    if (slug.endsWith('-hisui')) slug = slug.replace(/-hisui$/, '-hisuian');
-    if (slug.endsWith('-paldea')) slug = slug.replace(/-paldea$/, '-paldean');
-    if (slug === 'indeedee-f') slug = 'indeedee-female';
-    if (slug === 'basculegion-f') slug = 'basculegion-female'; // Just in case
-
     return `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
 };
 
@@ -71,16 +63,11 @@ const getItemIconUrl = (itemName: string) => {
 
 const getTypeIconUrl = (typeName: string) => {
     if (!typeName || typeName === '-' || typeName === 'Terastal') return '';
-
-    // Fix: "Ghost" (Type) and "Haunter" (Pokemon) both translate to "ゴースト".
-    // toEnglish("ゴースト") returns "Haunter", which is not a valid type.
-    if (typeName === 'Haunter') typeName = 'Ghost';
-
     // Use Showdown for all types including Stellar (Stellar.png exists on Showdown)
     return `https://play.pokemonshowdown.com/sprites/types/${typeName}.png`;
 };
 
-const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCount = 0 }: { headers: string[], rows: any[], highlightEfficient?: boolean, stickyCount?: number }) {
+const Table = memo(function Table({ headers, rows, highlightEfficient }: { headers: string[], rows: any[], highlightEfficient?: boolean }) {
     const [displayLimit, setDisplayLimit] = useState(50);
 
     // Reset limit when data changes (e.g. calculation update or tab switch if rows ref changes)
@@ -121,20 +108,21 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
             const itemUrl = getItemIconUrl(oppItem);
 
             return (
-                <div className="flex items-center gap-1 justify-center" title={t(row._meta.species)}>
+                <div className="flex items-center gap-2">
                     <img
                         src={getIconUrl(row._meta.species)}
                         alt={val}
-                        className="w-8 h-8 object-contain pixelated"
+                        className="w-8 h-6 object-contain pixelated"
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    <div className="flex flex-col gap-0.5 ml-0.5 opacity-90">
+                    <span>{t(row._meta.species)}</span>
+                    <div className="flex items-center gap-1 ml-1 opacity-80">
                         {teraUrl && (
                             <img
                                 src={teraUrl}
                                 alt={oppTera}
-                                className="w-5 h-3 object-contain"
+                                className="w-8 h-4 object-contain"
                                 title={`Tera: ${oppTera}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -144,7 +132,7 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
                             <img
                                 src={itemUrl}
                                 alt={oppItem}
-                                className="w-4 h-4 object-contain"
+                                className="w-5 h-5 object-contain"
                                 title={`Item: ${oppItem}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -157,93 +145,29 @@ const Table = memo(function Table({ headers, rows, highlightEfficient, stickyCou
         return translateText(String(val));
     };
 
-    // State to store left offsets for sticky columns
-    const [stickyOffsets, setStickyOffsets] = useState<number[]>([]);
-    const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);
-
-    // Measure widths and watch for resize to update sticky offsets robustly
-    useEffect(() => {
-        if (stickyCount <= 0 || !headerRefs.current.length) {
-            setStickyOffsets([]);
-            return;
-        }
-
-        const updateOffsets = () => {
-            const offsets: number[] = [];
-            let currentOffset = 0;
-
-            // Calculate offsets for sticky columns (0 to stickyCount - 1)
-            for (let i = 0; i < stickyCount; i++) {
-                offsets.push(currentOffset);
-                const el = headerRefs.current[i];
-                if (el) {
-                    currentOffset += el.offsetWidth;
-                }
-            }
-            setStickyOffsets(offsets);
-        };
-
-        // Initial Calculation
-        updateOffsets();
-
-        // Use ResizeObserver to handle dynamic width changes (fonts, content loading)
-        const observer = new ResizeObserver(() => {
-            // Debounce or just run? Running directly is usually fine for UI updates unless huge table.
-            // RequestAnimationFrame can prevent thrashing.
-            requestAnimationFrame(updateOffsets);
-        });
-
-        // Observe all sticky headers
-        for (let i = 0; i < stickyCount; i++) {
-            const el = headerRefs.current[i];
-            if (el) observer.observe(el);
-        }
-
-        return () => observer.disconnect();
-    }, [headers, rows, stickyCount, displayLimit]); // Re-attach when data structure changes
-
     return (
         <div className="flex flex-col gap-4">
             <div className="overflow-x-auto border border-gray-700/50 rounded-lg">
                 <table className="min-w-max divide-y divide-gray-700 table-auto w-full">
                     <thead>
                         <tr>
-                            {headers.map((h, hIdx) => {
-                                const isSticky = hIdx < stickyCount;
-                                const stickyLeft = isSticky ? (stickyOffsets[hIdx] || 0) : undefined;
-
-                                return (
-                                    <th
-                                        key={h}
-                                        ref={(el) => { headerRefs.current[hIdx] = el; }}
-                                        className={`px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 backdrop-blur-sm whitespace-nowrap border-b border-gray-600 ${isSticky ? 'sticky z-30 !bg-gray-900' : 'sticky top-0'}`}
-                                        style={isSticky ? { left: `${stickyLeft}px`, top: 0 } : { top: 0 }}
-                                    >
-                                        {translateText(h)}
-                                    </th>
-                                );
-                            })}
+                            {headers.map((h) => (
+                                <th key={h} className="px-2 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider bg-gray-900/80 sticky top-0 backdrop-blur-sm whitespace-nowrap border-b border-gray-600">
+                                    {translateText(h)}
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700 bg-transparent">
                         {visibleRows.map((row, idx) => (
-                            <tr key={idx} className={`group hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
-                                {headers.map((h, hIdx) => {
-                                    const isSticky = hIdx < stickyCount;
-                                    const stickyLeft = isSticky ? (stickyOffsets[hIdx] || 0) : undefined;
-
-                                    return (
-                                        <td
-                                            key={h}
-                                            className={`px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0 ${isSticky ? 'sticky z-20 !bg-[#111827] group-hover:!bg-[#1a2333]' : ''}`}
-                                            style={isSticky ? { left: `${stickyLeft}px` } : {}}
-                                        >
-                                            <div className="flex justify-center items-center h-full overflow-hidden text-ellipsis">
-                                                {renderCell(h, String(row[h]), row)}
-                                            </div>
-                                        </td>
-                                    );
-                                })}
+                            <tr key={idx} className={`hover:bg-white/5 transition-colors ${highlightEfficient && row['最良合計'] !== '-' ? 'bg-green-900/10' : ''}`}>
+                                {headers.map((h) => (
+                                    <td key={h} className="px-2 py-3 text-sm text-gray-300 whitespace-nowrap border-r border-gray-700/30 last:border-r-0">
+                                        <div className="flex justify-center items-center h-full">
+                                            {renderCell(h, String(row[h]), row)}
+                                        </div>
+                                    </td>
+                                ))}
                             </tr>
                         ))}
                     </tbody>
@@ -356,7 +280,7 @@ const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, a
                                     style={{ backgroundColor: 'rgba(17, 24, 39, 1)' }}
                                     className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-sm text-gray-200 border-b border-gray-800 last:border-0"
                                 >
-                                    {t(s)}
+                                    {t(s)} <span className="text-xs text-gray-500">({s})</span>
                                 </li>
                             ))
                         ) : (
@@ -374,7 +298,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [selectedConfig, setSelectedConfig] = useState<string>('');
     const [currentConfig, setCurrentConfig] = useState<UserPokemonConfig | null>(null);
     const [baseStats, setBaseStats] = useState<PokemonStats | null>(null);
-    const [isEnvCollapsed, setIsEnvCollapsed] = useState<boolean>(true); // Default minimized
 
     // Opponent Edit Mode States
     const [editMode, setEditMode] = useState<'user' | 'opponent' | 'manage'>('user');
@@ -390,15 +313,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [allSpeciesList, setAllSpeciesList] = useState<string[]>([]);
     const [excludedIds, setExcludedIds] = useState<string[]>([]); // IDs of opponents to SKIP
     const [filterText, setFilterText] = useState<string>('');
-    const [hitCount, setHitCount] = useState<number>(5); // Default to 5 (Max) as per user sentiment "forces 5". Or user might want 2-5? 
-    // User said "5回充てるタイプの連続技は回数を指定できるようにしよう".
-    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default', hitCount: 5, defenseLineMode: 'standard' });
-    const [sortOrder, setSortOrder] = useState<'desc' | 'asc' | 'none'>('none'); // Sorting state
-
-    // Sync hitCount to calcSettings when hitCount changes
-    useEffect(() => {
-        setCalcSettings(prev => ({ ...prev, hitCount }));
-    }, [hitCount]);
+    const [calcSettings, setCalcSettings] = useState<CalculationSettings>({ abilityVariantMode: 'default', teraVariantMode: 'default' });
 
     useEffect(() => {
         // Fetch Meta Opponents and All Species on mount
@@ -890,7 +805,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             // Reverse translate moves for calculation
             const calculationConfig = {
                 ...currentConfig,
-                species: toEnglish(currentConfig.species),
                 moves: currentConfig.moves.map(m => toEnglish(m))
             };
 
@@ -913,7 +827,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             // 3. Process (Translate Moves)
             const processedOpponents = activeOpps.map(o => ({
                 ...o,
-                species: toEnglish(o.species), // Use English species for calc
                 moves: o.moves.map(m => toEnglish(m))
             }));
 
@@ -940,8 +853,20 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         // 1. Enforce Max 252 (and min 0)
         let newValue = Math.max(0, Math.min(252, value));
 
-        // 2. Snap to efficient Level 50 EVs (REMOVED: logic fights user input)
-        // if (newValue !== 0) { ... }
+        // 2. Snap to efficient Level 50 EVs (0, 4, 12, 20, 28...)
+        if (newValue !== 0) {
+            // If close to 0 (e.g. 1-2), go to 0. 
+            // Logic: 0 -> next is 4. Midpoint is 2.
+            if (newValue <= 2) {
+                newValue = 0;
+            } else {
+                // Formula: 4 + 8k. k = round((val - 4)/8).
+                const k = Math.round((newValue - 4) / 8);
+                newValue = 4 + 8 * k;
+                // Clamp again just in case snap pushed it over (e.g. 252 -> 252 is ok. 4+8*31 = 252. perfect.)
+                newValue = Math.max(4, Math.min(252, newValue));
+            }
+        }
 
         // 3. Enforce Global 510 Limit
         const currentTotal = getTotalEVs();
@@ -1020,15 +945,8 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     <input
                         type="number"
                         min="0" max="252" step="4"
-                        value={ev === 0 ? '' : ev}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (val === '') updateEV(stat, 0);
-                            else {
-                                const num = Number(val);
-                                if (!isNaN(num)) updateEV(stat, num);
-                            }
-                        }}
+                        value={ev}
+                        onChange={(e) => updateEV(stat, Number(e.target.value))}
                         className="w-16 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-center text-white focus:border-pink-500 focus:outline-none"
                     />
                 </div>
@@ -1094,28 +1012,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             </div>
         );
     };
-    // Helper for Sorting
-    const getSortedRows = (rows: any[]) => {
-        if (sortOrder === 'none' || !rows) return rows;
-        return [...rows].sort((a, b) => {
-            const valA = a._sortVal ?? 0;
-            const valB = b._sortVal ?? 0;
-            if (sortOrder === 'desc') return valB - valA; // High SortVal (Hardest) first
-            return valA - valB; // Low SortVal (Easiest) first
-        });
-    };
-
     return (
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    ダメージ一括計算機 Version 0.9.3
+                    Pokemon SV Damage Calculator v2.3 (Adjustable)
                 </h1>
-                <p className="text-base text-gray-400 max-w-2xl mx-auto">
-                    環境上位の主要ポケモンに対するダメージを一括計算し、<br />
-                    最適な<b>攻撃・防御ライン（調整）</b>を効率よく検討するためのツールです。<br />
-                    <span className="text-sm opacity-80">※登録値・特化・無補正などの条件別ダメージや確定数を一覧で確認できます。</span>
+                <p className="text-lg text-gray-400">
+                    Select a configuration and adjust EVs/IVs to analyze.
                 </p>
             </div>
 
@@ -1134,13 +1039,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                         onClick={() => setEditMode('opponent')}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
                     >
-                        相手ポケモンを追加
+                        相手の編集
                     </button>
                     <button
                         onClick={() => setEditMode('manage')}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
                     >
-                        相手ポケモンリスト
+                        リスト管理
                     </button>
                 </div>
 
@@ -1202,25 +1107,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 `}
                                             >
                                                 <div className="flex items-center gap-3 overflow-hidden cursor-pointer flex-grow"
-                                                    onClick={() => {
-                                                        const targetGroup = o.groupId;
-                                                        let idsToToggle = [o.id];
-                                                        if (targetGroup) {
-                                                            // Find others with same group
-                                                            idsToToggle = displayList.filter(d => d.groupId === targetGroup).map(d => d.id);
-                                                        }
-                                                        const isCurrentlyExcluded = excludedIds.includes(o.id);
-
-                                                        setExcludedIds(prev => {
-                                                            if (isCurrentlyExcluded) {
-                                                                // Include (Remove from excluded)
-                                                                return prev.filter(id => !idsToToggle.includes(id));
-                                                            } else {
-                                                                // Exclude (Add to excluded)
-                                                                return [...new Set([...prev, ...idsToToggle])];
-                                                            }
-                                                        });
-                                                    }}
+                                                    onClick={() => setExcludedIds(prev => prev.includes(o.id) ? prev.filter(i => i !== o.id) : [...prev, o.id])}
                                                 >
                                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!isExcluded ? 'border-green-400 bg-green-400' : 'border-gray-500'}`}>
                                                         {!isExcluded && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
@@ -1402,7 +1289,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </div>
                                 </div>
                             )}
-
+                            <button
+                                onClick={handleCalculate}
+                                disabled={!currentConfig || isPending || !currentConfig.moves.some(m => m)}
+                                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 rounded border border-gray-600 whitespace-nowrap"
+                            >
+                                ダメ計 (編集中の相手で計算)
+                            </button>
                         </div>
                     )}
 
@@ -1418,375 +1311,324 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </h3>
                             </div>
 
-                            <div className="flex flex-col md:flex-row gap-6">
-                                {/* Left: Icon */}
-                                <div className="flex-shrink-0 flex justify-center items-start pt-4">
-                                    <img
-                                        src={getIconUrl(activeConfig.species)}
-                                        alt={activeConfig.species}
-                                        className="w-24 h-24 md:w-32 md:h-32 object-contain pixelated rendering-pixelated drop-shadow-lg"
-                                        onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
-                                    />
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                {/* Ability Selector */}
+                                <div className="flex flex-col items-start space-y-1">
+                                    <span className="text-xs text-gray-400">特性 (Ability)</span>
+                                    <select
+                                        value={activeConfig.ability || ''}
+                                        onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                    >
+                                        {availableAbilities.length > 0 ? (
+                                            availableAbilities.map((ab, idx) => (
+                                                <option key={`${ab}-${idx}`} value={ab}>{t(ab)}</option>
+                                            ))
+                                        ) : (
+                                            // Fallback if no list available yet
+                                            <option value={activeConfig.ability}>{t(activeConfig.ability)}</option>
+                                        )}
+                                    </select>
                                 </div>
 
-                                {/* Right: Controls */}
-                                <div className="flex-grow space-y-4">
-                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                        {/* Ability Selector */}
-                                        <div className="flex flex-col items-start space-y-1">
-                                            <span className="text-xs text-gray-400">特性 (Ability)</span>
-                                            <select
-                                                value={activeConfig.ability || ''}
-                                                onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
-                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
-                                            >
-                                                {availableAbilities.length > 0 ? (
-                                                    availableAbilities.map((ab, idx) => (
-                                                        <option key={`${ab}-${idx}`} value={ab}>{t(ab)}</option>
-                                                    ))
-                                                ) : (
-                                                    // Fallback if no list available yet
-                                                    <option value={activeConfig.ability}>{t(activeConfig.ability)}</option>
-                                                )}
-                                            </select>
-                                        </div>
-
-                                        {/* Item Selector */}
-                                        <div className="flex flex-col items-start space-y-1">
-                                            <span className="text-xs text-gray-400">持ち物 (Item)</span>
-                                            <select
-                                                value={activeConfig.item || ''}
-                                                onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
-                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
-                                            >
-                                                {REFINED_ITEMS.map((item) => (
-                                                    <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        {/* Tera Selector */}
-                                        <div className="flex flex-col items-start space-y-1">
-                                            <span className="text-xs text-gray-400">テラスタイプ</span>
-                                            <select
-                                                value={
-                                                    (activeConfig.species.includes('Terapagos') || activeConfig.species.includes('オーガポン')) // Ogerpon also fixed? User asked for Terapagos.
-                                                        && activeConfig.species.includes('Terapagos') ? 'Stellar' : (activeConfig.teraType || 'Stellar')
-                                                }
-                                                onChange={(e) => updateActiveConfig({ ...activeConfig, teraType: e.target.value })}
-                                                disabled={activeConfig.species.includes('Terapagos')}
-                                                className={`bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full ${activeConfig.species.includes('Terapagos') ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            >
-                                                {TERA_TYPES.map((type) => (
-                                                    <option key={type} value={type}>{type === 'Psychic' ? 'エスパー' : t(type)}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        {/* Nature Selector */}
-                                        <div className="flex flex-col items-start space-y-1">
-                                            <span className="text-xs text-gray-400">性格 (Nature)</span>
-                                            <select
-                                                value={activeConfig.nature}
-                                                onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
-                                                className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500"
-                                            >
-                                                {[
-                                                    // A Up
-                                                    'Lonely', 'Adamant', 'Naughty', 'Brave',
-                                                    // B Up
-                                                    'Bold', 'Impish', 'Lax', 'Relaxed',
-                                                    // C Up
-                                                    'Modest', 'Mild', 'Rash', 'Quiet',
-                                                    // D Up
-                                                    'Calm', 'Gentle', 'Careful', 'Sassy',
-                                                    // S Up
-                                                    'Timid', 'Hasty', 'Jolly', 'Naive',
-                                                ].map(n => (
-                                                    <option key={n} value={n}>{t(n)}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    {/* Moves Section */}
-                                    <div className="border-t border-gray-700 pt-4">
-                                        <h4 className="text-sm font-bold text-gray-400 mb-2 flex items-center gap-2">
-                                            技構成
-                                            {isThinkingMoves && <span className="text-xs text-gray-500 animate-pulse">Loading learnset...</span>}
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {Array.from({ length: 4 }).map((_, index) => {
-                                                const move = activeConfig?.moves[index] || '';
-                                                // USER REQUEST: White color for all move labels (removed colored classes)
-
-                                                return (
-                                                    <div key={index} className="flex flex-col space-y-1 w-full">
-                                                        <span className={`text-xs font-bold text-gray-400`}>技{index + 1}</span>
-                                                        <AutocompleteInput
-                                                            value={move}
-                                                            onChange={(val) => {
-                                                                const newMoves = [...activeConfig.moves];
-                                                                while (newMoves.length <= index) newMoves.push("");
-                                                                newMoves[index] = val;
-                                                                updateActiveConfig({ ...activeConfig, moves: newMoves });
-                                                            }}
-                                                            onSelect={(val) => {
-                                                                const newMoves = [...activeConfig.moves];
-                                                                while (newMoves.length <= index) newMoves.push("");
-                                                                newMoves[index] = val;
-                                                                updateActiveConfig({ ...activeConfig, moves: newMoves });
-                                                            }}
-                                                            itemList={availableMoves}
-                                                        />
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                        {/* Datalist removed */}
-                                    </div>
-
-                                    <div className="mb-4 pt-4 border-t border-gray-700">
-                                        <h4 className="text-sm font-bold text-gray-400 mb-2">ランク補正</h4>
-                                        <div className="flex w-full gap-2">
-                                            {renderRankSelect('攻撃', 'atk')}
-                                            {renderRankSelect('防御', 'def')}
-                                            {renderRankSelect('特攻', 'spa')}
-                                            {renderRankSelect('特防', 'spd')}
-                                            {renderRankSelect('素早さ', 'spe')}
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-                                        {renderStatSlider('HP', 'hp')}
-                                        {renderStatSlider('攻撃', 'atk')}
-                                        {renderStatSlider('防御', 'def')}
-                                        {renderStatSlider('特攻', 'spa')}
-                                        {renderStatSlider('特防', 'spd')}
-                                        {renderStatSlider('素早さ', 'spe')}
-                                    </div>
+                                {/* Item Selector */}
+                                <div className="flex flex-col items-start space-y-1">
+                                    <span className="text-xs text-gray-400">持ち物 (Item)</span>
+                                    <select
+                                        value={activeConfig.item || ''}
+                                        onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                    >
+                                        {REFINED_ITEMS.map((item) => (
+                                            <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
+                                        ))}
+                                    </select>
                                 </div>
+
+                                {/* Tera Selector */}
+                                <div className="flex flex-col items-start space-y-1">
+                                    <span className="text-xs text-gray-400">テラスタイプ</span>
+                                    <select
+                                        value={
+                                            (activeConfig.species.includes('Terapagos') || activeConfig.species.includes('オーガポン')) // Ogerpon also fixed? User asked for Terapagos.
+                                                && activeConfig.species.includes('Terapagos') ? 'Stellar' : (activeConfig.teraType || 'Stellar')
+                                        }
+                                        onChange={(e) => updateActiveConfig({ ...activeConfig, teraType: e.target.value })}
+                                        disabled={activeConfig.species.includes('Terapagos')}
+                                        className={`bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full ${activeConfig.species.includes('Terapagos') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    >
+                                        {TERA_TYPES.map((type) => (
+                                            <option key={type} value={type}>{type === 'Psychic' ? 'エスパー' : t(type)}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Nature Selector */}
+                                <div className="flex flex-col items-start space-y-1">
+                                    <span className="text-xs text-gray-400">性格 (Nature)</span>
+                                    <select
+                                        value={activeConfig.nature}
+                                        onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500"
+                                    >
+                                        {[
+                                            // A Up
+                                            'Lonely', 'Adamant', 'Naughty', 'Brave',
+                                            // B Up
+                                            'Bold', 'Impish', 'Lax', 'Relaxed',
+                                            // C Up
+                                            'Modest', 'Mild', 'Rash', 'Quiet',
+                                            // D Up
+                                            'Calm', 'Gentle', 'Careful', 'Sassy',
+                                            // S Up
+                                            'Timid', 'Hasty', 'Jolly', 'Naive',
+                                        ].map(n => (
+                                            <option key={n} value={n}>{t(n)}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            {/* Moves Section */}
+                            <div className="border-t border-gray-700 pt-4">
+                                <h4 className="text-sm font-bold text-gray-400 mb-2 flex items-center gap-2">
+                                    技構成
+                                    {isThinkingMoves && <span className="text-xs text-gray-500 animate-pulse">Loading learnset...</span>}
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {Array.from({ length: 4 }).map((_, index) => {
+                                        const move = activeConfig?.moves[index] || '';
+                                        // USER REQUEST: White color for all move labels (removed colored classes)
+
+                                        return (
+                                            <div key={index} className="flex flex-col space-y-1 w-full">
+                                                <span className={`text-xs font-bold text-gray-400`}>技{index + 1}</span>
+                                                <AutocompleteInput
+                                                    value={move}
+                                                    onChange={(val) => {
+                                                        const newMoves = [...activeConfig.moves];
+                                                        while (newMoves.length <= index) newMoves.push("");
+                                                        newMoves[index] = val;
+                                                        updateActiveConfig({ ...activeConfig, moves: newMoves });
+                                                    }}
+                                                    onSelect={(val) => {
+                                                        const newMoves = [...activeConfig.moves];
+                                                        while (newMoves.length <= index) newMoves.push("");
+                                                        newMoves[index] = val;
+                                                        updateActiveConfig({ ...activeConfig, moves: newMoves });
+                                                    }}
+                                                    itemList={availableMoves}
+                                                />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                                {/* Datalist removed */}
+                            </div>
+
+                            <div className="mb-4 pt-4 border-t border-gray-700">
+                                <h4 className="text-sm font-bold text-gray-400 mb-2">ランク補正</h4>
+                                <div className="flex w-full gap-2">
+                                    {renderRankSelect('攻撃', 'atk')}
+                                    {renderRankSelect('防御', 'def')}
+                                    {renderRankSelect('特攻', 'spa')}
+                                    {renderRankSelect('特防', 'spd')}
+                                    {renderRankSelect('素早さ', 'spe')}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                                {renderStatSlider('HP', 'hp')}
+                                {renderStatSlider('攻撃', 'atk')}
+                                {renderStatSlider('防御', 'def')}
+                                {renderStatSlider('特攻', 'spa')}
+                                {renderStatSlider('特防', 'spd')}
+                                {renderStatSlider('素早さ', 'spe')}
                             </div>
                         </div>
                     )}
 
                     {editMode !== 'manage' && (
                         <div className="p-4 bg-gray-900/40 rounded-xl border border-gray-700/30 space-y-4">
-                            <div className="flex items-center justify-between border-b border-gray-700 pb-2 cursor-pointer select-none" onClick={() => setIsEnvCollapsed(prev => !prev)}>
-                                <h3 className="text-lg font-semibold text-blue-200">
-                                    天候・フィールド・詳細設定
-                                </h3>
-                                <span className="text-blue-400 text-sm">
-                                    {isEnvCollapsed ? "▼ 表示する" : "▲ 隠す"}
-                                </span>
+                            <h3 className="text-lg font-semibold text-blue-200 border-b border-gray-700 pb-2">
+                                環境・サポート
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {/* Weather & Terrain */}
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-bold text-gray-400">天候</h4>
+                                        <select
+                                            value={globalField.weather || 'None'}
+                                            onChange={(e) => setGlobalField({ ...globalField, weather: e.target.value as any })}
+                                            className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="None">なし / 自動</option>
+                                            <option value="Sun">晴れ</option>
+                                            <option value="Rain">雨</option>
+                                            <option value="Sand">砂嵐</option>
+                                            <option value="Snow">雪</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-bold text-gray-400">フィールド</h4>
+                                        <select
+                                            value={globalField.terrain || 'None'}
+                                            onChange={(e) => setGlobalField({ ...globalField, terrain: e.target.value as any })}
+                                            className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-green-500 focus:outline-none"
+                                        >
+                                            <option value="None">なし / 自動</option>
+                                            <option value="Electric">エレキフィールド</option>
+                                            <option value="Grassy">グラスフィールド</option>
+                                            <option value="Psychic">サイコフィールド</option>
+                                            <option value="Misty">ミストフィールド</option>
+                                        </select>
+                                    </div>
+                                    {/* Spread Damage Rule */}
+                                    <div className="space-y-1 pt-1">
+                                        <h4 className="text-sm font-bold text-gray-400">ルール</h4>
+                                        <label className="flex items-center space-x-2 cursor-pointer bg-gray-700/50 p-2 rounded border border-gray-600">
+                                            <input
+                                                type="checkbox"
+                                                checked={globalField.global.isSpreadDamage ?? true}
+                                                onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSpreadDamage: e.target.checked } })}
+                                                className="rounded bg-gray-700 border-gray-600 text-blue-500 focus:ring-offset-gray-900"
+                                            />
+                                            <span className="text-sm text-gray-300">
+                                                全体技: ダブルダメージ<br />
+                                                (0.75倍補正あり)
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Ally Side */}
+                                <div className="space-y-2">
+                                    <h4 className="text-sm font-bold text-gray-400">味方側</h4>
+                                    <div className="space-y-1">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.userSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">リフレクター</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.userSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">ひかりのかべ</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.userSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">フレンドガード</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.userSide.isHelpingHand} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isHelpingHand: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">てだすけ</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Opponent Side */}
+                                <div className="space-y-2">
+                                    <h4 className="text-sm font-bold text-gray-400">相手側</h4>
+                                    <div className="space-y-1">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.opponentSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">リフレクター</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.opponentSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">ひかりのかべ</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.opponentSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">フレンドガード</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Global Ruins */}
+                                <div className="space-y-2">
+                                    <h4 className="text-sm font-bold text-gray-400">災い</h4>
+                                    <div className="space-y-1">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.global.isSwordOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSwordOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">わざわいのつるぎ (B↓)</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.global.isBeadsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isBeadsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">わざわいのたま (D↓)</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.global.isTabletsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isTabletsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">わざわいのおふだ (A↓)</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" checked={globalField.global.isVesselOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isVesselOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
+                                            <span className="text-sm text-gray-300">わざわいのうつわ (C↓)</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            {!isEnvCollapsed && (
-                                <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
-                                        {/* Weather & Terrain */}
-                                        <div className="space-y-4">
-                                            <div className="space-y-1">
-                                                <h4 className="text-sm font-bold text-gray-400">天候</h4>
-                                                <select
-                                                    value={globalField.weather || 'None'}
-                                                    onChange={(e) => setGlobalField({ ...globalField, weather: e.target.value as any })}
-                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none"
-                                                >
-                                                    <option value="None">なし / 自動</option>
-                                                    <option value="Sun">晴れ</option>
-                                                    <option value="Rain">雨</option>
-                                                    <option value="Sand">砂嵐</option>
-                                                    <option value="Snow">雪</option>
-                                                </select>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <h4 className="text-sm font-bold text-gray-400">フィールド</h4>
-                                                <select
-                                                    value={globalField.terrain || 'None'}
-                                                    onChange={(e) => setGlobalField({ ...globalField, terrain: e.target.value as any })}
-                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-green-500 focus:outline-none"
-                                                >
-                                                    <option value="None">なし / 自動</option>
-                                                    <option value="Electric">エレキフィールド</option>
-                                                    <option value="Grassy">グラスフィールド</option>
-                                                    <option value="Psychic">サイコフィールド</option>
-                                                    <option value="Misty">ミストフィールド</option>
-                                                </select>
-                                            </div>
-                                            {/* Spread Damage Rule */}
-                                            <div className="space-y-1 pt-1">
-                                                <h4 className="text-sm font-bold text-gray-400">ルール</h4>
-                                                <label className="flex items-center space-x-2 cursor-pointer bg-gray-700/50 p-2 rounded border border-gray-600">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={globalField.global.isSpreadDamage ?? true}
-                                                        onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSpreadDamage: e.target.checked } })}
-                                                        className="rounded bg-gray-700 border-gray-600 text-blue-500 focus:ring-offset-gray-900"
-                                                    />
-                                                    <span className="text-sm text-gray-300">
-                                                        全体技: ダブルダメージ<br />
-                                                        (0.75倍補正あり)
-                                                    </span>
-                                                </label>
-                                            </div>
 
-                                            <div className="space-y-1">
-                                                <h4 className="text-sm font-bold text-gray-400">連続技ヒット数</h4>
-                                                <select
-                                                    value={hitCount}
-                                                    onChange={(e) => setHitCount(Number(e.target.value))}
-                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-yellow-500 focus:outline-none"
-                                                >
-                                                    <option value={2}>2回</option>
-                                                    <option value={3}>3回</option>
-                                                    <option value={4}>4回</option>
-                                                    <option value={5}>5回</option>
-                                                </select>
-                                                <p className="text-xs text-gray-500">※スキルリンクは常に5回</p>
-                                            </div>
+                            {/* Opponent Ranks */}
 
-                                            <div className="space-y-1">
-                                                <h4 className="text-sm font-bold text-gray-400">防御ライン計算ロジック</h4>
-                                                <select
-                                                    value={calcSettings.defenseLineMode || 'standard'}
-                                                    onChange={(e) => setCalcSettings({ ...calcSettings, defenseLineMode: e.target.value as any })}
-                                                    className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
-                                                >
-                                                    <option value="standard">H振りベース (標準)</option>
-                                                    <option value="optimal">高効率調整 (最適)</option>
-                                                </select>
-                                                <p className="text-xs text-gray-500">※「最適」は総合耐久指数を効率化</p>
-                                            </div>
-                                        </div>
+                            {/* Opponent Ranks Restored */}
+                            <div className="border-t border-gray-700 pt-4 mt-2">
+                                <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
+                                <div className="flex w-full gap-2">
+                                    {renderRankSelect('攻撃', 'atk', true)}
+                                    {renderRankSelect('防御', 'def', true)}
+                                    {renderRankSelect('特攻', 'spa', true)}
+                                    {renderRankSelect('特防', 'spd', true)}
 
-                                        {/* Ally Side */}
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-bold text-gray-400">味方側</h4>
-                                            <div className="space-y-1">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.userSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">リフレクター</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.userSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">ひかりのかべ</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.userSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">フレンドガード</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.userSide.isHelpingHand} onChange={(e) => setGlobalField({ ...globalField, userSide: { ...globalField.userSide, isHelpingHand: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-pink-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">てだすけ</span>
-                                                </label>
-                                            </div>
-                                        </div>
+                                    {renderRankSelect('素早さ', 'spe', true)}
+                                </div>
+                            </div>
 
-                                        {/* Opponent Side */}
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-bold text-gray-400">相手側</h4>
-                                            <div className="space-y-1">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.opponentSide.isReflect} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isReflect: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">リフレクター</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.opponentSide.isLightScreen} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isLightScreen: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">ひかりのかべ</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.opponentSide.isFriendGuard} onChange={(e) => setGlobalField({ ...globalField, opponentSide: { ...globalField.opponentSide, isFriendGuard: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">フレンドガード</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {/* Global Ruins */}
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-bold text-gray-400">災い</h4>
-                                            <div className="space-y-1">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.global.isSwordOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isSwordOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">わざわいのつるぎ (B↓)</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.global.isBeadsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isBeadsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">わざわいのたま (D↓)</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.global.isTabletsOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isTabletsOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">わざわいのおふだ (A↓)</span>
-                                                </label>
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input type="checkbox" checked={globalField.global.isVesselOfRuin} onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, isVesselOfRuin: e.target.checked } })} className="rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-offset-gray-900" />
-                                                    <span className="text-sm text-gray-300">わざわいのうつわ (C↓)</span>
-                                                </label>
-                                            </div>
-                                        </div>
+                            {/* Detailed Settings Toggle */}
+                            <div className="border-t border-gray-700 pt-4 mt-2">
+                                <h4 className="text-sm font-bold text-gray-400 mb-2">詳細設定 (表示切替)</h4>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="flex-1 space-y-1">
+                                        <span className="text-xs text-gray-500">特性の分岐</span>
+                                        <select
+                                            value={calcSettings.abilityVariantMode}
+                                            onChange={(e) => setCalcSettings({ ...calcSettings, abilityVariantMode: e.target.value as VariantFilterMode })}
+                                            className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                                        >
+                                            <option value="default">すべて (重複は省略)</option>
+                                            <option value="active-only">発動のみ (Active Only)</option>
+                                            <option value="inactive-only">未発動のみ (Inactive Only)</option>
+                                        </select>
                                     </div>
-
-                                    {/* Opponent Ranks */}
-
-                                    {/* Opponent Ranks Restored */}
-                                    <div className="border-t border-gray-700 pt-4 mt-2">
-                                        <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
-                                        <div className="flex w-full gap-2">
-                                            {renderRankSelect('攻撃', 'atk', true)}
-                                            {renderRankSelect('防御', 'def', true)}
-                                            {renderRankSelect('特攻', 'spa', true)}
-                                            {renderRankSelect('特防', 'spd', true)}
-
-                                            {renderRankSelect('素早さ', 'spe', true)}
-                                        </div>
+                                    <div className="flex-1 space-y-1">
+                                        <span className="text-xs text-gray-500">テラスタルの分岐</span>
+                                        <select
+                                            value={calcSettings.teraVariantMode}
+                                            onChange={(e) => setCalcSettings({ ...calcSettings, teraVariantMode: e.target.value as VariantFilterMode })}
+                                            className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                                        >
+                                            <option value="default">すべて (重複は省略)</option>
+                                            <option value="active-only">テラスタルのみ (Tera Only)</option>
+                                            <option value="inactive-only">テラスタルなし (No Tera)</option>
+                                        </select>
                                     </div>
-
-                                    {/* Detailed Settings Toggle */}
-                                    <div className="border-t border-gray-700 pt-4 mt-2">
-                                        <h4 className="text-sm font-bold text-gray-400 mb-2">詳細設定 (表示切替)</h4>
-                                        <div className="flex flex-col sm:flex-row gap-4">
-                                            <div className="flex-1 space-y-1">
-                                                <span className="text-xs text-gray-500">特性の分岐</span>
-                                                <select
-                                                    value={calcSettings.abilityVariantMode}
-                                                    onChange={(e) => setCalcSettings({ ...calcSettings, abilityVariantMode: e.target.value as VariantFilterMode })}
-                                                    className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
-                                                >
-                                                    <option value="default">すべて (重複は省略)</option>
-                                                    <option value="active-only">発動のみ (Active Only)</option>
-                                                    <option value="inactive-only">未発動のみ (Inactive Only)</option>
-                                                </select>
-                                            </div>
-                                            <div className="flex-1 space-y-1">
-                                                <span className="text-xs text-gray-500">テラスタルの分岐</span>
-                                                <select
-                                                    value={calcSettings.teraVariantMode}
-                                                    onChange={(e) => setCalcSettings({ ...calcSettings, teraVariantMode: e.target.value as VariantFilterMode })}
-                                                    className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
-                                                >
-                                                    <option value="default">すべて (重複は省略)</option>
-                                                    <option value="active-only">テラスタルのみ (Tera Only)</option>
-                                                    <option value="inactive-only">テラスタルなし (No Tera)</option>
-                                                </select>
-                                            </div>
-                                            <div className="flex-1 space-y-1">
-                                                <span className="text-xs text-gray-500">その他</span>
-                                                <div className="flex items-center h-full">
-                                                    <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={calcSettings.excludeWeakMoves || false}
-                                                            onChange={(e) => setCalcSettings({ ...calcSettings, excludeWeakMoves: e.target.checked })}
-                                                            className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
-                                                        />
-                                                        確定3発以下を除外
-                                                    </label>
-                                                </div>
-                                            </div>
+                                    <div className="flex-1 space-y-1">
+                                        <span className="text-xs text-gray-500">その他</span>
+                                        <div className="flex items-center h-full">
+                                            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={calcSettings.excludeWeakMoves || false}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, excludeWeakMoves: e.target.checked })}
+                                                    className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
+                                                />
+                                                確定3発以下を除外
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
-                            )}
+                            </div>
+
                         </div>
                     )}
                 </div>
@@ -1801,42 +1643,20 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {
                 results && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {/* Tabs and Sort Control */}
-                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-end sm:items-center">
-                            <div className="flex space-x-1 rounded-xl bg-gray-900/50 p-1 w-full sm:w-auto">
-                                {(['attack', 'defense', 'offensiveLine', 'defenseLine'] as const).map((tab) => (
-                                    <button
-                                        key={tab}
-                                        onClick={() => {
-                                            setActiveTab(tab);
-                                            // Reset sort when switching tabs? Or keep?
-                                            // setSortOrder('desc'); 
-                                        }}
-                                        className={`px-4 rounded-lg py-2.5 text-sm font-medium leading-5 text-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 ${activeTab === tab
-                                            ? 'bg-gray-700 shadow shadow-black/50'
-                                            : 'text-gray-400 hover:bg-white/[0.12] hover:text-white'
-                                            }`}
-                                    >
-                                        {tab === 'attack' ? 'Attack (攻)' : tab === 'defense' ? 'Defense (受)' : tab === 'offensiveLine' ? 'Off Lines (攻ライン)' : 'Def Lines (受ライン)'}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* Sort Control (Only for Lines) */}
-                            {['offensiveLine', 'defenseLine'].includes(activeTab) && (
-                                <div className="flex items-center space-x-2 bg-gray-900/50 p-1 rounded-lg">
-                                    <span className="text-xs text-gray-400 pl-2">並び替え:</span>
-                                    <select
-                                        value={sortOrder}
-                                        onChange={(e) => setSortOrder(e.target.value as any)}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-blue-500"
-                                    >
-                                        <option value="none">登録順 (Default)</option>
-                                        <option value="desc">必要努力値が多い順 (Hardest)</option>
-                                        <option value="asc">必要努力値が少ない順 (Easiest)</option>
-                                    </select>
-                                </div>
-                            )}
+                        {/* Tabs */}
+                        <div className="flex space-x-1 rounded-xl bg-gray-900/50 p-1">
+                            {(['attack', 'defense', 'offensiveLine', 'defenseLine'] as const).map((tab) => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-white ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 ${activeTab === tab
+                                        ? 'bg-gray-700 shadow shadow-black/50'
+                                        : 'text-gray-400 hover:bg-white/[0.12] hover:text-white'
+                                        }`}
+                                >
+                                    {tab === 'attack' ? 'Attack (攻)' : tab === 'defense' ? 'Defense (受)' : tab === 'offensiveLine' ? 'Off Lines (攻ライン)' : 'Def Lines (受ライン)'}
+                                </button>
+                            ))}
                         </div>
 
                         {/* Content */}
@@ -1846,7 +1666,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     <Table
                                         headers={HEADERS_ATTACK}
                                         rows={results.attack}
-                                        stickyCount={4}
                                     />
                                 )}
                                 {activeTab === 'defense' && (
@@ -1856,7 +1675,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <Table
                                                 headers={HEADERS_DEF_PHYS}
                                                 rows={results.defense.physical}
-                                                stickyCount={4}
                                             />
                                         </div>
                                         <div>
@@ -1864,7 +1682,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <Table
                                                 headers={HEADERS_DEF_SPEC}
                                                 rows={results.defense.special}
-                                                stickyCount={4}
                                             />
                                         </div>
                                     </div>
@@ -1877,7 +1694,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         </p>
                                         <Table
                                             headers={HEADERS_OFF_LINE}
-                                            rows={getSortedRows(results.offensiveLine)}
+                                            rows={results.offensiveLine}
                                         />
                                     </div>
                                 )}
@@ -1887,7 +1704,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">Physical Lines (物理ライン)</h3>
                                             <Table
                                                 headers={HEADERS_DEF_LINE_PHYS}
-                                                rows={getSortedRows(results.defenseLine.physical)}
+                                                rows={results.defenseLine.physical}
                                                 highlightEfficient
                                             />
                                         </div>
@@ -1895,7 +1712,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">Special Lines (特殊ライン)</h3>
                                             <Table
                                                 headers={HEADERS_DEF_LINE_SPEC}
-                                                rows={getSortedRows(results.defenseLine.special)}
+                                                rows={results.defenseLine.special}
                                                 highlightEfficient
                                             />
                                         </div>

@@ -116,7 +116,7 @@
   {
     "name": {
       "english": "Rattata-Alola",
-      "japanese": "コラッタ(アローラ)"
+      "japanese": "コラッタ(アローラ)(アローラ)"
     }
   },
   {
@@ -128,13 +128,13 @@
   {
     "name": {
       "english": "Raticate-Alola",
-      "japanese": "ラッタ(アローラ)"
+      "japanese": "ラッタ(アローラ)(アローラ)"
     }
   },
   {
     "name": {
       "english": "Raticate-Alola-Totem",
-      "japanese": "ラッタ(アローラ)(ぬし)"
+      "japanese": "ラッタ(アローラ)(アローラ)(ぬし)"
     }
   },
   {
@@ -170,7 +170,7 @@
   {
     "name": {
       "english": "Pikachu-Alola",
-      "japanese": "ピカチュウ(アローラ)"
+      "japanese": "ピカチュウ(アローラ)(アローラ)"
     }
   },
   {
@@ -224,7 +224,7 @@
   {
     "name": {
       "english": "Raichu-Alola",
-      "japanese": "ライチュウ(アローラ)"
+      "japanese": "ライチュウ(アローラ)(アローラ)"
     }
   },
   {
@@ -236,7 +236,7 @@
   {
     "name": {
       "english": "Sandshrew-Alola",
-      "japanese": "サンド(アローラ)"
+      "japanese": "サンド(アローラ)(アローラ)"
     }
   },
   {
@@ -248,7 +248,7 @@
   {
     "name": {
       "english": "Sandslash-Alola",
-      "japanese": "サンドパン(アローラ)"
+      "japanese": "サンドパン(アローラ)(アローラ)"
     }
   },
   {
@@ -296,7 +296,7 @@
   {
     "name": {
       "english": "Vulpix-Alola",
-      "japanese": "ロコン(アローラ)"
+      "japanese": "ロコン(アローラ)(アローラ)"
     }
   },
   {
@@ -308,7 +308,7 @@
   {
     "name": {
       "english": "Ninetales-Alola",
-      "japanese": "キュウコン(アローラ)"
+      "japanese": "キュウコン(アローラ)(アローラ)"
     }
   },
   {
@@ -386,7 +386,7 @@
   {
     "name": {
       "english": "Diglett-Alola",
-      "japanese": "ディグダ(アローラ)"
+      "japanese": "ディグダ(アローラ)(アローラ)"
     }
   },
   {
@@ -398,7 +398,7 @@
   {
     "name": {
       "english": "Dugtrio-Alola",
-      "japanese": "ダグトリオ(アローラ)"
+      "japanese": "ダグトリオ(アローラ)(アローラ)"
     }
   },
   {
@@ -410,7 +410,7 @@
   {
     "name": {
       "english": "Meowth-Alola",
-      "japanese": "ニャース(アローラ)"
+      "japanese": "ニャース(アローラ)(アローラ)"
     }
   },
   {
@@ -428,7 +428,7 @@
   {
     "name": {
       "english": "Persian-Alola",
-      "japanese": "ペルシアン(アローラ)"
+      "japanese": "ペルシアン(アローラ)(アローラ)"
     }
   },
   {
@@ -572,19 +572,19 @@
   {
     "name": {
       "english": "Geodude-Alola",
-      "japanese": "イシツブテ(アローラ)"
+      "japanese": "イシツブテ(アローラ)(アローラ)"
     }
   },
   {
     "name": {
       "english": "Graveler",
-      "japanese": "ゴローン"
+      "japanese": "ゴロ��ン"
     }
   },
   {
     "name": {
       "english": "Graveler-Alola",
-      "japanese": "ゴローン(アローラ)"
+      "japanese": "ゴロ��ン(アローラ)(アローラ)"
     }
   },
   {
@@ -596,7 +596,7 @@
   {
     "name": {
       "english": "Golem-Alola",
-      "japanese": "ゴローニャ(アローラ)"
+      "japanese": "ゴローニャ(アローラ)(アローラ)"
     }
   },
   {
@@ -692,7 +692,7 @@
   {
     "name": {
       "english": "Grimer-Alola",
-      "japanese": "ベトベター(アローラ)"
+      "japanese": "ベトベター(アローラ)(アローラ)"
     }
   },
   {
@@ -704,7 +704,7 @@
   {
     "name": {
       "english": "Muk-Alola",
-      "japanese": "ベトベトン(アローラ)"
+      "japanese": "ベトベトン(アローラ)(アローラ)"
     }
   },
   {
@@ -806,7 +806,7 @@
   {
     "name": {
       "english": "Exeggutor-Alola",
-      "japanese": "ナッシー(アローラ)"
+      "japanese": "ナッシー(アローラ)(アローラ)"
     }
   },
   {
@@ -824,13 +824,13 @@
   {
     "name": {
       "english": "Marowak-Alola",
-      "japanese": "ガラガラ(アローラ)"
+      "japanese": "ガラガラ(アローラ)(アローラ)"
     }
   },
   {
     "name": {
       "english": "Marowak-Alola-Totem",
-      "japanese": "ガラガラ(アローラ)(ぬし)"
+      "japanese": "ガラガラ(アローラ)(アローラ)(ぬし)"
     }
   },
   {
@@ -6380,7 +6380,7 @@
   {
     "name": {
       "english": "Urshifu",
-      "japanese": "ウーラオス(いちげき)"
+      "japanese": "ウーラオス"
     }
   },
   {

@@ -1,6 +1,6 @@
 
 // Valid Items/Abilities for Top Meta Pokemon (Regulation G)
-// Key matches the Species name in meta_definitions.ts
+// Key matches the Species name in meta_definitions.ts (to be created from current meta_pokemons.ts)
 
 export interface MetaRanking {
     items: string[];
@@ -9,49 +9,111 @@ export interface MetaRanking {
 }
 
 export const MetaRankings: Record<string, MetaRanking> = {
-    // --- User Specified Configs ---
-    "Incineroar": {
-        items: ["Sitrus Berry", ""] // Sitrus and None
-    },
-    "Rillaboom": {
-        items: ["Assault Vest", ""] // AV and None
-    },
-    "Urshifu-Rapid-Strike": {
-        items: ["Mystic Water", ""] // Mystic Water and None
-    },
-    "Flutter Mane": {
-        items: ["Booster Energy", "Choice Specs"] // Booster and Specs
-    },
-    "Chien-Pao": {
-        items: [""] // None only
-    },
-    "Chi-Yu": {
-        items: [""] // None only
-    },
-    "Landorus": {
-        items: ["Life Orb"] // Life Orb
-    },
-    "Raging Bolt": {
-        items: ["Leftovers"] // Leftovers
-    },
-
-    // Note: Dragonite is intentionally OMITTED here.
-    // We want Dragonite(Multiscale) to use its default item (None).
-    // We want Dragonite(Inner Focus) to use its default item (Choice Band).
-    // If we included "Dragonite" here, specific defaults in definitions would be overridden/duplicated.
-
-    // --- Preserved Legendaries ---
+    // --- Restricted ---
     "Calyrex-Shadow": {
         items: ["Choice Specs", "Focus Sash", "Life Orb"]
     },
-    "Calyrex-Ice": {
-        items: ["Clear Amulet", "Never-Melt Ice"]
-    },
     "Miraidon": {
-        items: ["Choice Specs", "Life Orb"] // Default
+        items: ["Choice Specs", "Life Orb"]
     },
     "Koraidon": {
-        items: ["Clear Amulet", "Life Orb"] // Default
+        items: ["Clear Amulet", "Life Orb"]
+    },
+    "Kyogre": {
+        items: ["Choice Specs", "Mystic Water", ""]
+    },
+    "Groudon": {
+        items: ["Clear Amulet", "Choice Band", "Assault Vest"]
+    },
+    "Zacian-Crowned": {
+        items: ["Rusted Sword"]
+    },
+    "Terapagos": {
+        items: ["Leftovers", "Choice Specs", "Power Herb"]
+    },
+
+    // --- Paradox ---
+    "Flutter Mane": {
+        items: ["Choice Specs", "Booster Energy", "Focus Sash"]
+    },
+    "Iron Hands": {
+        items: ["Assault Vest", "Booster Energy"]
+    },
+    "Raging Bolt": {
+        items: ["Booster Energy", "Choice Specs", "Assault Vest"]
+    },
+    "Gouging Fire": {
+        items: ["Booster Energy", "Clear Amulet"]
+    },
+    "Walking Wake": {
+        items: ["Choice Specs", "Life Orb"]
+    },
+
+    // --- Standard Meta ---
+    "Incineroar": {
+        items: ["Sitrus Berry", ""]
+    },
+    "Rillaboom": {
+        items: ["Assault Vest", "Choice Band", ""]
+    },
+    "Urshifu-Rapid-Strike": {
+        items: ["Mystic Water", ""]
+    },
+    "Urshifu": { // Single Strike
+        items: ["Choice Band", "Black Glasses", ""]
+    },
+    "Ogerpon-Hearthflame": {
+        items: ["Hearthflame Mask"]
+    },
+    "Ogerpon-Wellspring": {
+        items: ["Wellspring Mask"]
+    },
+    "Chien-Pao": {
+        items: ["Life Orb", ""]
+    },
+    "Chi-Yu": {
+        items: ["Choice Specs", "Choice Scarf", ""]
+    },
+    "Gholdengo": {
+        items: ["Choice Specs", "Leftovers", "Choice Scarf"]
+    },
+    "Landorus-Therian": {
+        items: ["Assault Vest", ""]
+    },
+    "Tornadus": {
+        items: ["Covert Cloak", "Mental Herb", ""]
+    },
+    "Farigiraf": {
+        items: ["Throat Spray", "Sitrus Berry", ""]
+    },
+    "Ursaluna-Bloodmoon": {
+        items: ["Life Orb", "Silk Scarf", "Leftovers"]
+    },
+    "Amoonguss": {
+        items: ["Sitrus Berry", ""]
+    },
+    "Dragonite": {
+        items: ["Choice Band", ""]
+    },
+    "Kingambit": {
+        items: ["Black Glasses", "Assault Vest", "Leftovers"]
+    },
+    "Torkoal": {
+        items: ["Charcoal", "Sitrus Berry", ""]
+    },
+    "Annihilape": {
+        items: ["Leftovers", ""]
+    },
+    "Whimsicott": {
+        items: ["Covert Cloak", ""]
+    },
+    "Pelipper": {
+        items: ["Damp Rock", ""]
+    },
+    "Landorus": {
+        items: ["Life Orb", "Choice Specs"]
+    },
+    "Grimmsnarl": {
+        items: [""]
     }
-    // Removed others (Kyogre, Groudon, Zacian, Terapagos etc.) as per request to "remove defaults"
 };
