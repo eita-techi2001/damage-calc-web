@@ -21,9 +21,9 @@ const hiraganaToKatakana = (src: string) => {
 
 // Header Constants
 // Header Constants
-const HEADERS_ATTACK = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手HP', '相手防御実数', '自分実数値', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_DEF_PHYS = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手攻撃実数', 'HP実数', '防御実数', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_DEF_SPEC = ['相手', '技', 'DamagePct', 'DamageReal', '確定数', '相手攻撃実数', 'HP実数', '特防実数', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_ATTACK = ['相手', '技', 'ダメージ', '確定数', '相手HP', '相手防御実数', '自分実数値', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_DEF_PHYS = ['相手', '技', 'ダメージ', '確定数', '相手攻撃実数', 'HP実数', '防御実数', '自分持ち物', '自分テラスタル', '場の状態'];
+const HEADERS_DEF_SPEC = ['相手', '技', 'ダメージ', '確定数', '相手攻撃実数', 'HP実数', '特防実数', '自分持ち物', '自分テラスタル', '場の状態'];
 const HEADERS_OFF_LINE = ['必要実数値', '登録値', '自分テラスタル', '自分持ち物', '技', '相手', '相手HP', '相手耐久', 'H4', 'H252', 'HB/HD特化', '場の状態'];
 
 const HEADERS_DEF_LINE_PHYS = ['HP実数', '防御実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
@@ -42,17 +42,78 @@ const REFINED_ITEMS = [
     'Silk Scarf', 'Dragon Fang', 'Black Belt', 'Fairy Feather'
 ];
 
-// Helper to get Icon URL
+// Helper to get Icon URL (same as list management)
 const getIconUrl = (speciesName: string) => {
     if (!speciesName) return '';
-    // PokemonDB Style: lowercase, replace spaces with hyphens, remove special chars (except hyphens)
-    let slug = speciesName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
 
-    // Manual overrides for PokemonDB inconsistency
-    if (slug === 'calyrex-shadow') slug = 'calyrex-shadow-rider';
-    if (slug === 'calyrex-ice') slug = 'calyrex-ice-rider';
+    // Normalize full-width parentheses to half-width before translation
+    let normalizedName = speciesName
+        .replace(/（/g, '(')
+        .replace(/）/g, ')');
 
-    return `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
+    // Ensure we're working with English name
+    let englishName = toEnglish(normalizedName);
+
+    // DEBUG: Log regional forms only
+    const isRegionalForm = englishName.includes('-Alola') || englishName.includes('-Galar') ||
+                           englishName.includes('-Hisui') || englishName.includes('-Paldea');
+    if (isRegionalForm) {
+        console.log('🔍 Regional Form Debug:', {
+            input: speciesName,
+            normalized: normalizedName,
+            afterToEnglish: englishName,
+        });
+    }
+
+    // Remove any extra labels like (Active), (Inactive), parenthetical text
+    englishName = englishName
+        .replace(/\s*\(Active\)/gi, '')
+        .replace(/\s*\(Inactive\)/gi, '')
+        .replace(/\s*[\(（][^)）]*[\)）]/g, '') // Remove any parenthetical content (both half/full width)
+        .trim();
+
+    // PokemonDB format: lowercase, hyphenated, remove special chars
+    let slug = englishName.toLowerCase()
+        .replace(/ /g, '-')
+        .replace(/[.'']/g, '');
+
+    // DEBUG: Log after slug generation
+    if (isRegionalForm) {
+        console.log('   afterParenRemoval:', englishName, '→ slug:', slug);
+    }
+
+    // Specific fixes for known special cases
+    const specialCases: Record<string, string> = {
+        'calyrex-shadow': 'calyrex-shadow-rider',
+        'calyrex-ice': 'calyrex-ice-rider',
+        'calyrex-ice-rider': 'calyrex-ice-rider',
+        'calyrex-shadow-rider': 'calyrex-shadow-rider',
+        'urshifu-rapid-strike': 'urshifu-rapid-strike',
+        'urshifu-single-strike': 'urshifu-single-strike',
+        'landorus-therian': 'landorus-therian',
+        'tornadus-therian': 'tornadus-therian',
+        'thundurus-therian': 'thundurus-therian',
+        'enamorus-therian': 'enamorus-therian',
+        'basculin-blue-striped': 'basculin-blue-striped',
+        'basculin-white-striped': 'basculin-white-striped',
+        'tauros-paldea-combat': 'tauros-paldea-combat',
+        'tauros-paldea-blaze': 'tauros-paldea-blaze',
+        'tauros-paldea-aqua': 'tauros-paldea-aqua',
+        'maushold-family-of-four': 'maushold',
+        'maushold-family-of-three': 'maushold',
+        'dudunsparce-two-segment': 'dudunsparce',
+        'dudunsparce-three-segment': 'dudunsparce',
+    };
+
+    slug = specialCases[slug] || slug;
+
+    // Use different sources: Scarlet-Violet for regular Pokemon, Showdown dex for regional forms
+    // Showdown definitely has all regional forms (Alola/Galar/Hisui/Paldea)
+    const finalUrl = isRegionalForm
+        ? `https://play.pokemonshowdown.com/sprites/dex/${slug}.png`
+        : `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
+
+    return finalUrl;
 };
 
 const getItemIconUrl = (itemName: string) => {
@@ -94,12 +155,12 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
         if (header.includes('持ち物')) {
             const eng = toEnglish(val);
             const url = getItemIconUrl(eng);
-            if (url) return <img src={url} alt={val} className="w-6 h-6 object-contain mx-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />;
+            if (url) return <img src={url} alt={val} className="w-7 h-7 object-contain mx-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />;
         }
         if (header.includes('テラスタル')) {
             const eng = toEnglish(val);
             const url = getTypeIconUrl(eng);
-            if (url) return <img src={url} alt={val} className="w-8 h-4 object-contain mx-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />;
+            if (url) return <img src={url} alt={val} className="w-10 h-5 object-contain mx-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />;
         }
         if (header === '相手' && row._meta?.species) {
             const oppTera = toEnglish(String(row['相手テラスタル'] || '-'));
@@ -108,21 +169,21 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
             const itemUrl = getItemIconUrl(oppItem);
 
             return (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                     <img
                         src={getIconUrl(row._meta.species)}
                         alt={val}
-                        className="w-8 h-6 object-contain pixelated"
+                        className="w-12 h-9 object-contain pixelated"
+                        title={t(row._meta.species)}
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    <span>{t(row._meta.species)}</span>
-                    <div className="flex items-center gap-1 ml-1 opacity-80">
+                    <div className="flex items-center gap-1 opacity-80">
                         {teraUrl && (
                             <img
                                 src={teraUrl}
                                 alt={oppTera}
-                                className="w-8 h-4 object-contain"
+                                className="w-10 h-5 object-contain"
                                 title={`Tera: ${oppTera}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -132,7 +193,7 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
                             <img
                                 src={itemUrl}
                                 alt={oppItem}
-                                className="w-5 h-5 object-contain"
+                                className="w-6 h-6 object-contain"
                                 title={`Item: ${oppItem}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -334,7 +395,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         });
         getTranslationData().then(async (res) => {
             const { registerTranslations } = await import('@/core/translator');
-            registerTranslations(res.pokemon);
+            // Filter out regional forms from multilang file (they have incorrect translations)
+            // t() function handles regional forms dynamically
+            const filteredPokemon: Record<string, string> = {};
+            for (const [key, value] of Object.entries(res.pokemon)) {
+                if (!key.includes('-Alola') && !key.includes('-Galar') && !key.includes('-Hisui') && !key.includes('-Paldea')) {
+                    filteredPokemon[key] = value;
+                }
+            }
+            registerTranslations(filteredPokemon);
             registerTranslations(res.moves); // Also moves
         });
     }, []);
@@ -361,7 +430,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             const { getTranslationData } = await import('@/app/actions');
             const { registerTranslations } = await import('@/core/translator');
             const data = await getTranslationData();
-            registerTranslations({ ...data.pokemon, ...data.moves, ...data.abilities });
+            // Filter out regional forms from multilang file (they have incorrect translations)
+            const filteredPokemon: Record<string, string> = {};
+            for (const [key, value] of Object.entries(data.pokemon)) {
+                if (!key.includes('-Alola') && !key.includes('-Galar') && !key.includes('-Hisui') && !key.includes('-Paldea')) {
+                    filteredPokemon[key] = value;
+                }
+            }
+            registerTranslations({ ...filteredPokemon, ...data.moves, ...data.abilities });
         });
     }, []);
 
@@ -1017,7 +1093,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    Pokemon SV Damage Calculator v2.3 (Adjustable)
+                    一括ダメージ計算
                 </h1>
                 <p className="text-lg text-gray-400">
                     Select a configuration and adjust EVs/IVs to analyze.
@@ -1114,22 +1190,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     </div>
                                                     <div className="flex-shrink-0 mr-3">
                                                         <img
-                                                            src={`https://img.pokemondb.net/sprites/scarlet-violet/icon/${o.species.toLowerCase()
-                                                                .replace(/ /g, '-')
-                                                                .replace(/[.'’]/g, '')
-                                                                .replace('-(active)', '')
-                                                                .replace('-(inactive)', '')
-                                                                .replace('-rapid-strike', '-rapid-strike') // consistency check
-                                                                .replace('-single-strike', '-single-strike')
-                                                                .replace('-crowned', '-crowned')
-                                                                // Specific fixes if needed
-                                                                .replace('calyrex-ice', 'calyrex-ice-rider')
-                                                                .replace('calyrex-shadow', 'calyrex-shadow-rider')
-                                                                .replace('urshifu-rapid-strike', 'urshifu-rapid-strike')
-                                                                .replace('urshifu-single-strike', 'urshifu-single-strike')
-                                                                .replace('landorus-therian', 'landorus-therian')
-                                                                .replace('tornadus-therian', 'tornadus-therian')
-                                                                }.png`}
+                                                            src={getIconUrl(o.species)}
                                                             alt={o.species}
                                                             className="w-8 h-8 object-contain pixelated" // pixelated for icons
                                                             loading="lazy"
@@ -1187,27 +1248,51 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 {editMode === 'user' ? '自分のポケモンを選択' : '相手ポケモンを選択'}
                             </h2>
                             <div className="flex flex-col sm:flex-row gap-4 items-end">
-                                <div className="flex-grow w-full">
+                                <div className="flex-grow w-full flex items-center gap-3">
                                     {editMode === 'user' ? (
                                         <>
+                                            {/* User Pokemon Icon */}
+                                            {currentConfig?.species && (
+                                                <img
+                                                    src={getIconUrl(currentConfig.species)}
+                                                    alt={currentConfig.species}
+                                                    className="w-20 h-15 object-contain pixelated flex-shrink-0"
+                                                    title={t(currentConfig.species)}
+                                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                                />
+                                            )}
                                             {/* Autocomplete Combobox */}
-                                            <AutocompleteInput
-                                                value={selectedConfig}
-                                                onChange={setSelectedConfig}
-                                                onSelect={handleLoadUserPokemon}
-                                                itemList={allSpeciesList}
-                                                placeholder="Search My Pokemon (自分のポケモンを検索)..."
-                                            />
+                                            <div className="flex-grow max-w-md">
+                                                <AutocompleteInput
+                                                    value={selectedConfig}
+                                                    onChange={setSelectedConfig}
+                                                    onSelect={handleLoadUserPokemon}
+                                                    itemList={allSpeciesList}
+                                                    placeholder="Search My Pokemon (自分のポケモンを検索)..."
+                                                />
+                                            </div>
                                         </>
                                     ) : (
                                         <>
-                                            <AutocompleteInput
-                                                value={selectedOpponent}
-                                                onChange={setSelectedOpponent}
-                                                onSelect={handleLoadOpponent}
-                                                itemList={allSpeciesList}
-                                                placeholder="ポケモンを検索して追加..."
-                                            />
+                                            {/* Opponent Pokemon Icon */}
+                                            {opponentConfig?.species && (
+                                                <img
+                                                    src={getIconUrl(opponentConfig.species)}
+                                                    alt={opponentConfig.species}
+                                                    className="w-20 h-15 object-contain pixelated flex-shrink-0"
+                                                    title={t(opponentConfig.species)}
+                                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                                />
+                                            )}
+                                            <div className="flex-grow max-w-md">
+                                                <AutocompleteInput
+                                                    value={selectedOpponent}
+                                                    onChange={setSelectedOpponent}
+                                                    onSelect={handleLoadOpponent}
+                                                    itemList={allSpeciesList}
+                                                    placeholder="ポケモンを検索して追加..."
+                                                />
+                                            </div>
                                         </>
                                     )}
                                 </div>

@@ -333,6 +333,20 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
     }
 
     // Helper: Smart Berry Deduplication Helper
+    // Manual KO calculation for cases where kochance() fails
+    const calculateManualKO = (hp: number, minDmg: number, maxDmg: number) => {
+        if (maxDmg === 0) return '無理';
+
+        const minHits = Math.ceil(hp / maxDmg); // 最大ダメージでの最小ヒット数
+        const maxHits = Math.ceil(hp / minDmg); // 最小ダメージでの最大ヒット数
+
+        if (minHits === maxHits) {
+            return `確定${minHits}発`;
+        } else {
+            return `乱数${maxHits}発`;
+        }
+    };
+
     const calculateBerryAdjustedKO = (result: any, minDmg: number, maxDmg: number) => {
         let ko: { n: number, chance?: number, text: string } = { n: 0, chance: 0, text: '' };
         if (maxDmg > 0) {
@@ -841,9 +855,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                                 else killDesc = `乱数${ko.n}発 (${pct}%)`;
                             }
                         } else {
-                            // Fallback for very low damage or immunity
-                            if (minDmg === 0) killDesc = 'ダメージ無し';
-                            else killDesc = '乱数4発～';
+                            // Fallback: use manual calculation when kochance() fails
+                            killDesc = calculateManualKO(defMaxHP, minDmg, maxDmg);
                         }
 
                         // Detect Spread Override for Display
@@ -935,6 +948,10 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                         const teraLabel = defenderScenario.isTera ? (t(defender.teraType || '') || 'Terastal') : '-';
 
+                        const damageDisplay = percentage === maxPercentage
+                            ? (minDmg === maxDmg ? `${percentage}%（${minDmg}）` : `${percentage}%（${minDmg}～${maxDmg}）`)
+                            : `${percentage}%～${maxPercentage}%（${minDmg}～${maxDmg}）`;
+
                         attackResults.push({
                             '状況': `${userScenario.label}${variantLabel}`,
                             '自分実数値': userStat,
@@ -948,9 +965,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '相手持ち物': t(defender.item),
                             '相手HP': defMaxHP,
                             '相手防御実数': cat === 'Physical' ? result.defender.stats.def : result.defender.stats.spd,
-                            'DamagePct': percentage === maxPercentage ? `${percentage}%` : `${percentage}% ~ ${maxPercentage}%`,
+                            'ダメージ': damageDisplay,
                             '確定数': killDesc,
-                            'DamageReal': dmgStr,
                             '場の状態': formatVal(fieldState),
                             // Hidden Metadata
                             // Hidden Metadata for Deduplication & Reconstruction
@@ -1057,11 +1073,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const userMaxHP = result.defender.stats.hp;
                         const minPercentage = Math.floor((range[0] / userMaxHP) * 100);
                         const maxPercentage = Math.floor((maxDmg / userMaxHP) * 100);
-                        const percentageDisplay = minPercentage === maxPercentage ? `${minPercentage}%` : `${minPercentage} ~ ${maxPercentage}%`;
 
-                        const dmgStr = `${range[0]} ~ ${maxDmg}`;
+                        const damageDisplay = minPercentage === maxPercentage
+                            ? (range[0] === maxDmg ? `${minPercentage}%（${range[0]}）` : `${minPercentage}%（${range[0]}～${maxDmg}）`)
+                            : `${minPercentage}%～${maxPercentage}%（${range[0]}～${maxDmg}）`;
+
                         const ko = calculateBerryAdjustedKO(result, range[0], maxDmg);
-                        const killDesc = translateText(ko.text || '');
+                        const killDesc = ko.text ? translateText(ko.text) : calculateManualKO(userMaxHP, range[0], maxDmg);
 
                         // Filter Weak Moves (3HKO or worse)
                         if (settings?.excludeWeakMoves) {
@@ -1144,8 +1162,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '技': moveNameDisplay,
                             '場の状態': formatVal(fieldState),
                             '相手攻撃実数': result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa,
-                            'DamagePct': percentageDisplay,
-                            'DamageReal': dmgStr,
+                            'ダメージ': damageDisplay,
                             '確定数': killDesc,
                             // New Fields
                             '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),

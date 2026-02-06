@@ -4,6 +4,7 @@ export const japaneseDict: { [key: string]: string } = {
     "Flutter Mane": "ハバタクカミ",
     "Incineroar": "ガオガエン",
     "Rillaboom": "ゴリランダー",
+    "urshifu": "ウーラオス(いちげき)",
     "urshifurapidstrike": "ウーラオス(れんげき)",
     "Urshifu (Rapid Strike)": "ウーラオス(れんげき)",
     "calyrexshadow": "バドレックス(こくば)",
@@ -78,7 +79,9 @@ export const japaneseDict: { [key: string]: string } = {
     "Ogerpon-Wellspring": "オーガポン(いど)",
     "Ogerpon-Hearthflame": "オーガポン(かまど)",
     "Zamazenta-Crowned": "ザマゼンタ(王)",
+    "Urshifu": "ウーラオス(いちげき)",
     "Urshifu-Rapid-Strike": "ウーラオス(れんげき)",
+    "Urshifu-Single-Strike": "ウーラオス(いちげき)",
     "Calyrex-Shadow": "バドレックス(こくば)",
     "Calyrex-Ice": "バドレックス(はくば)",
 
@@ -367,6 +370,8 @@ const FIXED_TRANSLATIONS: { [key: string]: string } = {
     "Meltan": "メルタン",
 
     // Missing Forms
+    "urshifu": "ウーラオス(いちげき)",
+    "Urshifu": "ウーラオス(いちげき)",
     "Hoopa": "フーパ",
     "Hoopa-Unbound": "フーパ(ときはなたれし)",
     "Cherrim": "チェリム",
@@ -377,6 +382,66 @@ const FIXED_TRANSLATIONS: { [key: string]: string } = {
     "Oricorio-Pa'u": "オドリドリ(ふらふら)",
     "Oricorio-Pau": "オドリドリ(ふらふら)",
     "Oricorio-Sensu": "オドリドリ(まいまい)",
+
+    // Common base names for regional forms
+    "Rattata": "コラッタ",
+    "Raticate": "ラッタ",
+    "Raichu": "ライチュウ",
+    "Sandshrew": "サンド",
+    "Sandslash": "サンドパン",
+    "Vulpix": "ロコン",
+    "Ninetales": "キュウコン",
+    "Diglett": "ディグダ",
+    "Dugtrio": "ダグトリオ",
+    "Meowth": "ニャース",
+    "Persian": "ペルシアン",
+    "Geodude": "イシツブテ",
+    "Graveler": "ゴローン",
+    "Golem": "ゴローニャ",
+    "Grimer": "ベトベター",
+    "Muk": "ベトベトン",
+    "Exeggutor": "ナッシー",
+    "Marowak": "ガラガラ",
+    "Ponyta": "ポニータ",
+    "Rapidash": "ギャロップ",
+    "Slowpoke": "ヤドン",
+    "Slowbro": "ヤドラン",
+    "Slowking": "ヤドキング",
+    "Farfetch'd": "カモネギ",
+    "Weezing": "マタドガス",
+    "Mr. Mime": "バリヤード",
+    "Articuno": "フリーザー",
+    "Zapdos": "サンダー",
+    "Moltres": "ファイヤー",
+    "Corsola": "サニーゴ",
+    "Zigzagoon": "ジグザグマ",
+    "Linoone": "マッスグマ",
+    "Darumaka": "ダルマッカ",
+    "Darmanitan": "ヒヒダルマ",
+    "Yamask": "デスマス",
+    "Stunfisk": "マッギョ",
+    "Growlithe": "ガーディ",
+    "Arcanine": "ウインディ",
+    "Voltorb": "ビリリダマ",
+    "Electrode": "マルマイン",
+    "Typhlosion": "バクフーン",
+    "Qwilfish": "ハリーセン",
+    "Sneasel": "ニューラ",
+    "Samurott": "ダイケンキ",
+    "Lilligant": "ドレディア",
+    "Zorua": "ゾロア",
+    "Zoroark": "ゾロアーク",
+    "Braviary": "ウォーグル",
+    "Sliggoo": "ヌメイル",
+    "Goodra": "ヌメルゴン",
+    "Avalugg": "クレベース",
+    "Decidueye": "ジュナイパー",
+    "Tauros": "ケンタロス",
+    "Tauros-Paldea-Combat": "ケンタロス(パルデア)",
+    "Tauros-Paldea-Blaze": "ケンタロス(パルデア)炎",
+    "Tauros-Paldea-Aqua": "ケンタロス(パルデア)水",
+    "Wooper": "ウパー",
+    "Clodsire": "ドオー",
 };
 
 export const reverseJapaneseDict: { [key: string]: string } = {};
@@ -404,11 +469,50 @@ export function registerTranslations(newDict: { [key: string]: string }) {
 }
 
 export function t(key: string): string {
-    return japaneseDict[key] || key;
+    // Check exact match first
+    if (japaneseDict[key]) return japaneseDict[key];
+
+    // Handle regional forms dynamically (e.g., "Rattata-Alola" -> "ラッタ(アローラ)")
+    const regionalSuffixes: { [key: string]: string } = {
+        '-Alola': '(アローラ)',
+        '-Galar': '(ガラル)',
+        '-Hisui': '(ヒスイ)',
+        '-Paldea': '(パルデア)'
+    };
+
+    for (const [suffix, translation] of Object.entries(regionalSuffixes)) {
+        if (key.endsWith(suffix)) {
+            const baseName = key.slice(0, -suffix.length);
+            const baseTranslation = japaneseDict[baseName] || baseName;
+            return baseTranslation + translation;
+        }
+    }
+
+    return key;
 }
 
 export function toEnglish(key: string): string {
-    return reverseJapaneseDict[key] || key;
+    // Check exact match first
+    if (reverseJapaneseDict[key]) return reverseJapaneseDict[key];
+
+    // Handle regional forms dynamically (e.g., "ラッタ(アローラ)" or "ラッタ（アローラ）" -> "Rattata-Alola")
+    // Support both half-width () and full-width （）parentheses
+    const regionalPatterns = [
+        { pattern: /[\(（]アローラ[\)）]$/, suffix: '-Alola' },
+        { pattern: /[\(（]ガラル[\)）]$/, suffix: '-Galar' },
+        { pattern: /[\(（]ヒスイ[\)）]$/, suffix: '-Hisui' },
+        { pattern: /[\(（]パルデア[\)）]$/, suffix: '-Paldea' }
+    ];
+
+    for (const { pattern, suffix } of regionalPatterns) {
+        if (pattern.test(key)) {
+            const baseName = key.replace(pattern, '');
+            const baseEnglish = reverseJapaneseDict[baseName] || baseName;
+            return baseEnglish + suffix;
+        }
+    }
+
+    return key;
 }
 
 export function translateText(text: string): string {
