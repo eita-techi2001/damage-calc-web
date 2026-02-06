@@ -29,6 +29,10 @@ const HEADERS_OFF_LINE = ['必要実数値', '登録値', '自分テラスタル
 const HEADERS_DEF_LINE_PHYS = ['HP実数', '防御実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
 const HEADERS_DEF_LINE_SPEC = ['HP実数', '特防実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
 
+// Helper functions to add remarks column conditionally
+const withRemarks = (headers: string[], showRemarks: boolean) =>
+    showRemarks ? [...headers, '備考'] : headers;
+
 const REFINED_ITEMS = [
     '',
     'Choice Band', 'Choice Specs', 'Wise Glasses', 'Muscle Band',
@@ -54,16 +58,9 @@ const getIconUrl = (speciesName: string) => {
     // Ensure we're working with English name
     let englishName = toEnglish(normalizedName);
 
-    // DEBUG: Log regional forms only
+    // Check for regional forms BEFORE any transformations
     const isRegionalForm = englishName.includes('-Alola') || englishName.includes('-Galar') ||
                            englishName.includes('-Hisui') || englishName.includes('-Paldea');
-    if (isRegionalForm) {
-        console.log('🔍 Regional Form Debug:', {
-            input: speciesName,
-            normalized: normalizedName,
-            afterToEnglish: englishName,
-        });
-    }
 
     // Remove any extra labels like (Active), (Inactive), parenthetical text
     englishName = englishName
@@ -76,11 +73,6 @@ const getIconUrl = (speciesName: string) => {
     let slug = englishName.toLowerCase()
         .replace(/ /g, '-')
         .replace(/[.'']/g, '');
-
-    // DEBUG: Log after slug generation
-    if (isRegionalForm) {
-        console.log('   afterParenRemoval:', englishName, '→ slug:', slug);
-    }
 
     // Specific fixes for known special cases
     const specialCases: Record<string, string> = {
@@ -107,8 +99,12 @@ const getIconUrl = (speciesName: string) => {
 
     slug = specialCases[slug] || slug;
 
+    // Special override for Corsola-Galar (dex sprite doesn't exist)
+    if (slug === 'corsola-galar' || slug === 'corsola-galarian') {
+        return `https://play.pokemonshowdown.com/sprites/pokemon/corsola-galar.png`;
+    }
+
     // Use different sources: Scarlet-Violet for regular Pokemon, Showdown dex for regional forms
-    // Showdown definitely has all regional forms (Alola/Galar/Hisui/Paldea)
     const finalUrl = isRegionalForm
         ? `https://play.pokemonshowdown.com/sprites/dex/${slug}.png`
         : `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
@@ -421,8 +417,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'attack' | 'defense' | 'defenseLine' | 'offensiveLine'>('attack');
     const [availableMoves, setAvailableMoves] = useState<string[]>(allMoves);
-    const [availableAbilities, setAvailableAbilities] = useState<string[]>([]);
+    const [userAvailableAbilities, setUserAvailableAbilities] = useState<string[]>([]);
+    const [opponentAvailableAbilities, setOpponentAvailableAbilities] = useState<string[]>([]);
     const [isThinkingMoves, setIsThinkingMoves] = useState(false);
+    const [evInputs, setEvInputs] = useState<{ [key: string]: string }>({}); // Local state for EV inputs
+
+    // Derived active abilities based on editMode
+    const availableAbilities = editMode === 'user' ? userAvailableAbilities : opponentAvailableAbilities;
 
     // NEW: Fetch full translations on mount
     useEffect(() => {
@@ -519,7 +520,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     const dataRes = await getPokemonData(engSpecies);
                     if (dataRes.success && dataRes.data && dataRes.data.abilities) {
                         const abilities = Object.values(dataRes.data.abilities) as string[];
-                        setAvailableAbilities(abilities);
+                        setUserAvailableAbilities(abilities);
                         // Fix for persistant ability bug:
                         // If current config's ability is not in the new species' valid abilities, default to first one.
                         if (!abilities.includes(res.data.ability)) {
@@ -548,12 +549,12 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 const isPhysical = bs.atk >= bs.spa;
 
                 const defaultEVs = {
-                    hp: 4,
-                    atk: isPhysical ? 252 : 0,
+                    hp: 0,
+                    atk: 0,
                     def: 0,
-                    spa: isPhysical ? 0 : 252,
+                    spa: 0,
                     spd: 0,
-                    spe: 252
+                    spe: 0
                 };
 
                 const defaultIVs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
@@ -580,7 +581,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 setBaseStats(bs);
                 if (dataRes.data.abilities) {
                     // Extract values from abilities object (0, 1, H, S)
-                    setAvailableAbilities(Object.values(dataRes.data.abilities));
+                    setUserAvailableAbilities(Object.values(dataRes.data.abilities));
                 }
                 setError(null);
 
@@ -613,7 +614,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 if (basic.data.abilities) {
                     // FIX: Update available abilities for opponent edit mode
                     const abilities = Object.values(basic.data.abilities) as string[];
-                    setAvailableAbilities(abilities);
+                    setOpponentAvailableAbilities(abilities);
                 }
             }
             return;
@@ -661,7 +662,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 const abilityData = await getPokemonData(name);
                 if (abilityData.success && abilityData.data?.abilities) {
                     const abilities = Object.values(abilityData.data.abilities) as string[];
-                    setAvailableAbilities(abilities);
+                    setOpponentAvailableAbilities(abilities);
                 }
 
                 setSaveMessage(null);
@@ -696,7 +697,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             setOpponentBaseStats(basic.data.baseStats);
             if (basic.data.abilities) {
                 const abilities = Object.values(basic.data.abilities) as string[];
-                setAvailableAbilities(abilities);
+                setOpponentAvailableAbilities(abilities);
             }
         }
     };
@@ -1020,9 +1021,31 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     <span className="text-xs text-gray-500">努力値</span>
                     <input
                         type="number"
-                        min="0" max="252" step="4"
-                        value={ev}
-                        onChange={(e) => updateEV(stat, Number(e.target.value))}
+                        min="0" max="252"
+                        value={evInputs[stat] !== undefined ? evInputs[stat] : (ev || '')}
+                        onChange={(e) => setEvInputs({ ...evInputs, [stat]: e.target.value })}
+                        onFocus={(e) => setEvInputs({ ...evInputs, [stat]: String(ev || '') })}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.currentTarget.blur();
+                            }
+                        }}
+                        onBlur={(e) => {
+                            const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                            if (!isNaN(val)) {
+                                // Round down to nearest multiple of 4
+                                const rounded = Math.floor(val / 4) * 4;
+                                const clamped = Math.max(0, Math.min(252, rounded));
+                                updateEV(stat, clamped);
+                                // Clear local input state so it uses the updated EV value
+                                setEvInputs((prev) => {
+                                    const newInputs = { ...prev };
+                                    delete newInputs[stat];
+                                    return newInputs;
+                                });
+                            }
+                        }}
+                        placeholder="0"
                         className="w-16 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-center text-white focus:border-pink-500 focus:outline-none"
                     />
                 </div>
@@ -1031,7 +1054,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 <input
                     type="range"
                     min="0" max="252" step="4"
-                    value={ev}
+                    value={Math.floor((ev || 0) / 4) * 4}
                     onChange={(e) => updateEV(stat, Number(e.target.value))}
                     className="flex-grow h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
                 />
@@ -1321,9 +1344,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <div className="flex flex-col gap-2 w-full">
                                             <input
                                                 type="text"
-                                                placeholder="ラベル (例: スカーフ型, H252など)"
-                                                value={customLabel}
-                                                onChange={(e) => setCustomLabel(e.target.value)}
+                                                placeholder="備考 (メモを入力...)"
+                                                value={opponentConfig?.remarks || ''}
+                                                onChange={(e) => setOpponentConfig({ ...opponentConfig!, remarks: e.target.value })}
                                                 className="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
                                             />
                                             <div className="flex gap-2">
@@ -1374,18 +1397,11 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </div>
                                 </div>
                             )}
-                            <button
-                                onClick={handleCalculate}
-                                disabled={!currentConfig || isPending || !currentConfig.moves.some(m => m)}
-                                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 rounded border border-gray-600 whitespace-nowrap"
-                            >
-                                ダメ計 (編集中の相手で計算)
-                            </button>
                         </div>
                     )}
 
-                    {/* Stats Slider Section (activeConfig) */}
-                    {activeConfig && (
+                    {/* Stats Slider Section (activeConfig) - For User and Opponent modes */}
+                    {activeConfig && editMode !== 'manage' && (
                         <div className="p-4 bg-gray-900/40 rounded-xl border border-gray-700/30 space-y-4">
                             <div className="flex flex-wrap justify-between items-center border-b border-gray-700 pb-2 gap-4">
                                 <h3 className={`text-lg font-semibold ${editMode === 'opponent' ? 'text-purple-200' : 'text-pink-200'}`}>
@@ -1534,7 +1550,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                         </div>
                     )}
 
-                    {editMode !== 'manage' && (
+                    {editMode === 'user' && (
                         <div className="p-4 bg-gray-900/40 rounded-xl border border-gray-700/30 space-y-4">
                             <h3 className="text-lg font-semibold text-blue-200 border-b border-gray-700 pb-2">
                                 環境・サポート
@@ -1585,6 +1601,20 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 (0.75倍補正あり)
                                             </span>
                                         </label>
+                                    </div>
+                                    {/* Multi-Hit Count */}
+                                    <div className="space-y-1 pt-1">
+                                        <h4 className="text-sm font-bold text-gray-400">連続攻撃</h4>
+                                        <select
+                                            value={globalField.global.multiHitCount ?? 5}
+                                            onChange={(e) => setGlobalField({ ...globalField, global: { ...globalField.global, multiHitCount: parseInt(e.target.value) } })}
+                                            className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="2">2回</option>
+                                            <option value="3">3回</option>
+                                            <option value="4">4回</option>
+                                            <option value="5">5回 (スキルリンク)</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1699,7 +1729,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </div>
                                     <div className="flex-1 space-y-1">
                                         <span className="text-xs text-gray-500">その他</span>
-                                        <div className="flex items-center h-full">
+                                        <div className="flex flex-col gap-2">
                                             <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
                                                 <input
                                                     type="checkbox"
@@ -1708,6 +1738,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
                                                 />
                                                 確定3発以下を除外
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={calcSettings.showRemarks || false}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, showRemarks: e.target.checked })}
+                                                    className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
+                                                />
+                                                備考を表示
                                             </label>
                                         </div>
                                     </div>
@@ -1749,7 +1788,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="overflow-x-auto min-w-full">
                                 {activeTab === 'attack' && (
                                     <Table
-                                        headers={HEADERS_ATTACK}
+                                        headers={withRemarks(HEADERS_ATTACK, calcSettings.showRemarks || false)}
                                         rows={results.attack}
                                     />
                                 )}
@@ -1758,14 +1797,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-blue-500">Physical (物理)</h3>
                                             <Table
-                                                headers={HEADERS_DEF_PHYS}
+                                                headers={withRemarks(HEADERS_DEF_PHYS, calcSettings.showRemarks || false)}
                                                 rows={results.defense.physical}
                                             />
                                         </div>
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-purple-500">Special (特殊)</h3>
                                             <Table
-                                                headers={HEADERS_DEF_SPEC}
+                                                headers={withRemarks(HEADERS_DEF_SPEC, calcSettings.showRemarks || false)}
                                                 rows={results.defense.special}
                                             />
                                         </div>
@@ -1778,7 +1817,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             必要な努力値 (性格補正が必要な場合は補正後の値を表示 / 例: (Bold) 124)
                                         </p>
                                         <Table
-                                            headers={HEADERS_OFF_LINE}
+                                            headers={withRemarks(HEADERS_OFF_LINE, calcSettings.showRemarks || false)}
                                             rows={results.offensiveLine}
                                         />
                                     </div>
@@ -1788,7 +1827,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">Physical Lines (物理ライン)</h3>
                                             <Table
-                                                headers={HEADERS_DEF_LINE_PHYS}
+                                                headers={withRemarks(HEADERS_DEF_LINE_PHYS, calcSettings.showRemarks || false)}
                                                 rows={results.defenseLine.physical}
                                                 highlightEfficient
                                             />
@@ -1796,7 +1835,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <div>
                                             <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">Special Lines (特殊ライン)</h3>
                                             <Table
-                                                headers={HEADERS_DEF_LINE_SPEC}
+                                                headers={withRemarks(HEADERS_DEF_LINE_SPEC, calcSettings.showRemarks || false)}
                                                 rows={results.defenseLine.special}
                                                 highlightEfficient
                                             />

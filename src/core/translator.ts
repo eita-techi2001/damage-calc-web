@@ -381,6 +381,12 @@ const FIXED_TRANSLATIONS: { [key: string]: string } = {
     "Oricorio-Pau": "オドリドリ(ふらふら)",
     "Oricorio-Sensu": "オドリドリ(まいまい)",
 
+    // Gender-specific Pokemon
+    "Nidoran-F": "ニドラン♀",
+    "Nidoran-M": "ニドラン♂",
+    "Nidoran♀": "ニドラン♀",
+    "Nidoran♂": "ニドラン♂",
+
     // Common base names for regional forms
     "Rattata": "コラッタ",
     "Raticate": "ラッタ",

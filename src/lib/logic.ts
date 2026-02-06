@@ -137,7 +137,10 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
     const calc = new DamageCalculator();
     const explorer = new LineExplorer();
     const gen = 9;
-    const baseFieldArgs: any = { isSpreadDamage: globalField?.global?.isSpreadDamage ?? true }; // Placeholder for future manual field config
+    const baseFieldArgs: any = {
+        isSpreadDamage: globalField?.global?.isSpreadDamage ?? true,
+        multiHitCount: globalField?.global?.multiHitCount ?? 5
+    }; // Placeholder for future manual field config
 
     // Prepare Targets (Opponents)
     // If opponentsList (formerly opponentOverrides) is provided, use it directly.
@@ -968,6 +971,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             'ダメージ': damageDisplay,
                             '確定数': killDesc,
                             '場の状態': formatVal(fieldState),
+                            '備考': defender.remarks || '',
                             // Hidden Metadata
                             // Hidden Metadata for Deduplication & Reconstruction
                             '_meta': {
@@ -1168,6 +1172,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '相手特性': getDisplayAbility(effectiveAttacker.ability || '-', attacker.extraLabel || '', effectiveAttacker.item, fieldArgs.weather, fieldArgs.terrain),
                             '自分特性': getDisplayAbility(userPoke.ability || '-', variantLabel, userPoke.item, fieldArgs.weather, fieldArgs.terrain),
                             '自分持ち物': t(userPoke.item || '-'),
+                            '備考': attacker.remarks || '',
                             '_meta': {
 
                                 minDmg: range[0],
@@ -1278,6 +1283,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 '相手持ち物': r['相手持ち物'],
                 '技': r['技'],
                 '場の状態': r['場の状態'],
+                '備考': r['備考'] || '',
                 '_meta': r['_meta'] // Ensure meta is passed for icons
             };
 
@@ -1589,6 +1595,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 'H252': tierResults['H252'],
                 'HB/HD特化': tierResults['HB/HD特化'],
                 '場の状態': r['場の状態'],
+                '備考': r['備考'] || '',
                 '_meta': r['_meta'] // Add meta for icons
             });
         }

@@ -42,7 +42,7 @@ export class DamageCalculator {
         return new Pokemon(gen, config.species, options);
     }
 
-    public calculateDamage(attackerConfig: UserPokemonConfig, defenderConfig: MetaPokemonVariant, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean } = {}) {
+    public calculateDamage(attackerConfig: UserPokemonConfig, defenderConfig: MetaPokemonVariant, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean; multiHitCount?: number } = {}) {
         const attacker = this.toCalcPokemon(attackerConfig, false, isAttackerTera);
 
         // Fix for Stellar Defense: Stellar type defensively retains original typing.
@@ -55,12 +55,23 @@ export class DamageCalculator {
         // Logic to Handle Spread Damage Rule
         // Default is TRUE (Spread moves get 0.75x in Doubles).
         // If FALSE (Single), we override target to 'Normal' to force 1.0x.
-        const { isSpreadDamage = true, ...realFieldOptions } = fieldOptions;
+        const { isSpreadDamage = true, multiHitCount = 5, ...realFieldOptions } = fieldOptions;
 
-        // Check original move target
+        // Check original move target and apply overrides
         let move = new Move(gen, moveName);
+        const moveOverrides: any = {};
+
         if (isSpreadDamage === false && ['allAdjacent', 'allAdjacentFoes'].includes(move.target)) {
-            move = new Move(gen, moveName, { overrides: { target: 'normal' } });
+            moveOverrides.target = 'normal';
+        }
+
+        // Set hits for multi-hit moves
+        if (multiHitCount && multiHitCount !== 5) {
+            moveOverrides.hits = multiHitCount;
+        }
+
+        if (Object.keys(moveOverrides).length > 0) {
+            move = new Move(gen, moveName, { overrides: moveOverrides });
         }
 
         // Merge default field (Doubles) with overrides
@@ -72,19 +83,30 @@ export class DamageCalculator {
     }
 
     // Add more methods for scenarios (e.g., getting hit by meta)
-    public calculateReceivedDamage(attackerConfig: MetaPokemonVariant, defenderConfig: UserPokemonConfig, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean } = {}) {
+    public calculateReceivedDamage(attackerConfig: MetaPokemonVariant, defenderConfig: UserPokemonConfig, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean; multiHitCount?: number } = {}) {
         const attacker = this.toCalcPokemon(attackerConfig, false, isAttackerTera);
 
         // Fix for Stellar Defense (User as Defender)
         const isDefenderStellar = isDefenderTera && defenderConfig.teraType === 'Stellar';
         const defender = this.toCalcPokemon(defenderConfig, false, isDefenderTera && !isDefenderStellar);
 
-        const { isSpreadDamage = true, ...realFieldOptions } = fieldOptions;
+        const { isSpreadDamage = true, multiHitCount = 5, ...realFieldOptions } = fieldOptions;
 
-        // Check original move target
+        // Check original move target and apply overrides
         let move = new Move(gen, moveName);
+        const moveOverrides: any = {};
+
         if (isSpreadDamage === false && ['allAdjacent', 'allAdjacentFoes'].includes(move.target)) {
-            move = new Move(gen, moveName, { overrides: { target: 'normal' } });
+            moveOverrides.target = 'normal';
+        }
+
+        // Set hits for multi-hit moves
+        if (multiHitCount && multiHitCount !== 5) {
+            moveOverrides.hits = multiHitCount;
+        }
+
+        if (Object.keys(moveOverrides).length > 0) {
+            move = new Move(gen, moveName, { overrides: moveOverrides });
         }
 
         const currentField = new Field({ gameType: 'Doubles', ...realFieldOptions });

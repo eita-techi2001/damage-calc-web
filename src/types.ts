@@ -29,6 +29,7 @@ export interface UserPokemonConfig {
     teraType?: TypeName;
     boosts?: Partial<PokemonStats>;
     overrides?: any;
+    remarks?: string; // 備考
 }
 
 export interface MetaPokemonVariant {
@@ -52,6 +53,7 @@ export interface MetaPokemonVariant {
     };
     overrides?: any;
     boosts?: Partial<PokemonStats>;
+    remarks?: string; // 備考
 }
 
 export interface CalculationResult {
@@ -83,6 +85,7 @@ export interface GlobalFieldState {
         isTabletsOfRuin: boolean;
         isVesselOfRuin: boolean;
         isSpreadDamage?: boolean; // Added for Toggle (Default true)
+        multiHitCount?: number; // 連続攻撃回数 (Default 5)
     };
 }
 
@@ -92,4 +95,5 @@ export interface CalculationSettings {
     abilityVariantMode: VariantFilterMode;
     teraVariantMode: VariantFilterMode;
     excludeWeakMoves?: boolean;
+    showRemarks?: boolean; // 備考を表示
 }
