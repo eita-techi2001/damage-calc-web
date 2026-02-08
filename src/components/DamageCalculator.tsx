@@ -752,16 +752,16 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     else next.push(updated as any);
                 } else {
                     // Sibling: sync shared fields, preserve variant-specific fields
-                    const metaSibling = metaOpponents.find(m => m.id === id);
-                    const existingSibling = existingIdx >= 0 ? next[existingIdx] : metaSibling;
+                    const metaSibling: any = metaOpponents.find(m => m.id === id);
+                    const existingSibling: any = existingIdx >= 0 ? next[existingIdx] : metaSibling;
                     if (existingSibling) {
                         const siblingUpdate = {
                             ...sharedFields,
                             id: id,
-                            extraLabel: metaSibling?.extraLabel ?? (existingSibling as any).extraLabel,
-                            forcedField: metaSibling?.forcedField ?? (existingSibling as any).forcedField,
-                            overrides: metaSibling?.overrides ?? (existingSibling as any).overrides,
-                            boosts: metaSibling?.boosts ?? (existingSibling as any).boosts,
+                            extraLabel: metaSibling?.extraLabel ?? existingSibling.extraLabel,
+                            forcedField: metaSibling?.forcedField ?? existingSibling.forcedField,
+                            overrides: metaSibling?.overrides ?? existingSibling.overrides,
+                            boosts: metaSibling?.boosts ?? existingSibling.boosts,
                             customLabel: undefined,
                         };
                         if (existingIdx >= 0) next[existingIdx] = siblingUpdate as any;
