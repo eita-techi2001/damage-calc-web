@@ -707,49 +707,42 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         const targetId = (opponentConfig as any).id;
         if (!targetId) return;
 
-        // 1. Identify Siblings (Same Species & Item)
-        // Improved Logic: Use the ORIGINAL Item from the Meta definition (if available) to find siblings.
-        // This allows Sync to work even if the user CHANGES the Item during the edit.
-
-        let searchSpecies = opponentConfig.species;
-        let searchItem = opponentConfig.item;
-
-        // Try to find the original meta definition by ID
+        // Use original meta definition's species/item/ability for sibling search
         const originalMeta = metaOpponents.find(m => m.id === targetId);
-        if (originalMeta) {
-            searchSpecies = originalMeta.species;
-            searchItem = originalMeta.item;
-        }
+        const searchSpecies = originalMeta?.species ?? opponentConfig.species;
+        const searchItem = originalMeta?.item ?? opponentConfig.item;
+        const searchAbility = originalMeta?.ability ?? opponentConfig.ability;
 
-        // Find all Meta definitions that match the Original Species + Item
-        const siblings = metaOpponents.filter(m =>
-            m.species === searchSpecies &&
-            m.item === searchItem
-        );
+        // Find all siblings from both meta and custom opponents
+        const allOpponents: any[] = [...metaOpponents, ...opponentOverrides];
+        const siblingIds = new Set<string>();
+        siblingIds.add(targetId);
+        allOpponents.forEach(o => {
+            if (o.species === searchSpecies && o.item === searchItem && o.ability === searchAbility) {
+                siblingIds.add(o.id);
+            }
+        });
 
-        // If the current target is NOT in meta (pure custom), we assume no siblings?
-        // Or if we changed the Item, we might lose sync with siblings.
-        // For now, let's just Sync all Metas that match Species+Item.
-
-        // We perform an update for EACH sibling found + the target itself.
-        // If targetId is not in siblings (e.g. modified item), we still update targetId.
-
-        const idsToUpdate = new Set<string>();
-        idsToUpdate.add(targetId);
-        siblings.forEach(s => idsToUpdate.add(s.id));
+        // Shared fields to sync (stats, moves, item, etc.)
+        const sharedFields = {
+            species: opponentConfig.species,
+            item: opponentConfig.item,
+            nature: opponentConfig.nature,
+            evs: opponentConfig.evs,
+            ivs: opponentConfig.ivs,
+            moves: opponentConfig.moves,
+            teraType: opponentConfig.teraType,
+            remarks: opponentConfig.remarks,
+            level: opponentConfig.level,
+            ability: opponentConfig.ability,
+        };
 
         setOpponentOverrides(prev => {
             const next = [...prev];
 
-            idsToUpdate.forEach(id => {
-                // Determine the base to preserve (Label etc)
-                // If it's the target, we use opponentConfig.
-                // If it's a sibling, we need to preserve its specific label (e.g. "Inactive").
-
-                // Try to find existing override for this ID
+            siblingIds.forEach(id => {
                 const existingIdx = next.findIndex(o => o.id === id);
 
-                // If it's the main target, we have the full new config in 'opponentConfig'
                 if (id === targetId) {
                     const updated = {
                         ...opponentConfig,
@@ -758,20 +751,19 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     if (existingIdx >= 0) next[existingIdx] = updated as any;
                     else next.push(updated as any);
                 } else {
-                    // It's a sibling. We need to copy stats from 'opponentConfig' but keep ID and Label.
-                    // Recover sibling's original metadata (Label) from Meta list
+                    // Sibling: sync shared fields, preserve variant-specific fields
                     const metaSibling = metaOpponents.find(m => m.id === id);
-                    if (metaSibling) {
+                    const existingSibling = existingIdx >= 0 ? next[existingIdx] : metaSibling;
+                    if (existingSibling) {
                         const siblingUpdate = {
-                            ...opponentConfig, // Copy new stats
-                            id: id,            // Restore ID
-                            extraLabel: metaSibling.extraLabel, // Restore Sibling Label (e.g. Inactive)
-                            customLabel: undefined // Metadata ones usually don't have custom labels unless user added one?
-                            // If user previously customized the sibling, we might overwrite it.
-                            // But "Sync" implies we want them to match.
+                            ...sharedFields,
+                            id: id,
+                            extraLabel: metaSibling?.extraLabel ?? (existingSibling as any).extraLabel,
+                            forcedField: metaSibling?.forcedField ?? (existingSibling as any).forcedField,
+                            overrides: metaSibling?.overrides ?? (existingSibling as any).overrides,
+                            boosts: metaSibling?.boosts ?? (existingSibling as any).boosts,
+                            customLabel: undefined,
                         };
-                        // Note: We do NOT copy 'customLabel' from the editor.
-
                         if (existingIdx >= 0) next[existingIdx] = siblingUpdate as any;
                         else next.push(siblingUpdate as any);
                     }
@@ -831,8 +823,21 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         // Usually clearing is good.
     };
 
+    // Find all sibling variant IDs (same species + item + ability = same variant group)
+    const getVariantGroupIds = (targetId: string): string[] => {
+        const allOpponents: any[] = [...metaOpponents, ...opponentOverrides];
+        const target = allOpponents.find(o => o.id === targetId);
+        if (!target) return [targetId];
+        const seen = new Set<string>();
+        return allOpponents
+            .filter(o => o.species === target.species && o.item === target.item && o.ability === target.ability)
+            .map(o => o.id)
+            .filter(id => { if (seen.has(id)) return false; seen.add(id); return true; });
+    };
+
     const handleDeleteOverride = (id: string) => {
-        setOpponentOverrides(prev => prev.filter(o => o.id !== id));
+        const groupIds = getVariantGroupIds(id);
+        setOpponentOverrides(prev => prev.filter(o => !groupIds.includes(o.id)));
     };
 
     // ...
@@ -1206,7 +1211,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 `}
                                             >
                                                 <div className="flex items-center gap-3 overflow-hidden cursor-pointer flex-grow"
-                                                    onClick={() => setExcludedIds(prev => prev.includes(o.id) ? prev.filter(i => i !== o.id) : [...prev, o.id])}
+                                                    onClick={() => {
+                                                        const groupIds = getVariantGroupIds(o.id);
+                                                        setExcludedIds(prev =>
+                                                            prev.includes(o.id)
+                                                                ? prev.filter(i => !groupIds.includes(i))
+                                                                : [...prev, ...groupIds.filter(i => !prev.includes(i))]
+                                                        );
+                                                    }}
                                                 >
                                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!isExcluded ? 'border-green-400 bg-green-400' : 'border-gray-500'}`}>
                                                         {!isExcluded && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
@@ -1277,6 +1289,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             {/* User Pokemon Icon */}
                                             {currentConfig?.species && (
                                                 <img
+                                                    key={currentConfig.species}
                                                     src={getIconUrl(currentConfig.species)}
                                                     alt={currentConfig.species}
                                                     className="w-20 h-15 object-contain pixelated flex-shrink-0"
@@ -1300,6 +1313,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             {/* Opponent Pokemon Icon */}
                                             {opponentConfig?.species && (
                                                 <img
+                                                    key={opponentConfig.species}
                                                     src={getIconUrl(opponentConfig.species)}
                                                     alt={opponentConfig.species}
                                                     className="w-20 h-15 object-contain pixelated flex-shrink-0"
@@ -1325,9 +1339,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <button
                                             onClick={handleCalculate}
                                             disabled={!currentConfig || isPending || !currentConfig.moves.some(m => m)}
-                                            className={`w-full text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 ${!currentConfig || isPending || !currentConfig.moves.some(m => m)
+                                            className={`w-full text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 whitespace-nowrap ${!currentConfig || isPending || !currentConfig.moves.some(m => m)
                                                 ? 'bg-gray-600 cursor-not-allowed opacity-50'
-                                                : 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 shadow-pink-500/20 whitespace-nowrap'
+                                                : 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 shadow-pink-500/20'
                                                 }`}
                                         >
                                             {isPending ? (
