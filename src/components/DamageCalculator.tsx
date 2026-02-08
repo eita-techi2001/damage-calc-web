@@ -1390,29 +1390,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             </div>
                         </div>
                     )}
-                    {editMode === 'opponent' && (
-                        <div className="space-y-4">
-                            {opponentOverrides.length > 0 && (
-                                <div className="bg-gray-900/40 p-3 rounded-lg border border-gray-700/50">
-                                    <span className="text-xs text-purple-300 font-bold block mb-2">Customized Opponents:</span>
-                                    <div className="flex flex-wrap gap-2">
-                                        {opponentOverrides.map(o => (
-                                            <div key={o.id} className="text-xs px-2 py-1 bg-purple-900/50 rounded border border-purple-500/30 text-purple-200 flex items-center gap-2">
-                                                <span>{t(o.species)} {o.customLabel ? `(${o.customLabel})` : ''}</span>
-                                                <span className="text-gray-400 text-[10px]">{t(o.item || 'None')}</span>
-                                                <button
-                                                    onClick={() => handleDeleteOverride(o.id)}
-                                                    className="text-red-400 hover:text-red-200 font-bold px-1 ml-1"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
 
                     {/* Stats Slider Section (activeConfig) - For User and Opponent modes */}
                     {activeConfig && editMode !== 'manage' && (
