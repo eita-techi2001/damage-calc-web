@@ -1265,9 +1265,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             ];
 
             // Prepare Result Row
+            // Combine HP + Def/SpD into 必要実数値 (e.g. "H207B120" or "H207D130")
+            const hpVal = r['HP実数'];
+            const defVal = category === 'Physical' ? r['防御実数'] : r['特防実数'];
+            const defKey = category === 'Physical' ? 'B' : 'D';
             const row: any = {
                 // Initial Default Values
-                '実数値1': '-', '結果1': '-',
+                '必要実数値': `H${hpVal}${defKey}${defVal}`,
+                '必要努力値': '-',
                 '特化': '-', '結果2': '-',
                 '無補正252': '-', '結果3': '-',
 
@@ -1346,6 +1351,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         row['HP実数'] = realHP;
                         row['防御実数'] = defText;
                         row['特防実数'] = spdText;
+                        // Update combined 必要実数値
+                        const updatedDefVal = category === 'Physical' ? defText : spdText;
+                        row['必要実数値'] = `H${realHP}${defKey}${updatedDefVal}`;
                     }
 
                     // Calculate Opponent Real Stat
@@ -1404,8 +1412,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                     // Map to new Columns based on Tier
                     if (tier.type === 'Registered') {
-                        row['実数値1'] = `${oppRealStat}${oppArrow}`;
-                        row['結果1'] = resStr;
+                        row['必要努力値'] = resStr;
                     } else if (tier.type === 'Spec') {
                         row['特化'] = `${oppRealStat}${oppArrow}`;
                         row['結果2'] = resStr;
@@ -1416,8 +1423,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                 } else {
                     if (tier.type === 'Registered') {
-                        row['実数値1'] = '-';
-                        row['結果1'] = '無理';
+                        row['必要努力値'] = '無理';
                     } else if (tier.type === 'Spec') {
                         row['特化'] = '-';
                         row['結果2'] = '無理';
@@ -1590,7 +1596,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 '相手持ち物': r['相手持ち物'],
                 '相手HP': r['相手HP'],
                 '相手耐久': category === 'Physical' ? `B${dummyRes.defender.stats.def}` : `D${dummyRes.defender.stats.spd}`,
-                '登録値': tierResults['登録値'],
+                '必要努力値': tierResults['登録値'],
                 'H4': tierResults['H4'],
                 'H252': tierResults['H252'],
                 'HB/HD特化': tierResults['HB/HD特化'],
@@ -1605,8 +1611,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
     // but multiple Attack Scenarios (e.g. user variants) might still yield similar Lines?
     // Actually, simple dedup is still good safe-guard.)
     // New Headers for Split Columns
-    const defLineHeadersPhys = ['HP実数', '防御実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
-    const defLineHeadersSpec = ['HP実数', '特防実数', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '補正1', '実数値1', '結果1', '補正2', '実数値2', '結果2'];
+    const defLineHeadersPhys = ['必要実数値', '必要努力値', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '特化', '結果2', '無補正252', '結果3'];
+    const defLineHeadersSpec = ['必要実数値', '必要努力値', '自分テラスタル', '相手', '相手テラスタル', '相手持ち物', '技', '場の状態', '特化', '結果2', '無補正252', '結果3'];
 
     let physLineUnique = deduplicateResults(physDefLineResults, defLineHeadersPhys);
     let specLineUnique = deduplicateResults(specDefLineResults, defLineHeadersSpec);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect, useMemo, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { getAllMoves, loadConfig, calculateCustom, getMetaOpponents, getAllSpecies, getPokemonData, getTranslationData } from '@/app/actions';
 import { PokemonStats, UserPokemonConfig, GlobalFieldState, CalculationSettings, VariantFilterMode } from '@/types';
 import { t, translateText, toEnglish } from '@/core/translator';
@@ -24,10 +25,10 @@ const hiraganaToKatakana = (src: string) => {
 const HEADERS_ATTACK = ['相手', '技', 'ダメージ', '確定数', '相手HP', '相手防御実数', '自分実数値', '自分持ち物', '自分テラスタル', '場の状態'];
 const HEADERS_DEF_PHYS = ['相手', '技', 'ダメージ', '確定数', '相手攻撃実数', 'HP実数', '防御実数', '自分持ち物', '自分テラスタル', '場の状態'];
 const HEADERS_DEF_SPEC = ['相手', '技', 'ダメージ', '確定数', '相手攻撃実数', 'HP実数', '特防実数', '自分持ち物', '自分テラスタル', '場の状態'];
-const HEADERS_OFF_LINE = ['必要実数値', '登録値', '自分テラスタル', '自分持ち物', '技', '相手', '相手HP', '相手耐久', 'H4', 'H252', 'HB/HD特化', '場の状態'];
+const HEADERS_OFF_LINE = ['必要実数値', '相手', '技', '必要努力値', '自分テラスタル', '自分持ち物', '相手HP', '相手耐久', 'H4', 'H252', 'HB/HD特化', '場の状態'];
 
-const HEADERS_DEF_LINE_PHYS = ['HP実数', '防御実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
-const HEADERS_DEF_LINE_SPEC = ['HP実数', '特防実数', '実数値1', '結果1', '自分テラスタル', '自分持ち物', '相手', '技', '特化', '結果2', '無補正252', '結果3', '場の状態'];
+const HEADERS_DEF_LINE_PHYS = ['必要実数値', '相手', '技', '必要努力値', '自分テラスタル', '自分持ち物', '特化', '結果2', '無補正252', '結果3', '場の状態'];
+const HEADERS_DEF_LINE_SPEC = ['必要実数値', '相手', '技', '必要努力値', '自分テラスタル', '自分持ち物', '特化', '結果2', '無補正252', '結果3', '場の状態'];
 
 // Helper functions to add remarks column conditionally
 const withRemarks = (headers: string[], showRemarks: boolean) =>
@@ -124,8 +125,66 @@ const getTypeIconUrl = (typeName: string) => {
     return `https://play.pokemonshowdown.com/sprites/types/${typeName}.png`;
 };
 
+const RowDetailPopup = ({ row, onClose }: { row: any; onClose: () => void }) => {
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', handleEscape);
+        document.body.style.overflow = 'hidden';
+        return () => { document.removeEventListener('keydown', handleEscape); document.body.style.overflow = ''; };
+    }, [onClose]);
+
+    const species = row._meta?.species;
+    const oppTera = toEnglish(String(row['相手テラスタル'] || '-'));
+    const oppItem = toEnglish(String(row['相手持ち物'] || '-'));
+    const teraUrl = oppTera !== '-' ? getTypeIconUrl(oppTera) : null;
+    const itemUrl = oppItem !== '-' ? getItemIconUrl(oppItem) : null;
+
+    const hiddenKeys = new Set(['_meta', '相手']);
+    const fields = Object.entries(row).filter(([k]) => !hiddenKeys.has(k) && !k.startsWith('_'));
+
+    return createPortal(
+        <>
+            <div className="fixed inset-0 bg-black/60 z-[200]" onClick={onClose} />
+            <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none">
+                <div className="bg-gray-800 border border-gray-600 rounded-xl w-full max-w-xs max-h-[85vh] overflow-y-auto pointer-events-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                    <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-3 flex items-center justify-between z-10">
+                        <div className="flex items-center gap-2">
+                            {species && (
+                                <img src={getIconUrl(species)} alt={species} className="w-14 h-10 object-contain pixelated"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                            )}
+                            <div>
+                                <div className="font-bold text-white text-sm">{row['相手'] || t(species)}</div>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                    {teraUrl && <img src={teraUrl} alt={oppTera} className="w-10 h-5 object-contain" />}
+                                    {itemUrl && <img src={itemUrl} alt={oppItem} className="w-6 h-6 object-contain" />}
+                                </div>
+                            </div>
+                        </div>
+                        <button onClick={onClose} className="text-gray-400 hover:text-white text-xl w-8 h-8 flex items-center justify-center">✕</button>
+                    </div>
+                    <div className="p-3 space-y-1.5">
+                        {fields.map(([key, val]) => {
+                            const strVal = String(val ?? '-');
+                            if (!strVal || strVal === '-' || strVal === '') return null;
+                            return (
+                                <div key={key} className="flex justify-between items-start gap-2 py-1 border-b border-gray-700/40 last:border-b-0">
+                                    <span className="text-xs text-gray-400 shrink-0">{translateText(key)}</span>
+                                    <span className="text-sm text-white text-right">{translateText(strVal)}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </>,
+        document.body
+    );
+};
+
 const Table = memo(function Table({ headers, rows, highlightEfficient }: { headers: string[], rows: any[], highlightEfficient?: boolean }) {
     const [displayLimit, setDisplayLimit] = useState(50);
+    const [popupRow, setPopupRow] = useState<any>(null);
 
     // Reset limit when data changes (e.g. calculation update or tab switch if rows ref changes)
     useEffect(() => {
@@ -165,7 +224,8 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
             const itemUrl = getItemIconUrl(oppItem);
 
             return (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 cursor-pointer hover:opacity-80 active:opacity-60"
+                    onClick={() => setPopupRow(row)}>
                     <img
                         src={getIconUrl(row._meta.species)}
                         alt={val}
@@ -174,12 +234,12 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    <div className="flex items-center gap-1 opacity-80">
+                    <div className="flex flex-col items-center gap-0.5 opacity-80">
                         {teraUrl && (
                             <img
                                 src={teraUrl}
                                 alt={oppTera}
-                                className="w-10 h-5 object-contain"
+                                className="w-8 h-4 object-contain"
                                 title={`Tera: ${oppTera}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -189,7 +249,7 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
                             <img
                                 src={itemUrl}
                                 alt={oppItem}
-                                className="w-6 h-6 object-contain"
+                                className="w-5 h-5 object-contain"
                                 title={`Item: ${oppItem}`}
                                 loading="lazy"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -246,6 +306,7 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
                     </button>
                 </div>
             )}
+            {popupRow && <RowDetailPopup row={popupRow} onClose={() => setPopupRow(null)} />}
         </div>
     );
 });
