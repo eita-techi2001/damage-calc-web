@@ -1310,17 +1310,17 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         const real = calcRealStat(stat, base, ev, iv, activeConfig.nature);
 
         return (
-            <div className="flex items-center space-x-4 py-1" key={stat}>
-                <span className="w-12 text-sm font-bold text-gray-400">{label}</span>
+            <div className="flex items-center gap-2 sm:gap-4 py-1 min-w-0" key={stat}>
+                <span className="w-10 sm:w-12 text-xs sm:text-sm font-bold text-gray-400 flex-shrink-0">{label}</span>
 
                 {/* Real Stat Display */}
-                <div className="w-12 text-center">
-                    <span className="text-lg font-bold text-white">{real}</span>
+                <div className="w-10 sm:w-12 text-center flex-shrink-0">
+                    <span className="text-base sm:text-lg font-bold text-white">{real}</span>
                 </div>
 
                 {/* EV Input */}
-                <div className="flex flex-col items-center">
-                    <span className="text-xs text-gray-500">努力値</span>
+                <div className="flex flex-col items-center flex-shrink-0">
+                    <span className="text-xs text-gray-500 hidden sm:block">努力値</span>
                     <input
                         type="number"
                         min="0" max="252"
@@ -1348,7 +1348,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             }
                         }}
                         placeholder="0"
-                        className="w-16 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-center text-white focus:border-pink-500 focus:outline-none"
+                        className="w-12 sm:w-16 bg-gray-900 border border-gray-700 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm text-center text-white focus:border-pink-500 focus:outline-none"
                     />
                 </div>
 
@@ -1358,18 +1358,18 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     min="0" max="252" step="4"
                     value={Math.floor((ev || 0) / 4) * 4}
                     onChange={(e) => updateEV(stat, Number(e.target.value))}
-                    className="flex-grow h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="flex-1 min-w-0 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
                 />
 
                 {/* IV Input */}
-                <div className="flex flex-col items-center">
-                    <span className="text-xs text-gray-500">個体値</span>
+                <div className="flex flex-col items-center flex-shrink-0">
+                    <span className="text-xs text-gray-500 hidden sm:block">個体値</span>
                     <input
                         type="number"
                         min="0" max="31"
                         value={iv}
                         onChange={(e) => updateIV(stat, Number(e.target.value))}
-                        className="w-12 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-center text-gray-300 focus:border-purple-500 focus:outline-none"
+                        className="w-10 sm:w-12 bg-gray-900 border border-gray-700 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm text-center text-gray-300 focus:border-purple-500 focus:outline-none"
                     />
                 </div>
             </div>
@@ -1399,12 +1399,12 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         const colorClass = isOpponent ? "border-purple-600 focus:border-purple-400" : "border-pink-600 focus:border-pink-400";
 
         return (
-            <div className="flex-1 flex flex-col items-center space-y-1" key={`${isOpponent ? 'opp' : 'user'}-${stat}`}>
-                <span className="text-xs text-gray-400">{label}</span>
+            <div className="flex flex-col items-center space-y-1" key={`${isOpponent ? 'opp' : 'user'}-${stat}`}>
+                <span className="text-xs text-gray-400 truncate w-full text-center">{label}</span>
                 <select
                     value={val}
                     onChange={onChange}
-                    className={`bg-gray-800 border ${colorClass} rounded px-1 py-1 text-xs text-white focus:outline-none w-14 text-center`}
+                    className={`bg-gray-800 border ${colorClass} rounded px-0.5 sm:px-1 py-1 text-xs text-white focus:outline-none w-full text-center`}
                 >
                     {[6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6].map(v => (
                         <option key={v} value={v}>{v > 0 ? `+${v}` : v}</option>
@@ -1456,79 +1456,88 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 {editMode === 'manage' && (
                     <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                         {/* Box Management Controls */}
-                        <div className="flex gap-3 items-center bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
-                            <label className="text-sm text-gray-400 whitespace-nowrap">Box:</label>
-                            <select
-                                value={boxesState?.activeBoxId || 'default'}
-                                onChange={(e) => handleSwitchBox(e.target.value)}
-                                className="flex-grow px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                            >
-                                {boxesState?.boxes.map(box => (
-                                    <option key={box.id} value={box.id}>
-                                        {box.name} {box.isDefault ? '(デフォルト)' : ''}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                onClick={() => setCreateBoxModalOpen(true)}
-                                className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors whitespace-nowrap"
-                            >
-                                + 新規Box
-                            </button>
-                            {activeBox && !activeBox.isDefault && (
-                                <>
-                                    <button
-                                        onClick={() => {
-                                            setNewBoxName(activeBox.name);
-                                            setRenameBoxModalOpen(true);
-                                        }}
-                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
-                                        title="Box名を変更"
-                                    >
-                                        名前変更
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            if (confirm(`Box「${activeBox.name}」を削除しますか？`)) {
-                                                handleDeleteBox();
-                                            }
-                                        }}
-                                        className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
-                                        title="Boxを削除"
-                                    >
-                                        削除
-                                    </button>
-                                </>
-                            )}
-                            <button
-                                onClick={handleCloneBox}
-                                className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors"
-                                title="Boxを複製"
-                            >
-                                複製
-                            </button>
+                        <div className="bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm space-y-3">
+                            {/* Box Selector Row */}
+                            <div className="flex gap-2 items-center w-full">
+                                <label className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">Box:</label>
+                                <select
+                                    value={boxesState?.activeBoxId || 'default'}
+                                    onChange={(e) => handleSwitchBox(e.target.value)}
+                                    className="flex-1 min-w-0 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                                >
+                                    {boxesState?.boxes.map(box => (
+                                        <option key={box.id} value={box.id}>
+                                            {box.name} {box.isDefault ? '(デフォルト)' : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Buttons Row - 2 columns on mobile, auto on desktop */}
+                            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                                <button
+                                    onClick={() => setCreateBoxModalOpen(true)}
+                                    className="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                >
+                                    + 新規Box
+                                </button>
+                                {activeBox && !activeBox.isDefault && (
+                                    <>
+                                        <button
+                                            onClick={() => {
+                                                setNewBoxName(activeBox.name);
+                                                setRenameBoxModalOpen(true);
+                                            }}
+                                            className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                            title="Box名を変更"
+                                        >
+                                            名前変更
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                if (confirm(`Box「${activeBox.name}」を削除しますか？`)) {
+                                                    handleDeleteBox();
+                                                }
+                                            }}
+                                            className="px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                            title="Boxを削除"
+                                        >
+                                            削除
+                                        </button>
+                                    </>
+                                )}
+                                <button
+                                    onClick={handleCloneBox}
+                                    className="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                    title="Boxを複製"
+                                >
+                                    複製
+                                </button>
+                            </div>
                         </div>
 
                         {/* Import/Export Controls */}
-                        <div className="flex gap-3 items-center bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
-                            <button
-                                onClick={() => setImportModalOpen(true)}
-                                className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors"
-                            >
-                                📋 PokePaste インポート
-                            </button>
-                            <button
-                                onClick={() => handleExportBox('ja')}
-                                className="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors"
-                            >
-                                📤 エクスポート (日本語)
-                            </button>
-                            <button
-                                onClick={() => handleExportBox('en')}
-                                className="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors"
-                            >
-                                📤 エクスポート (English)
-                            </button>
+                        <div className="bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <button
+                                    onClick={() => setImportModalOpen(true)}
+                                    className="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    📋 PokePaste インポート
+                                </button>
+                                <button
+                                    onClick={() => handleExportBox('ja')}
+                                    className="px-3 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    📤 エクスポート (日本語)
+                                </button>
+                                <button
+                                    onClick={() => handleExportBox('en')}
+                                    className="px-3 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    📤 エクスポート (English)
+                                </button>
+                            </div>
                         </div>
 
                         {/* Add New Pokemon Button */}
@@ -1699,9 +1708,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </button>
                                 </div>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="space-y-3 w-full overflow-hidden">
                                     {/* Pokemon Search Row */}
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3 w-full min-w-0">
                                         {/* Opponent Pokemon Icon */}
                                         {opponentConfig?.species && (
                                             <img
@@ -1734,14 +1743,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     />
 
                                     {/* Box Selector and Buttons Row */}
-                                    <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+                                    <div className="flex flex-col sm:flex-row gap-2 items-stretch w-full overflow-hidden">
                                         {/* Box Selector - Takes up ~50% of width */}
-                                        <div className="flex items-center gap-2 flex-1">
-                                            <label className="text-xs text-gray-400 whitespace-nowrap">Box:</label>
+                                        <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
+                                            <label className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">Box:</label>
                                             <select
                                                 value={targetBoxId}
                                                 onChange={(e) => setTargetBoxId(e.target.value)}
-                                                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 min-w-0"
+                                                className="flex-1 px-2 sm:px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 min-w-0 max-w-full"
+                                                style={{ textOverflow: 'ellipsis' }}
                                             >
                                                 {boxesState?.boxes.map(box => (
                                                     <option key={box.id} value={box.id}>
@@ -1752,11 +1762,11 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         </div>
 
                                         {/* Action Buttons - Takes up ~50% of width */}
-                                        <div className="flex gap-2 flex-1">
+                                        <div className="flex gap-2 flex-1 min-w-0 overflow-hidden">
                                             {opponentConfig && (opponentConfig as any).id && (
                                                 <button
                                                     onClick={handleUpdateCustomOpponent}
-                                                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-colors"
+                                                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-2 sm:px-4 rounded-lg shadow-lg transition-colors min-w-0"
                                                 >
                                                     更新
                                                 </button>
@@ -1764,7 +1774,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             <button
                                                 onClick={handleAddCustomOpponent}
                                                 disabled={!opponentConfig}
-                                                className={`flex-1 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all ${!opponentConfig
+                                                className={`flex-1 text-white font-bold py-2 px-2 sm:px-4 rounded-lg shadow-lg transition-all min-w-0 ${!opponentConfig
                                                     ? 'bg-gray-600 cursor-not-allowed opacity-50'
                                                     : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500'
                                                     }`}
@@ -1908,7 +1918,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
                             <div className="mb-4 pt-4 border-t border-gray-700">
                                 <h4 className="text-sm font-bold text-gray-400 mb-2">ランク補正</h4>
-                                <div className="flex w-full gap-2">
+                                <div className="grid grid-cols-5 gap-1 sm:gap-2 w-full">
                                     {renderRankSelect('攻撃', 'atk')}
                                     {renderRankSelect('防御', 'def')}
                                     {renderRankSelect('特攻', 'spa')}
@@ -2067,12 +2077,11 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             {/* Opponent Ranks Restored */}
                             <div className="border-t border-gray-700 pt-4 mt-2">
                                 <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
-                                <div className="flex w-full gap-2">
+                                <div className="grid grid-cols-5 gap-1 sm:gap-2 w-full">
                                     {renderRankSelect('攻撃', 'atk', true)}
                                     {renderRankSelect('防御', 'def', true)}
                                     {renderRankSelect('特攻', 'spa', true)}
                                     {renderRankSelect('特防', 'spd', true)}
-
                                     {renderRankSelect('素早さ', 'spe', true)}
                                 </div>
                             </div>
