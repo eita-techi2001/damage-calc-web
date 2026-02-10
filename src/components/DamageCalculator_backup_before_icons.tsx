@@ -324,8 +324,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         terrain: 'None',
         userSide: { isReflect: false, isLightScreen: false, isFriendGuard: false, isHelpingHand: false },
         opponentSide: { isReflect: false, isLightScreen: false, isFriendGuard: false },
-        global: { isSwordOfRuin: false, isBeadsOfRuin: false, isTabletsOfRuin: false, isVesselOfRuin: false },
-        opponentRanks: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }
+        global: { isSwordOfRuin: false, isBeadsOfRuin: false, isTabletsOfRuin: false, isVesselOfRuin: false }
     });
 
     // Force re-render on mount
