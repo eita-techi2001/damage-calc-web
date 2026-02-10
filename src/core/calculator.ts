@@ -8,16 +8,25 @@ const field = new Field({ gameType: 'Doubles' });
 export class DamageCalculator {
     // Convert User/Meta config to @smogon/calc Pokemon object
     private toCalcPokemon(config: UserPokemonConfig | MetaPokemonVariant, isDynamax: boolean = false, isTera: boolean = false): Pokemon {
+        // DEBUG: Log config structure
+        console.log('[CALCULATOR] toCalcPokemon called for:', config.species);
+        console.log('[CALCULATOR] config.evs:', JSON.stringify(config.evs));
+        console.log('[CALCULATOR] config.ivs:', JSON.stringify((config as any).ivs));
+        console.log('[CALCULATOR] config.level:', (config as any).level);
+        console.log('[CALCULATOR] config.boosts:', JSON.stringify((config as any).boosts));
+
         const options: any = {
             item: config.item,
             nature: config.nature,
             ability: config.ability,
             evs: config.evs,
-            ivs: (config as any).ivs,
+            ivs: (config as any).ivs || { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
             boosts: (config as any).boosts,
-            level: 50,
+            level: (config as any).level || 50,
             // teraType: config.teraType  <-- Don't pass this by default
         };
+
+        console.log('[CALCULATOR] options being passed to Pokemon:', JSON.stringify(options, null, 2));
 
         // Initialize overrides from config
         if ((config as any).overrides) {
@@ -35,11 +44,38 @@ export class DamageCalculator {
 
         if (isTera && config.teraType) {
             // Do NOT override types manually errors in loss of original STAB (Adaptability check)
-            // options.overrides = { ...options.overrides, types: [config.teraType] }; 
+            // options.overrides = { ...options.overrides, types: [config.teraType] };
             options.teraType = config.teraType;
         }
 
-        return new Pokemon(gen, config.species, options);
+        // Extract gender from species name (e.g., "Incineroar (F)" -> species: "Incineroar", gender: "F")
+        let cleanSpecies = config.species;
+        let gender: 'M' | 'F' | undefined = undefined;
+        const genderMatch = config.species.match(/\(([MF])\)$/);
+        if (genderMatch) {
+            gender = genderMatch[1] as 'M' | 'F';
+            cleanSpecies = config.species.replace(/\s*\([MF]\)$/, '').trim();
+            console.log('[CALCULATOR] Extracted gender:', gender, 'from species:', config.species);
+            console.log('[CALCULATOR] Cleaned species name:', cleanSpecies);
+        }
+
+        // Add gender if extracted
+        if (gender) {
+            options.gender = gender;
+        }
+
+        try {
+            console.log('[CALCULATOR] About to create Pokemon with species:', cleanSpecies);
+            console.log('[CALCULATOR] Final options:', JSON.stringify(options, null, 2));
+            const pokemon = new Pokemon(gen, cleanSpecies, options);
+            console.log('[CALCULATOR] Pokemon created successfully!');
+            return pokemon;
+        } catch (error) {
+            console.error('[CALCULATOR] ERROR creating Pokemon:', error);
+            console.error('[CALCULATOR] Species:', cleanSpecies);
+            console.error('[CALCULATOR] Options that caused error:', JSON.stringify(options, null, 2));
+            throw error;
+        }
     }
 
     public calculateDamage(attackerConfig: UserPokemonConfig, defenderConfig: MetaPokemonVariant, moveName: string, isAttackerTera: boolean = false, isDefenderTera: boolean = false, fieldOptions: Partial<Field> & { isSpreadDamage?: boolean; multiHitCount?: number } = {}) {

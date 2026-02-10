@@ -132,6 +132,19 @@ export async function getAllSpecies() {
 
 export async function calculateCustom(config: UserPokemonConfig, globalField?: GlobalFieldState, explicitOpponents?: UserPokemonConfig[], settings?: CalculationSettings) {
     try {
+        // DEBUG: Log received data
+        console.log('[SERVER] calculateCustom called');
+        console.log('[SERVER] User config level:', config.level);
+        console.log('[SERVER] User config ivs:', JSON.stringify(config.ivs));
+        console.log('[SERVER] User config ivs.hp:', config.ivs?.hp);
+        console.log('[SERVER] User config ranks:', JSON.stringify(config.ranks));
+        console.log('[SERVER] User config evs:', JSON.stringify(config.evs));
+        if (explicitOpponents && explicitOpponents.length > 0) {
+            console.log('[SERVER] First opponent level:', explicitOpponents[0].level);
+            console.log('[SERVER] First opponent ivs:', JSON.stringify(explicitOpponents[0].ivs));
+            console.log('[SERVER] First opponent ranks:', JSON.stringify(explicitOpponents[0].ranks));
+        }
+
         // Fix Terapagos: Force Terastal Form for calculation
         if (config.species === 'Terapagos') {
             config = { ...config, species: 'Terapagos-Terastal' };
@@ -145,7 +158,11 @@ export async function calculateCustom(config: UserPokemonConfig, globalField?: G
         const results = await calculateDamageForConfig(config, globalField, explicitOpponents, settings);
         return { success: true, data: results };
     } catch (e) {
-        console.error('Error calculating custom damage:', e);
+        console.error('[SERVER] Error calculating custom damage:', e);
+        // Log the full error with stack trace
+        if (e instanceof Error) {
+            console.error('[SERVER] Error stack:', e.stack);
+        }
         return { success: false, error: String(e) };
     }
 }

@@ -97,3 +97,18 @@ export interface CalculationSettings {
     excludeWeakMoves?: boolean;
     showRemarks?: boolean; // 備考を表示
 }
+
+// Pokemon Box Management
+export interface PokemonBox {
+    id: string;
+    name: string;
+    opponents: MetaPokemonVariant[];
+    excludedIds: string[];
+    isDefault: boolean;
+    createdAt: number;
+}
+
+export interface BoxesState {
+    boxes: PokemonBox[];
+    activeBoxId: string;
+}
