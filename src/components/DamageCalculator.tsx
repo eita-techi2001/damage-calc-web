@@ -49,6 +49,48 @@ const REFINED_ITEMS = [
     'Silk Scarf', 'Dragon Fang', 'Black Belt', 'Fairy Feather'
 ];
 
+// Nature stat modifiers: { nature: { boosted: stat, reduced: stat } }
+const NATURE_MODIFIERS: Record<string, { boosted: keyof PokemonStats | null, reduced: keyof PokemonStats | null }> = {
+    // Neutral natures
+    'Hardy': { boosted: null, reduced: null },
+    'Docile': { boosted: null, reduced: null },
+    'Serious': { boosted: null, reduced: null },
+    'Bashful': { boosted: null, reduced: null },
+    'Quirky': { boosted: null, reduced: null },
+    // Attack boosted
+    'Lonely': { boosted: 'atk', reduced: 'def' },
+    'Adamant': { boosted: 'atk', reduced: 'spa' },
+    'Naughty': { boosted: 'atk', reduced: 'spd' },
+    'Brave': { boosted: 'atk', reduced: 'spe' },
+    // Defense boosted
+    'Bold': { boosted: 'def', reduced: 'atk' },
+    'Impish': { boosted: 'def', reduced: 'spa' },
+    'Lax': { boosted: 'def', reduced: 'spd' },
+    'Relaxed': { boosted: 'def', reduced: 'spe' },
+    // Sp. Atk boosted
+    'Modest': { boosted: 'spa', reduced: 'atk' },
+    'Mild': { boosted: 'spa', reduced: 'def' },
+    'Rash': { boosted: 'spa', reduced: 'spd' },
+    'Quiet': { boosted: 'spa', reduced: 'spe' },
+    // Sp. Def boosted
+    'Calm': { boosted: 'spd', reduced: 'atk' },
+    'Gentle': { boosted: 'spd', reduced: 'def' },
+    'Careful': { boosted: 'spd', reduced: 'spa' },
+    'Sassy': { boosted: 'spd', reduced: 'spe' },
+    // Speed boosted
+    'Timid': { boosted: 'spe', reduced: 'atk' },
+    'Hasty': { boosted: 'spe', reduced: 'def' },
+    'Jolly': { boosted: 'spe', reduced: 'spa' },
+    'Naive': { boosted: 'spe', reduced: 'spd' },
+};
+
+// Format nature name without English abbreviations
+const formatNatureName = (nature: string): string => {
+    const translated = t(nature);
+    // Remove English stat abbreviations like (A↑C↓)
+    return translated.replace(/\s*\([A-Z]↑[A-Z]↓\)/, '').trim();
+};
+
 // Helper to get Icon URL (same as list management)
 const getIconUrl = (speciesName: string) => {
     if (!speciesName) return '';
@@ -379,7 +421,7 @@ const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, a
                 placeholder={placeholder}
                 autoFocus={autoFocus}
                 style={{ backgroundColor: 'rgba(17, 24, 39, 1)', color: 'white' }}
-                className="block w-full rounded-lg border-gray-600 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-3 px-4 transition-colors"
+                className="block w-full rounded-lg border-2 border-gray-400 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-3 px-4 transition-colors"
             />
             {show && (
                 <>
@@ -427,6 +469,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [customLabel, setCustomLabel] = useState<string>('');
     const [saveMessage, setSaveMessage] = useState<string | null>(null);
     const [targetBoxId, setTargetBoxId] = useState<string>(''); // Box to add opponent to
+    const [selectedOpponentId, setSelectedOpponentId] = useState<string | null>(null); // Track selected opponent for rank modifications
 
     // Pokemon Box Management States
     const [boxesState, setBoxesState] = useState<BoxesState | null>(null);
@@ -565,8 +608,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         terrain: 'None',
         userSide: { isReflect: false, isLightScreen: false, isFriendGuard: false, isHelpingHand: false },
         opponentSide: { isReflect: false, isLightScreen: false, isFriendGuard: false },
-        global: { isSwordOfRuin: false, isBeadsOfRuin: false, isTabletsOfRuin: false, isVesselOfRuin: false, isSpreadDamage: true },
-        opponentRanks: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }
+        global: { isSwordOfRuin: false, isBeadsOfRuin: false, isTabletsOfRuin: false, isVesselOfRuin: false, isSpreadDamage: true }
     });
 
     // Force re-render on mount
@@ -811,6 +853,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
         setCustomLabel((opp as any).customLabel || opp.extraLabel?.replace(/[()]/g, '') || '');
         setEditMode('opponent');
+        setSelectedOpponentId(opp.id); // Track opponent for rank modifications
 
         // Fetch Stats & Abilities for editing
         const basic = await getPokemonData(opp.species);
@@ -850,6 +893,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             nature: opponentConfig.nature,
             evs: opponentConfig.evs,
             ivs: opponentConfig.ivs,
+            ranks: opponentConfig.ranks,
             moves: opponentConfig.moves,
             teraType: opponentConfig.teraType,
             remarks: opponentConfig.remarks,
@@ -889,6 +933,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 customLabel: customLabel.trim() || undefined
             });
         }
+
+        console.log('[DEBUG] Saving opponent with ranks:', opponentConfig.ranks);
+        console.log('[DEBUG] Target opponent ID:', targetId);
 
         setBoxesState({
             ...boxesState,
@@ -1190,13 +1237,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     return null; // Skip this opponent
                 }
 
+                const ranks = o.ranks || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
                 return {
                     ...o,
                     moves: o.moves.map((m: any) => toEnglish(m || '')),
                     // Ensure level, ivs and ranks exist with defaults if missing
                     level: o.level || 50,
                     ivs: o.ivs || { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-                    ranks: o.ranks || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }
+                    ranks: ranks,
+                    boosts: ranks  // Map ranks to boosts for calculator
                 };
             }).filter(o => o !== null); // Remove null entries
 
@@ -1309,9 +1358,18 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         const base = activeBaseStats?.[stat] ?? 100; // Fallback 100
         const real = calcRealStat(stat, base, ev, iv, activeConfig.nature);
 
+        // Determine label color based on nature modifiers
+        const natureModifier = NATURE_MODIFIERS[activeConfig.nature] || { boosted: null, reduced: null };
+        let labelColor = 'text-gray-400';
+        if (natureModifier.boosted === stat) {
+            labelColor = 'text-pink-500'; // Boosted stat
+        } else if (natureModifier.reduced === stat) {
+            labelColor = 'text-cyan-400'; // Reduced stat
+        }
+
         return (
             <div className="flex items-center gap-2 sm:gap-4 py-1 min-w-0" key={stat}>
-                <span className="w-10 sm:w-12 text-xs sm:text-sm font-bold text-gray-400 flex-shrink-0">{label}</span>
+                <span className={`w-10 sm:w-12 text-xs sm:text-sm font-bold ${labelColor} flex-shrink-0`}>{label}</span>
 
                 {/* Real Stat Display */}
                 <div className="w-10 sm:w-12 text-center flex-shrink-0">
@@ -1377,18 +1435,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     };
 
     const renderRankSelect = (label: string, stat: keyof PokemonStats, isOpponent: boolean = false) => {
+        // Get rank value from active config
         const val = isOpponent
-            ? (globalField.opponentRanks?.[stat] || 0)
+            ? (activeConfig?.ranks?.[stat] || 0)
             : (activeConfig?.ranks?.[stat] || 0);
 
         const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             const newVal = Number(e.target.value);
-            if (isOpponent) {
-                setGlobalField({
-                    ...globalField,
-                    opponentRanks: { ...globalField.opponentRanks, [stat]: newVal } as PokemonStats
-                });
-            } else if (activeConfig) {
+            if (activeConfig) {
                 updateActiveConfig({
                     ...activeConfig,
                     ranks: { ...activeConfig.ranks, [stat]: newVal } as PokemonStats
@@ -1398,9 +1452,20 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
         const colorClass = isOpponent ? "border-purple-600 focus:border-purple-400" : "border-pink-600 focus:border-pink-400";
 
+        // Determine label color based on nature modifiers (only for user, not opponent)
+        let labelColor = 'text-gray-400';
+        if (!isOpponent && activeConfig) {
+            const natureModifier = NATURE_MODIFIERS[activeConfig.nature] || { boosted: null, reduced: null };
+            if (natureModifier.boosted === stat) {
+                labelColor = 'text-pink-500';
+            } else if (natureModifier.reduced === stat) {
+                labelColor = 'text-cyan-400';
+            }
+        }
+
         return (
             <div className="flex flex-col items-center space-y-1" key={`${isOpponent ? 'opp' : 'user'}-${stat}`}>
-                <span className="text-xs text-gray-400 truncate w-full text-center">{label}</span>
+                <span className={`text-xs ${labelColor} truncate w-full text-center`}>{label}</span>
                 <select
                     value={val}
                     onChange={onChange}
@@ -1428,7 +1493,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 {/* MODE TABS */}
                 <div className="flex border-b border-gray-700 mb-6 space-x-4">
                     <button
-                        onClick={() => setEditMode('user')}
+                        onClick={() => { setEditMode('user'); setSelectedOpponentId(null); }}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'user' ? 'text-pink-400 border-b-2 border-pink-400' : 'text-gray-400 hover:text-white'}`}
                     >
                         自分のポケモン
@@ -1440,7 +1505,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                         相手の編集
                     </button>
                     <button
-                        onClick={() => setEditMode('manage')}
+                        onClick={() => { setEditMode('manage'); setSelectedOpponentId(null); }}
                         className={`pb-2 px-4 transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
                     >
                         リスト管理
@@ -1474,7 +1539,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
                                 <button
                                     onClick={() => setCreateBoxModalOpen(true)}
-                                    className="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                    className="px-3 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
                                     + 新規Box
                                 </button>
@@ -1485,7 +1550,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 setNewBoxName(activeBox.name);
                                                 setRenameBoxModalOpen(true);
                                             }}
-                                            className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                            className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                             title="Box名を変更"
                                         >
                                             名前変更
@@ -1496,7 +1561,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     handleDeleteBox();
                                                 }
                                             }}
-                                            className="px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                            className="px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                             title="Boxを削除"
                                         >
                                             削除
@@ -1505,7 +1570,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 )}
                                 <button
                                     onClick={handleCloneBox}
-                                    className="px-3 sm:px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                    className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                     title="Boxを複製"
                                 >
                                     複製
@@ -1518,19 +1583,19 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <button
                                     onClick={() => setImportModalOpen(true)}
-                                    className="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📋 PokePaste インポート
                                 </button>
                                 <button
                                     onClick={() => handleExportBox('ja')}
-                                    className="px-3 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📤 エクスポート (日本語)
                                 </button>
                                 <button
                                     onClick={() => handleExportBox('en')}
-                                    className="px-3 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📤 エクスポート (English)
                                 </button>
@@ -1548,7 +1613,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         setTargetBoxId(boxesState.activeBoxId);
                                     }
                                 }}
-                                className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-lg transition-colors"
+                                className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg transition-colors"
                             >
                                 ➕ 新規ポケモン追加
                             </button>
@@ -1800,7 +1865,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 min-w-0">
                                 {/* Ability Selector */}
                                 <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
-                                    <span className="text-xs text-gray-400">特性 (Ability)</span>
+                                    <span className="text-xs text-gray-400">特性</span>
                                     <select
                                         value={activeConfig.ability || ''}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
@@ -1819,7 +1884,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
                                 {/* Item Selector */}
                                 <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
-                                    <span className="text-xs text-gray-400">持ち物 (Item)</span>
+                                    <span className="text-xs text-gray-400">持ち物</span>
                                     <select
                                         value={activeConfig.item || ''}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
@@ -1851,7 +1916,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
                                 {/* Nature Selector */}
                                 <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
-                                    <span className="text-xs text-gray-400">性格 (Nature)</span>
+                                    <span className="text-xs text-gray-400">性格</span>
                                     <select
                                         value={activeConfig.nature}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
@@ -2069,20 +2134,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </div>
                             </div>
 
-                            {/* Opponent Ranks */}
-
-                            {/* Opponent Ranks Restored */}
-                            <div className="border-t border-gray-700 pt-4 mt-2">
-                                <h4 className="text-sm font-bold text-gray-400 mb-2">敵全体のランク補正</h4>
-                                <div className="grid grid-cols-5 gap-1 sm:gap-2 w-full">
-                                    {renderRankSelect('攻撃', 'atk', true)}
-                                    {renderRankSelect('防御', 'def', true)}
-                                    {renderRankSelect('特攻', 'spa', true)}
-                                    {renderRankSelect('特防', 'spd', true)}
-                                    {renderRankSelect('素早さ', 'spe', true)}
-                                </div>
-                            </div>
-
                             {/* Detailed Settings Toggle */}
                             <div className="border-t border-gray-700 pt-4 mt-2">
                                 <h4 className="text-sm font-bold text-gray-400 mb-2">詳細設定 (表示切替)</h4>
@@ -2179,14 +2230,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 {activeTab === 'defense' && (
                                     <div className="space-y-8">
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-blue-500">Physical (物理)</h3>
+                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-blue-500">物理</h3>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_PHYS, calcSettings.showRemarks || false)}
                                                 rows={results.defense.physical}
                                             />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-purple-500">Special (特殊)</h3>
+                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-purple-500">特殊</h3>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_SPEC, calcSettings.showRemarks || false)}
                                                 rows={results.defense.special}
@@ -2196,7 +2247,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 )}
                                 {activeTab === 'offensiveLine' && (
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-red-500">Offensive Requirement (火力ライン)</h3>
+                                        <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-red-500">火力ライン</h3>
                                         <p className="text-sm text-gray-400 mb-4 ml-2">
                                             必要な努力値 (性格補正が必要な場合は補正後の値を表示 / 例: (Bold) 124)
                                         </p>
@@ -2209,7 +2260,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 {activeTab === 'defenseLine' && (
                                     <div className="space-y-8">
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">Physical Lines (物理ライン)</h3>
+                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">物理ライン</h3>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_LINE_PHYS, calcSettings.showRemarks || false)}
                                                 rows={results.defenseLine.physical}
@@ -2217,7 +2268,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                             />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">Special Lines (特殊ライン)</h3>
+                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">特殊ライン</h3>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_LINE_SPEC, calcSettings.showRemarks || false)}
                                                 rows={results.defenseLine.special}

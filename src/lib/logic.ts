@@ -565,16 +565,17 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     for (const move of userPoke.moves) {
                         if (!move) continue;
 
-                        // Clone defender to apply Global Opponent Ranks calculations
+                        // Clone defender and map ranks to boosts for calculation
                         const effectiveDefender = JSON.parse(JSON.stringify(defender));
-                        if (globalField && globalField.opponentRanks) {
+
+                        // Map defender.ranks to boosts for calculation
+                        if (defender.ranks) {
                             if (!effectiveDefender.boosts) effectiveDefender.boosts = {};
-                            const r = globalField.opponentRanks;
-                            effectiveDefender.boosts.atk = (effectiveDefender.boosts.atk || 0) + (r.atk || 0);
-                            effectiveDefender.boosts.def = (effectiveDefender.boosts.def || 0) + (r.def || 0);
-                            effectiveDefender.boosts.spa = (effectiveDefender.boosts.spa || 0) + (r.spa || 0);
-                            effectiveDefender.boosts.spd = (effectiveDefender.boosts.spd || 0) + (r.spd || 0);
-                            effectiveDefender.boosts.spe = (effectiveDefender.boosts.spe || 0) + (r.spe || 0);
+                            effectiveDefender.boosts.atk = (effectiveDefender.boosts.atk || 0) + (defender.ranks.atk || 0);
+                            effectiveDefender.boosts.def = (effectiveDefender.boosts.def || 0) + (defender.ranks.def || 0);
+                            effectiveDefender.boosts.spa = (effectiveDefender.boosts.spa || 0) + (defender.ranks.spa || 0);
+                            effectiveDefender.boosts.spd = (effectiveDefender.boosts.spd || 0) + (defender.ranks.spd || 0);
+                            effectiveDefender.boosts.spe = (effectiveDefender.boosts.spe || 0) + (defender.ranks.spe || 0);
                         }
 
                         // Field Setup
@@ -967,7 +968,28 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             '相手テラスタル': teraLabel,
                             '相手持ち物': t(defender.item),
                             '相手HP': defMaxHP,
-                            '相手防御実数': cat === 'Physical' ? result.defender.stats.def : result.defender.stats.spd,
+                            '相手防御実数': (() => {
+                                // Get base stats for defender species
+                                const dummyDefender = new (calcLib.Pokemon)(calcLib.Generations.get(gen), defender.species);
+                                const defenderBaseStats = (dummyDefender as any).bs || (dummyDefender.species as any).baseStats;
+
+                                const statKey = cat === 'Physical' ? 'def' : 'spd';
+                                const baseStatValue = defenderBaseStats[statKey];
+
+                                // Calculate nature multiplier
+                                const defenderNature = defender.nature || 'Serious';
+                                const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
+                                const natureAnti: { [key: string]: string } = { 'Modest': 'atk', 'Timid': 'atk', 'Calm': 'atk', 'Bold': 'atk', 'Adamant': 'spa', 'Impish': 'spa', 'Jolly': 'spa', 'Careful': 'spa' };
+                                const natureMult = natureRef[defenderNature] === statKey ? 1.1 : (natureAnti[defenderNature] === statKey ? 0.9 : 1.0);
+
+                                // Calculate actual stat value (before rank modification)
+                                const ev = defender.evs?.[statKey] || 0;
+                                const iv = defender.ivs?.[statKey] || 31;
+                                const statValue = calcRealStatWithBase(baseStatValue, ev, iv, natureMult, false);
+
+                                const rankValue = cat === 'Physical' ? (defender.ranks?.def || 0) : (defender.ranks?.spd || 0);
+                                return rankValue !== 0 ? `${statValue}(${rankValue > 0 ? '+' : ''}${rankValue})` : statValue;
+                            })(),
                             'ダメージ': damageDisplay,
                             '確定数': killDesc,
                             '場の状態': formatVal(fieldState),
@@ -1003,16 +1025,17 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${t(attacker.teraType || '')})` });
 
                     for (const attackerScenario of attackerScenarios) {
-                        // Clone attacker to apply Global Opponent Ranks
+                        // Clone attacker to apply ranks and boosts
                         let effectiveAttackerBase = JSON.parse(JSON.stringify(attacker)); // We clone base first
-                        if (globalField && globalField.opponentRanks) {
+
+                        // Map attacker.ranks to boosts for calculation
+                        if (attacker.ranks) {
                             if (!effectiveAttackerBase.boosts) effectiveAttackerBase.boosts = {};
-                            const r = globalField.opponentRanks;
-                            effectiveAttackerBase.boosts.atk = (effectiveAttackerBase.boosts.atk || 0) + (r.atk || 0);
-                            effectiveAttackerBase.boosts.def = (effectiveAttackerBase.boosts.def || 0) + (r.def || 0);
-                            effectiveAttackerBase.boosts.spa = (effectiveAttackerBase.boosts.spa || 0) + (r.spa || 0);
-                            effectiveAttackerBase.boosts.spd = (effectiveAttackerBase.boosts.spd || 0) + (r.spd || 0);
-                            effectiveAttackerBase.boosts.spe = (effectiveAttackerBase.boosts.spe || 0) + (r.spe || 0);
+                            effectiveAttackerBase.boosts.atk = (effectiveAttackerBase.boosts.atk || 0) + (attacker.ranks.atk || 0);
+                            effectiveAttackerBase.boosts.def = (effectiveAttackerBase.boosts.def || 0) + (attacker.ranks.def || 0);
+                            effectiveAttackerBase.boosts.spa = (effectiveAttackerBase.boosts.spa || 0) + (attacker.ranks.spa || 0);
+                            effectiveAttackerBase.boosts.spd = (effectiveAttackerBase.boosts.spd || 0) + (attacker.ranks.spd || 0);
+                            effectiveAttackerBase.boosts.spe = (effectiveAttackerBase.boosts.spe || 0) + (attacker.ranks.spe || 0);
                         }
 
                         // Field Setup
@@ -1101,8 +1124,23 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         }
 
                         const realHP = result.defender.stats.hp;
-                        const realDef = result.defender.stats.def;
-                        const realSpD = result.defender.stats.spd;
+
+                        // Calculate defensive stats without rank modification
+                        const userNature = userPoke.nature || 'Serious';
+                        const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
+                        const natureAnti: { [key: string]: string } = { 'Modest': 'atk', 'Timid': 'atk', 'Calm': 'atk', 'Bold': 'atk', 'Adamant': 'spa', 'Impish': 'spa', 'Jolly': 'spa', 'Careful': 'spa' };
+
+                        const defNatureMult = natureRef[userNature] === 'def' ? 1.1 : (natureAnti[userNature] === 'def' ? 0.9 : 1.0);
+                        const spdNatureMult = natureRef[userNature] === 'spd' ? 1.1 : (natureAnti[userNature] === 'spd' ? 0.9 : 1.0);
+
+                        const realDef = calcRealStatWithBase(baseStats.def, userPoke.evs.def, userPoke.ivs?.def || 31, defNatureMult, false);
+                        const realSpD = calcRealStatWithBase(baseStats.spd, userPoke.evs.spd, userPoke.ivs?.spd || 31, spdNatureMult, false);
+
+                        // Add rank display to defensive stats
+                        const defRankValue = userPoke.ranks?.def || 0;
+                        const spdRankValue = userPoke.ranks?.spd || 0;
+                        const displayDef = defRankValue !== 0 ? `${realDef}(${defRankValue > 0 ? '+' : ''}${defRankValue})` : realDef;
+                        const displaySpD = spdRankValue !== 0 ? `${realSpD}(${spdRankValue > 0 ? '+' : ''}${spdRankValue})` : realSpD;
 
                         // Helper to build comprehensive Field State string
                         const getFieldState = (args: any, isIntimidate?: boolean) => {
@@ -1157,15 +1195,36 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                         const row: any = { // Explicit any for indexing
                             'HP実数': realHP,
-                            '防御実数': realDef,
-                            '特防実数': realSpD,
+                            '防御実数': displayDef,
+                            '特防実数': displaySpD,
                             '自分テラスタル': getTeraDisplay(userScenario.label),
                             '相手': `${t(attacker.species)}${attacker.extraLabel || ''}`,
                             '相手テラスタル': getTeraDisplay(attackerScenario.label),
                             '相手持ち物': formatVal(t(attacker.item)),
                             '技': moveNameDisplay,
                             '場の状態': formatVal(fieldState),
-                            '相手攻撃実数': result.move.category === 'Physical' ? result.attacker.stats.atk : result.attacker.stats.spa,
+                            '相手攻撃実数': (() => {
+                                // Get base stats for attacker species
+                                const dummyAttacker = new (calcLib.Pokemon)(calcLib.Generations.get(gen), attacker.species);
+                                const attackerBaseStats = (dummyAttacker as any).bs || (dummyAttacker.species as any).baseStats;
+
+                                const statKey = result.move.category === 'Physical' ? 'atk' : 'spa';
+                                const baseStatValue = attackerBaseStats[statKey];
+
+                                // Calculate nature multiplier
+                                const attackerNature = attacker.nature || 'Serious';
+                                const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
+                                const natureAnti: { [key: string]: string } = { 'Modest': 'atk', 'Timid': 'atk', 'Calm': 'atk', 'Bold': 'atk', 'Adamant': 'spa', 'Impish': 'spa', 'Jolly': 'spa', 'Careful': 'spa' };
+                                const natureMult = natureRef[attackerNature] === statKey ? 1.1 : (natureAnti[attackerNature] === statKey ? 0.9 : 1.0);
+
+                                // Calculate actual stat value (before rank modification)
+                                const ev = attacker.evs?.[statKey] || 0;
+                                const iv = attacker.ivs?.[statKey] || 31;
+                                const statValue = calcRealStatWithBase(baseStatValue, ev, iv, natureMult, false);
+
+                                const rankValue = result.move.category === 'Physical' ? (attacker.ranks?.atk || 0) : (attacker.ranks?.spa || 0);
+                                return rankValue !== 0 ? `${statValue}(${rankValue > 0 ? '+' : ''}${rankValue})` : statValue;
+                            })(),
                             'ダメージ': damageDisplay,
                             '確定数': killDesc,
                             // New Fields
@@ -1504,7 +1563,23 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     foundLine = true;
 
                     if (tier.label === '登録値' && res.stat) {
-                        registeredTierStatStr = res.stat.toString();
+                        // Calculate actual stat from required EVs
+                        const rankValue = userPoke.ranks?.[sKey] || 0;
+
+                        // Calculate nature multiplier
+                        const userNature = userPoke.nature || 'Serious';
+                        const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
+                        const natureAnti: { [key: string]: string } = { 'Modest': 'atk', 'Timid': 'atk', 'Calm': 'atk', 'Bold': 'atk', 'Adamant': 'spa', 'Impish': 'spa', 'Jolly': 'spa', 'Careful': 'spa' };
+                        const natureMult = natureRef[userNature] === sKey ? 1.1 : (natureAnti[userNature] === sKey ? 0.9 : 1.0);
+
+                        // Calculate base stat value from EVs
+                        const requiredEV = res.evs[sKey];
+                        const iv = userPoke.ivs?.[sKey] || 31;
+                        const baseStatValue = calcRealStatWithBase(baseStats[sKey], requiredEV, iv, natureMult, false);
+
+                        registeredTierStatStr = rankValue !== 0
+                            ? `${baseStatValue}(${rankValue > 0 ? '+' : ''}${rankValue})`
+                            : baseStatValue.toString();
                     }
                     break;
                 }

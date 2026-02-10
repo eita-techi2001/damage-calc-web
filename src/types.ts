@@ -67,7 +67,6 @@ export interface CalculationResult {
 export interface GlobalFieldState {
     weather?: 'None' | 'Sun' | 'Rain' | 'Sand' | 'Snow' | 'Harsh Sunshine' | 'Heavy Rain' | 'Strong Winds';
     terrain?: 'None' | 'Electric' | 'Grassy' | 'Psychic' | 'Misty';
-    opponentRanks?: PokemonStats; // Added v2.5
     userSide: {
         isReflect: boolean;
         isLightScreen: boolean;
