@@ -1418,11 +1418,8 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    一括ダメージ計算
+                    YURIN式一括ダメージ計算機
                 </h1>
-                <p className="text-lg text-gray-400">
-                    Select a configuration and adjust EVs/IVs to analyze.
-                </p>
             </div>
 
             {/* Control Panel */}
@@ -1800,14 +1797,14 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </h3>
                             </div>
 
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 min-w-0">
                                 {/* Ability Selector */}
-                                <div className="flex flex-col items-start space-y-1">
+                                <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
                                     <span className="text-xs text-gray-400">特性 (Ability)</span>
                                     <select
                                         value={activeConfig.ability || ''}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, ability: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full max-w-full"
                                     >
                                         {availableAbilities.length > 0 ? (
                                             availableAbilities.map((ab, idx) => (
@@ -1821,12 +1818,12 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </div>
 
                                 {/* Item Selector */}
-                                <div className="flex flex-col items-start space-y-1">
+                                <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
                                     <span className="text-xs text-gray-400">持ち物 (Item)</span>
                                     <select
                                         value={activeConfig.item || ''}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, item: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full"
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full max-w-full"
                                     >
                                         {REFINED_ITEMS.map((item) => (
                                             <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
@@ -1853,12 +1850,12 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 </div>
 
                                 {/* Nature Selector */}
-                                <div className="flex flex-col items-start space-y-1">
+                                <div className="flex flex-col items-start space-y-1 min-w-0 overflow-hidden">
                                     <span className="text-xs text-gray-400">性格 (Nature)</span>
                                     <select
                                         value={activeConfig.nature}
                                         onChange={(e) => updateActiveConfig({ ...activeConfig, nature: e.target.value })}
-                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500"
+                                        className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full max-w-full"
                                     >
                                         {[
                                             // A Up
@@ -2165,7 +2162,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         : 'text-gray-400 hover:bg-white/[0.12] hover:text-white'
                                         }`}
                                 >
-                                    {tab === 'attack' ? 'Attack (攻)' : tab === 'defense' ? 'Defense (受)' : tab === 'offensiveLine' ? 'Off Lines (攻ライン)' : 'Def Lines (受ライン)'}
+                                    {tab === 'attack' ? '攻撃側' : tab === 'defense' ? '防御側' : tab === 'offensiveLine' ? '攻撃ライン' : '防御ライン'}
                                 </button>
                             ))}
                         </div>
