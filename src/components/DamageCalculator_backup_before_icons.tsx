@@ -885,19 +885,12 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         );
     };
 
-    const renderRankSelect = (label: string, stat: keyof PokemonStats, isOpponent: boolean = false) => {
-        const val = isOpponent
-            ? (globalField.opponentRanks?.[stat] || 0)
-            : (activeConfig?.ranks?.[stat] || 0);
+    const renderRankSelect = (label: string, stat: keyof PokemonStats) => {
+        const val = activeConfig?.ranks?.[stat] || 0;
 
         const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             const newVal = Number(e.target.value);
-            if (isOpponent) {
-                setGlobalField({
-                    ...globalField,
-                    opponentRanks: { ...globalField.opponentRanks, [stat]: newVal } as PokemonStats
-                });
-            } else if (activeConfig) {
+            if (activeConfig) {
                 updateActiveConfig({
                     ...activeConfig,
                     ranks: { ...activeConfig.ranks, [stat]: newVal } as PokemonStats
@@ -905,10 +898,10 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             }
         };
 
-        const colorClass = isOpponent ? "border-purple-600 focus:border-purple-400" : "border-pink-600 focus:border-pink-400";
+        const colorClass = "border-pink-600 focus:border-pink-400";
 
         return (
-            <div className="flex flex-col items-center space-y-1" key={`${isOpponent ? 'opp' : 'user'}-${stat}`}>
+            <div className="flex flex-col items-center space-y-1" key={`user-${stat}`}>
                 <span className="text-xs text-gray-400">{label}</span>
                 <select
                     value={val}
@@ -1443,18 +1436,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         <span className="text-sm text-gray-300">Vessel (うつわ/C↓)</span>
                                     </label>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Opponent Ranks */}
-                        <div className="border-t border-gray-700 pt-4 mt-2">
-                            <h4 className="text-sm font-bold text-gray-400 mb-2">Global Opponent Ranks (敵全体のランク補正)</h4>
-                            <div className="flex items-center space-x-4 flex-wrap">
-                                {renderRankSelect('Atk', 'atk', true)}
-                                {renderRankSelect('Def', 'def', true)}
-                                {renderRankSelect('SpA', 'spa', true)}
-                                {renderRankSelect('SpD', 'spd', true)}
-                                {renderRankSelect('Spe', 'spe', true)}
                             </div>
                         </div>
                     </div>

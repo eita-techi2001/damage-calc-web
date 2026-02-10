@@ -446,17 +446,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     for (const move of userPoke.moves) {
                         if (!move) continue;
 
-                        // Clone defender to apply Global Opponent Ranks calculations
+                        // Clone defender
                         const effectiveDefender = JSON.parse(JSON.stringify(defender));
-                        if (globalField && globalField.opponentRanks) {
-                            if (!effectiveDefender.boosts) effectiveDefender.boosts = {};
-                            const r = globalField.opponentRanks;
-                            effectiveDefender.boosts.atk = (effectiveDefender.boosts.atk || 0) + (r.atk || 0);
-                            effectiveDefender.boosts.def = (effectiveDefender.boosts.def || 0) + (r.def || 0);
-                            effectiveDefender.boosts.spa = (effectiveDefender.boosts.spa || 0) + (r.spa || 0);
-                            effectiveDefender.boosts.spd = (effectiveDefender.boosts.spd || 0) + (r.spd || 0);
-                            effectiveDefender.boosts.spe = (effectiveDefender.boosts.spe || 0) + (r.spe || 0);
-                        }
 
                         // Field Setup
                         const fieldArgs: any = { ...baseFieldArgs, gameType: 'Doubles' };
@@ -870,17 +861,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                     if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${t(attacker.teraType || '')})` });
 
                     for (const attackerScenario of attackerScenarios) {
-                        // Clone attacker to apply Global Opponent Ranks
-                        let effectiveAttackerBase = JSON.parse(JSON.stringify(attacker)); // We clone base first
-                        if (globalField && globalField.opponentRanks) {
-                            if (!effectiveAttackerBase.boosts) effectiveAttackerBase.boosts = {};
-                            const r = globalField.opponentRanks;
-                            effectiveAttackerBase.boosts.atk = (effectiveAttackerBase.boosts.atk || 0) + (r.atk || 0);
-                            effectiveAttackerBase.boosts.def = (effectiveAttackerBase.boosts.def || 0) + (r.def || 0);
-                            effectiveAttackerBase.boosts.spa = (effectiveAttackerBase.boosts.spa || 0) + (r.spa || 0);
-                            effectiveAttackerBase.boosts.spd = (effectiveAttackerBase.boosts.spd || 0) + (r.spd || 0);
-                            effectiveAttackerBase.boosts.spe = (effectiveAttackerBase.boosts.spe || 0) + (r.spe || 0);
-                        }
+                        // Clone attacker
+                        let effectiveAttackerBase = JSON.parse(JSON.stringify(attacker));
 
                         // Field Setup
                         const fieldArgs: any = { ...baseFieldArgs, gameType: 'Doubles' };
