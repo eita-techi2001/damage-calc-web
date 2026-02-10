@@ -1483,7 +1483,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {/* Header Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    YURIN式一括ダメージ計算機
+                    ポケモン一括ダメージ計算機
                 </h1>
             </div>
 
