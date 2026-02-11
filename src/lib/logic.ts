@@ -2,7 +2,7 @@
 import { DamageCalculator } from '@/core/calculator';
 import { MetaPokemons } from '@/data/meta_pokemons';
 import { UserPokemonConfig, MetaPokemonVariant, CalculationSettings, VariantFilterMode } from '@/types';
-import { t, translateText } from '@/core/translator';
+import { t, tType, translateText } from '@/core/translator';
 import { LineExplorer } from '@/core/lineExplorer';
 import { AbilityBranches } from '@/data/ability_branches';
 import * as calcLib from '@smogon/calc';
@@ -535,7 +535,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
         }
 
         let userScenarios = [{ isTera: false, label: '' }];
-        if (userPoke.teraType) userScenarios.push({ isTera: true, label: ` (テラ: ${t(userPoke.teraType || '')})` });
+        if (userPoke.teraType) userScenarios.push({ isTera: true, label: ` (テラ: ${tType(userPoke.teraType || '')})` });
 
         // Filter Tera
         const settingsTeraMode = settings?.teraVariantMode || 'default';
@@ -553,7 +553,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
         for (const userScenario of userScenarios) {
             for (const defender of targets) {
                 let defenderScenarios = [{ isTera: false, label: '' }];
-                if (defender.teraType) defenderScenarios.push({ isTera: true, label: ` (テラ: ${t(defender.teraType || '')})` });
+                if (defender.teraType) defenderScenarios.push({ isTera: true, label: ` (テラ: ${tType(defender.teraType || '')})` });
 
                 if (settingsTeraMode === 'active-only') {
                     defenderScenarios = defenderScenarios.filter(s => s.isTera);
@@ -632,17 +632,19 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const isIntimidateActive = (defender.forcedField && defender.forcedField.isDefenderIntimidated) ||
                             (defender.extraLabel && defender.extraLabel.includes('Intimidate') && !defender.extraLabel.includes('No Intimidate'));
 
+                        let intimidateEffective = false;
                         if (isIntimidateActive) {
                             effectiveUser = JSON.parse(JSON.stringify(userPoke));
                             if (!effectiveUser.boosts) effectiveUser.boosts = {};
                             const userAbility = effectiveUser.ability;
                             const userItem = effectiveUser.item;
-                            if (userAbility === 'Defiant') effectiveUser.boosts.atk = (effectiveUser.boosts.atk || 0) + 1;
-                            else if (userAbility === 'Competitive') effectiveUser.boosts.spa = (effectiveUser.boosts.spa || 0) + 2;
+                            if (userAbility === 'Defiant') { effectiveUser.boosts.atk = (effectiveUser.boosts.atk || 0) + 1; intimidateEffective = true; }
+                            else if (userAbility === 'Competitive') { effectiveUser.boosts.spa = (effectiveUser.boosts.spa || 0) + 2; intimidateEffective = true; }
                             else if (userAbility === 'Clear Body' || userItem === 'Clear Amulet' || userAbility === 'Full Metal Body') { }
-                            else if (userAbility === 'Hyper Cutter' && true) { }
-                            else effectiveUser.boosts.atk = (effectiveUser.boosts.atk || 0) - 1;
+                            else if (userAbility === 'Hyper Cutter') { }
+                            else { effectiveUser.boosts.atk = (effectiveUser.boosts.atk || 0) - 1; intimidateEffective = true; }
                         }
+                        // Defer final intimidateEffective check to after move category is known (see below)
 
                         // PROTOSYNTHESIS / QUARK DRIVE LOGIC
                         // 1. Determine Highest Stat (Attacker)
@@ -875,6 +877,10 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         }
 
                         const cat = result.move.category;
+                        // Special moves are unaffected by Intimidate's Atk drop (only Competitive's SpA+2 matters)
+                        if (cat === 'Special' && intimidateEffective && effectiveUser.ability !== 'Competitive') {
+                            intimidateEffective = false;
+                        }
                         // Use effectiveUser.boosts to determine stage
                         const statKey = cat === 'Physical' ? 'atk' : 'spa';
                         const stage = effectiveUser.boosts ? (effectiveUser.boosts[statKey] || 0) : 0;
@@ -898,10 +904,11 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             natureRef[nature] === statKey ? 1.1 : (natureAnti[nature] === statKey ? 0.9 : 1.0)
                         );
 
-                        let userStat = `${rawStat}${statArrow}`;
+                        const statPrefix = statKey === 'atk' ? 'A' : 'C';
+                        let userStat = `${statPrefix}${rawStat}${statArrow}`;
                         if (stage !== 0) {
                             const sign = stage > 0 ? '+' : '';
-                            userStat = `${rawStat}${statArrow} (${sign}${stage})`;
+                            userStat = `${statPrefix}${rawStat}${statArrow} (${sign}${stage})`;
                         }
 
                         let cleanName = t(defender.species);
@@ -965,9 +972,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
 
-                        const fieldState = getFieldState(fieldArgs, isIntimidateActive);
+                        const fieldState = getFieldState(fieldArgs, intimidateEffective);
 
-                        const teraLabel = defenderScenario.isTera ? (t(defender.teraType || '') || 'Terastal') : '-';
+                        const teraLabel = defenderScenario.isTera ? (tType(defender.teraType || '') || 'Terastal') : '-';
 
                         const damageDisplay = percentage === maxPercentage
                             ? (minDmg === maxDmg ? `${percentage}%（${minDmg}）` : `${percentage}%（${minDmg}～${maxDmg}）`)
@@ -1039,7 +1046,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             for (const attacker of targets) {
                 for (const move of attacker.moves) {
                     const attackerScenarios = [{ isTera: false, label: '' }];
-                    if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${t(attacker.teraType || '')})` });
+                    if (attacker.teraType) attackerScenarios.push({ isTera: true, label: ` (テラ: ${tType(attacker.teraType || '')})` });
 
                     for (const attackerScenario of attackerScenarios) {
                         // Clone attacker to apply ranks and boosts
@@ -1098,10 +1105,24 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         let effectiveAttacker: any = effectiveAttackerBase; // Changed from attacker to effectiveAttackerBase
                         // Use variant-specific Intimidate flag
                         const isIntimidateActive = variant.forcedField?.isDefenderIntimidated || false;
+                        let intimidateEffective = false;
                         if (isIntimidateActive) {
-                            effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase)); // Clone base (with ranks)
-                            if (!effectiveAttacker.boosts) effectiveAttacker.boosts = {};
-                            effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
+                            const atkAbility = effectiveAttackerBase.ability;
+                            const atkItem = effectiveAttackerBase.item;
+                            if (atkAbility === 'Clear Body' || atkAbility === 'Full Metal Body' || atkAbility === 'Hyper Cutter' || atkItem === 'Clear Amulet') {
+                                // Intimidate negated
+                            } else {
+                                effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase)); // Clone base (with ranks)
+                                if (!effectiveAttacker.boosts) effectiveAttacker.boosts = {};
+                                if (atkAbility === 'Defiant') {
+                                    effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) + 1;
+                                } else if (atkAbility === 'Competitive') {
+                                    effectiveAttacker.boosts.spa = (effectiveAttacker.boosts.spa || 0) + 2;
+                                } else {
+                                    effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
+                                }
+                                intimidateEffective = true;
+                            }
                         }
 
                         // PROTOSYNTHESIS / QUARK DRIVE for opponent attacker
@@ -1145,6 +1166,11 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             attackerScenario.isTera, userScenario.isTera,
                             fieldArgs
                         );
+
+                        // Special moves are unaffected by Intimidate's Atk drop (only Competitive's SpA+2 matters)
+                        if (result.move.category === 'Special' && intimidateEffective && effectiveAttackerBase.ability !== 'Competitive') {
+                            intimidateEffective = false;
+                        }
 
                         const range = result.range();
                         const maxDmg = range[1];
@@ -1238,14 +1264,13 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
 
-                        const fieldState = getFieldState(fieldArgs, isIntimidateActive);
+                        const fieldState = getFieldState(fieldArgs, intimidateEffective);
 
                         // Fix: "Psychic" matches both Type (Esper) and Move (Psychic) in translator.
                         const getTeraDisplay = (val: string) => {
                             if (val === '-' || !val) return '-';
                             const type = val.replace(' (テラ: ', '').replace(')', '');
-                            if (type === 'Psychic') return 'エスパー';
-                            return t(type);
+                            return tType(type);
                         };
 
                         // Detect Spread Override for Display (Defense)
@@ -1257,8 +1282,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                         const row: any = { // Explicit any for indexing
                             'HP実数': realHP,
-                            '防御実数': displayDef,
-                            '特防実数': displaySpD,
+                            ...(result.move.category === 'Physical' ? { '防御実数': displayDef } : { '特防実数': displaySpD }),
                             '自分テラスタル': getTeraDisplay(userScenario.label),
                             '相手': `${t(attacker.species)}${attacker.extraLabel || ''}`,
                             '相手テラスタル': getTeraDisplay(attackerScenario.label),
@@ -1399,8 +1423,7 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
 
                 // Values from Source
                 'HP実数': r['HP実数'],
-                '防御実数': r['防御実数'],
-                '特防実数': r['特防実数'],
+                ...(category === 'Physical' ? { '防御実数': r['防御実数'] } : { '特防実数': r['特防実数'] }),
                 '自分テラスタル': r['自分テラスタル'],
                 '自分特性': r['自分特性'],
                 '自分持ち物': r['自分持ち物'],
@@ -1470,8 +1493,8 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         if (category === 'Special' && nature === 'Calm' && userPoke.nature !== 'Calm') spdText += '↑';
 
                         row['HP実数'] = realHP;
-                        row['防御実数'] = defText;
-                        row['特防実数'] = spdText;
+                        if (category === 'Physical') row['防御実数'] = defText;
+                        else row['特防実数'] = spdText;
                         // Update combined 必要実数値
                         const updatedDefVal = category === 'Physical' ? defText : spdText;
                         row['必要実数値'] = `H${realHP}${defKey}${updatedDefVal}`;

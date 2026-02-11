@@ -295,7 +295,7 @@ export const japaneseDict: { [key: string]: string } = {
     "Poison": "どく",
     "Ground": "じめん",
     "Flying": "ひこう",
-    "Psychic": "エスパー",
+    "Psychic": "サイコキネシス", // Move translation. For type (エスパー), use tType().
     "Bug": "むし",
     "Rock": "いわ",
     "Ghost": "ゴースト",
@@ -493,6 +493,12 @@ export function t(key: string): string {
     }
 
     return key;
+}
+
+// Type-specific translation (handles "Psychic" → "エスパー" conflict with move "Psychic" → "サイコキネシス")
+const TYPE_OVERRIDES: Record<string, string> = { "Psychic": "エスパー" };
+export function tType(key: string): string {
+    return TYPE_OVERRIDES[key] || t(key);
 }
 
 export function toEnglish(key: string): string {

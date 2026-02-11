@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect, useMemo, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { getAllMoves, loadConfig, calculateCustom, getMetaOpponents, getAllSpecies, getPokemonData, getTranslationData } from '@/app/actions';
 import { PokemonStats, UserPokemonConfig, GlobalFieldState, CalculationSettings, VariantFilterMode, BoxesState, PokemonBox } from '@/types';
-import { t, translateText, toEnglish } from '@/core/translator';
+import { t, tType, translateText, toEnglish } from '@/core/translator';
 import { AbilityBranches } from '@/data/ability_branches';
 import { initializeBoxes, saveBoxes, getActiveBox, createBox, cloneBox } from '@/lib/storage';
 import { parsePokePaste, parseMultiplePokePaste, formatToPokePaste, formatMultipleToPokePaste } from '@/lib/pokepaste';
@@ -162,14 +162,13 @@ const getIconUrl = (speciesName: string) => {
 
     slug = specialCases[slug] || slug;
 
-    // Special override for Corsola-Galar (dex sprite doesn't exist)
-    if (slug === 'corsola-galar' || slug === 'corsola-galarian') {
-        return `https://play.pokemonshowdown.com/sprites/pokemon/corsola-galar.png`;
-    }
-
-    // Use different sources: Scarlet-Violet for regular Pokemon, Showdown dex for regional forms
+    // Use different sources: Scarlet-Violet for regular Pokemon, Showdown for regional forms
+    // Note: sprites/dex/ has Alola forms but NOT Galar/Hisui. Use sprites/gen5/ for those.
+    const isGalarOrHisui = englishName.includes('-Galar') || englishName.includes('-Hisui');
     const finalUrl = isRegionalForm
-        ? `https://play.pokemonshowdown.com/sprites/dex/${slug}.png`
+        ? (isGalarOrHisui
+            ? `https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`
+            : `https://play.pokemonshowdown.com/sprites/dex/${slug}.png`)
         : `https://img.pokemondb.net/sprites/scarlet-violet/icon/${slug}.png`;
 
     return finalUrl;
@@ -204,7 +203,14 @@ const RowDetailPopup = ({ row, onClose }: { row: any; onClose: () => void }) => 
     const itemUrl = oppItem !== '-' ? getItemIconUrl(oppItem) : null;
 
     const hiddenKeys = new Set(['_meta', '相手']);
-    const fields = Object.entries(row).filter(([k]) => !hiddenKeys.has(k) && !k.startsWith('_'));
+    const priorityKeys = ['必要実数値', '必要努力値'];
+    const bottomKeys = new Set(['特化', '結果2', '無補正252', '結果3']);
+    const allFields = Object.entries(row).filter(([k]) => !hiddenKeys.has(k) && !k.startsWith('_'));
+    const fields = [
+        ...allFields.filter(([k]) => priorityKeys.includes(k)),
+        ...allFields.filter(([k]) => !priorityKeys.includes(k) && !bottomKeys.has(k)),
+        ...allFields.filter(([k]) => bottomKeys.has(k)),
+    ];
 
     return createPortal(
         <>
@@ -376,13 +382,14 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
 });
 
 // Reusable Autocomplete Input
-const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, autoFocus }: {
+const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, autoFocus, translationsReady }: {
     value: string,
     onChange: (val: string) => void,
     onSelect: (val: string) => void,
     itemList: string[],
     placeholder?: string,
-    autoFocus?: boolean
+    autoFocus?: boolean,
+    translationsReady?: boolean
 }) => {
     const [show, setShow] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -415,7 +422,7 @@ const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, a
             );
         }).slice(0, LIMIT);
         setSuggestions(filtered);
-    }, [value, itemList, show]);
+    }, [value, itemList, show, translationsReady]);
 
     return (
         <div className="relative w-full" style={{ zIndex: show ? 1000 : 'auto' }}>
@@ -546,6 +553,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             registerTranslations(filteredPokemon);
             registerTranslations(res.moves); // Also moves
             setTranslationsReady(true);
+        }).catch((e) => {
+            console.error('Translation loading failed:', e);
+            setTranslationsReady(true); // Still mark ready to unblock UI
         });
     }, []);
 
@@ -1804,6 +1814,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 onSelect={handleLoadUserPokemon}
                                                 itemList={translatedSpeciesList}
                                                 placeholder="Search My Pokemon (自分のポケモンを検索)..."
+                                                translationsReady={translationsReady}
                                             />
                                         </div>
                                     </div>
@@ -1848,6 +1859,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 onSelect={handleLoadOpponent}
                                                 itemList={translatedSpeciesList}
                                                 placeholder="ポケモンを検索して追加..."
+                                                translationsReady={translationsReady}
                                             />
                                         </div>
                                     </div>
@@ -1966,7 +1978,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         className={`bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full ${activeConfig.species.includes('Terapagos') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {TERA_TYPES.map((type) => (
-                                            <option key={type} value={type}>{type === 'Psychic' ? 'エスパー' : t(type)}</option>
+                                            <option key={type} value={type}>{tType(type)}</option>
                                         ))}
                                     </select>
                                 </div>
