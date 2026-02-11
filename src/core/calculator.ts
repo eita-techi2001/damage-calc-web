@@ -5,6 +5,12 @@ import { UserPokemonConfig, MetaPokemonVariant } from '../types';
 const gen = Generations.get(9);
 const field = new Field({ gameType: 'Doubles' });
 
+// Fixed-count multi-hit moves that should always use their natural hit count
+const FIXED_MULTIHIT_MOVES = new Set([
+    'Triple Axel', 'Triple Kick', 'Surging Strikes',
+    'Population Bomb', 'Tachyon Cutter',
+]);
+
 export class DamageCalculator {
     // Convert User/Meta config to @smogon/calc Pokemon object
     private toCalcPokemon(config: UserPokemonConfig | MetaPokemonVariant, isDynamax: boolean = false, isTera: boolean = false): Pokemon {
@@ -39,6 +45,14 @@ export class DamageCalculator {
             if (options.overrides.boostedStat) {
                 options.boostedStat = options.overrides.boostedStat;
                 delete options.overrides.boostedStat;
+            }
+            if (options.overrides.curHP !== undefined) {
+                options.curHP = options.overrides.curHP;
+                delete options.overrides.curHP;
+            }
+            if (options.overrides.status) {
+                options.status = options.overrides.status;
+                delete options.overrides.status;
             }
         }
 
@@ -101,8 +115,9 @@ export class DamageCalculator {
             moveOverrides.target = 'normal';
         }
 
-        // Set hits for multi-hit moves
-        if (multiHitCount && multiHitCount !== 5) {
+        // Set hits for multi-hit moves (only for variable-range moves like Bullet Seed [2,5])
+        // Fixed-count moves (Triple Axel, Population Bomb, etc.) always use their natural hit count
+        if (multiHitCount && !FIXED_MULTIHIT_MOVES.has(moveName) && move.hits > 1) {
             moveOverrides.hits = multiHitCount;
         }
 
@@ -136,8 +151,9 @@ export class DamageCalculator {
             moveOverrides.target = 'normal';
         }
 
-        // Set hits for multi-hit moves
-        if (multiHitCount && multiHitCount !== 5) {
+        // Set hits for multi-hit moves (only for variable-range moves like Bullet Seed [2,5])
+        // Fixed-count moves (Triple Axel, Population Bomb, etc.) always use their natural hit count
+        if (multiHitCount && !FIXED_MULTIHIT_MOVES.has(moveName) && move.hits > 1) {
             moveOverrides.hits = multiHitCount;
         }
 
