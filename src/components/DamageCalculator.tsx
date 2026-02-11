@@ -382,14 +382,13 @@ const Table = memo(function Table({ headers, rows, highlightEfficient }: { heade
 });
 
 // Reusable Autocomplete Input
-const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, autoFocus, translationsReady }: {
+const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, autoFocus }: {
     value: string,
     onChange: (val: string) => void,
     onSelect: (val: string) => void,
     itemList: string[],
     placeholder?: string,
-    autoFocus?: boolean,
-    translationsReady?: boolean
+    autoFocus?: boolean
 }) => {
     const [show, setShow] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -422,7 +421,7 @@ const AutocompleteInput = ({ value, onChange, onSelect, itemList, placeholder, a
             );
         }).slice(0, LIMIT);
         setSuggestions(filtered);
-    }, [value, itemList, show, translationsReady]);
+    }, [value, itemList, show]);
 
     return (
         <div className="relative w-full" style={{ zIndex: show ? 1000 : 'auto' }}>
@@ -1814,7 +1813,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 onSelect={handleLoadUserPokemon}
                                                 itemList={translatedSpeciesList}
                                                 placeholder="Search My Pokemon (自分のポケモンを検索)..."
-                                                translationsReady={translationsReady}
                                             />
                                         </div>
                                     </div>
@@ -1859,7 +1857,6 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 onSelect={handleLoadOpponent}
                                                 itemList={translatedSpeciesList}
                                                 placeholder="ポケモンを検索して追加..."
-                                                translationsReady={translationsReady}
                                             />
                                         </div>
                                     </div>
