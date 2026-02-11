@@ -585,6 +585,10 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [translationsReady, setTranslationsReady] = useState(false);
     const [evInputs, setEvInputs] = useState<{ [key: string]: string }>({}); // Local state for EV inputs
 
+    // Create new array references when translations load to force AutocompleteInput useEffect re-run
+    const translatedSpeciesList = useMemo(() => [...allSpeciesList], [allSpeciesList, translationsReady]);
+    const translatedMovesList = useMemo(() => [...availableMoves], [availableMoves, translationsReady]);
+
     // Derived active abilities based on editMode
     const availableAbilities = editMode === 'user' ? userAvailableAbilities : opponentAvailableAbilities;
 
@@ -1798,7 +1802,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 value={selectedConfig}
                                                 onChange={setSelectedConfig}
                                                 onSelect={handleLoadUserPokemon}
-                                                itemList={allSpeciesList}
+                                                itemList={translatedSpeciesList}
                                                 placeholder="Search My Pokemon (自分のポケモンを検索)..."
                                             />
                                         </div>
@@ -1842,7 +1846,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 value={selectedOpponent}
                                                 onChange={setSelectedOpponent}
                                                 onSelect={handleLoadOpponent}
-                                                itemList={allSpeciesList}
+                                                itemList={translatedSpeciesList}
                                                 placeholder="ポケモンを検索して追加..."
                                             />
                                         </div>
@@ -2022,7 +2026,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                         newMoves[index] = val;
                                                         updateActiveConfig({ ...activeConfig, moves: newMoves });
                                                     }}
-                                                    itemList={availableMoves}
+                                                    itemList={translatedMovesList}
                                                 />
                                             </div>
                                         )
