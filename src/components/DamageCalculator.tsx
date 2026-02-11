@@ -36,6 +36,24 @@ const HEADERS_DEF_LINE_SPEC = ['必要実数値', '相手', '技', '必要努力
 const withRemarks = (headers: string[], showRemarks: boolean) =>
     showRemarks ? [...headers, '備考'] : headers;
 
+// EV extraction helpers for sorting line tables
+function extractOffensiveEV(str: string): number {
+    if (!str || str === '-') return Infinity;
+    const m = str.match(/(\d+)\s*$/);
+    return m ? parseInt(m[1], 10) : Infinity;
+}
+
+function extractDefensiveEV(str: string): number {
+    if (!str || str === '-' || str === '無理') return Infinity;
+    if (str.startsWith('無振り')) return 0;
+    let total = 0;
+    const matches = str.matchAll(/[HBDS](\d+)/g);
+    for (const m of matches) {
+        total += parseInt(m[1], 10);
+    }
+    return total;
+}
+
 const REFINED_ITEMS = [
     '',
     'Choice Band', 'Choice Specs', 'Wise Glasses', 'Muscle Band',
@@ -159,6 +177,8 @@ const getIconUrl = (speciesName: string) => {
 
 const getItemIconUrl = (itemName: string) => {
     if (!itemName || itemName === '-' || itemName === '(No Item)') return '';
+    // Booster Energy doesn't exist on PokeAPI sprites - use local file
+    if (itemName === 'Booster Energy') return '/items/booster-energy.png';
     const slug = itemName.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${slug}.png`;
 };
@@ -554,6 +574,9 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [results, setResults] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'attack' | 'defense' | 'defenseLine' | 'offensiveLine'>('attack');
+    const [offLineSortOrder, setOffLineSortOrder] = useState<'default' | 'asc' | 'desc'>('default');
+    const [defLinePhysSortOrder, setDefLinePhysSortOrder] = useState<'default' | 'asc' | 'desc'>('default');
+    const [defLineSpecSortOrder, setDefLineSpecSortOrder] = useState<'default' | 'asc' | 'desc'>('default');
     const [availableMoves, setAvailableMoves] = useState<string[]>(allMoves);
     const [userAvailableAbilities, setUserAvailableAbilities] = useState<string[]>([]);
     const [opponentAvailableAbilities, setOpponentAvailableAbilities] = useState<string[]>([]);
@@ -1161,6 +1184,34 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         return null;
     }, []);
 
+    // Sorted line results
+    const sortedOffensiveLines = useMemo(() => {
+        if (offLineSortOrder === 'default' || !results?.offensiveLine) return results?.offensiveLine || [];
+        return [...results.offensiveLine].sort((a: any, b: any) => {
+            const evA = extractOffensiveEV(a['必要努力値']);
+            const evB = extractOffensiveEV(b['必要努力値']);
+            return offLineSortOrder === 'asc' ? evA - evB : evB - evA;
+        });
+    }, [results?.offensiveLine, offLineSortOrder]);
+
+    const sortedDefLinePhys = useMemo(() => {
+        if (defLinePhysSortOrder === 'default' || !results?.defenseLine?.physical) return results?.defenseLine?.physical || [];
+        return [...results.defenseLine.physical].sort((a: any, b: any) => {
+            const evA = extractDefensiveEV(a['必要努力値']);
+            const evB = extractDefensiveEV(b['必要努力値']);
+            return defLinePhysSortOrder === 'asc' ? evA - evB : evB - evA;
+        });
+    }, [results?.defenseLine?.physical, defLinePhysSortOrder]);
+
+    const sortedDefLineSpec = useMemo(() => {
+        if (defLineSpecSortOrder === 'default' || !results?.defenseLine?.special) return results?.defenseLine?.special || [];
+        return [...results.defenseLine.special].sort((a: any, b: any) => {
+            const evA = extractDefensiveEV(a['必要努力値']);
+            const evB = extractDefensiveEV(b['必要努力値']);
+            return defLineSpecSortOrder === 'asc' ? evA - evB : evB - evA;
+        });
+    }, [results?.defenseLine?.special, defLineSpecSortOrder]);
+
     useEffect(() => {
         if (!workerRef) return;
 
@@ -1482,8 +1533,8 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
             {/* Header Section */}
             <div className="text-center space-y-2">
-                <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    ポケモン一括ダメージ計算機
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight sm:whitespace-nowrap text-white">
+                    ポケモン一括<br className="sm:hidden" />ダメージ計算
                 </h1>
             </div>
 
@@ -1491,22 +1542,22 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 shadow-xl">
 
                 {/* MODE TABS */}
-                <div className="flex border-b border-gray-700 mb-6 space-x-4">
+                <div className="flex border-b border-gray-700 mb-6 space-x-2 sm:space-x-4">
                     <button
                         onClick={() => { setEditMode('user'); setSelectedOpponentId(null); }}
-                        className={`pb-2 px-4 transition-colors font-bold ${editMode === 'user' ? 'text-pink-400 border-b-2 border-pink-400' : 'text-gray-400 hover:text-white'}`}
+                        className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'user' ? 'text-pink-400 border-b-2 border-pink-400' : 'text-gray-400 hover:text-white'}`}
                     >
                         自分のポケモン
                     </button>
                     <button
                         onClick={() => setEditMode('opponent')}
-                        className={`pb-2 px-4 transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
+                        className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
                     >
                         相手の編集
                     </button>
                     <button
                         onClick={() => { setEditMode('manage'); setSelectedOpponentId(null); }}
-                        className={`pb-2 px-4 transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
+                        className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
                     >
                         リスト管理
                     </button>
@@ -1561,7 +1612,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     handleDeleteBox();
                                                 }
                                             }}
-                                            className="px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                            className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                             title="Boxを削除"
                                         >
                                             削除
@@ -1583,19 +1634,19 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <button
                                     onClick={() => setImportModalOpen(true)}
-                                    className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📋 PokePaste インポート
                                 </button>
                                 <button
                                     onClick={() => handleExportBox('ja')}
-                                    className="px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📤 エクスポート (日本語)
                                 </button>
                                 <button
                                     onClick={() => handleExportBox('en')}
-                                    className="px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     📤 エクスポート (English)
                                 </button>
@@ -2247,31 +2298,64 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 )}
                                 {activeTab === 'offensiveLine' && (
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-red-500">火力ライン</h3>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <h3 className="text-xl font-bold text-gray-200 px-2 border-l-4 border-red-500">火力ライン</h3>
+                                            <select
+                                                value={offLineSortOrder}
+                                                onChange={(e) => setOffLineSortOrder(e.target.value as any)}
+                                                className="px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded text-gray-300"
+                                            >
+                                                <option value="default">デフォルト</option>
+                                                <option value="asc">必要努力値が少ない順</option>
+                                                <option value="desc">必要努力値が多い順</option>
+                                            </select>
+                                        </div>
                                         <p className="text-sm text-gray-400 mb-4 ml-2">
                                             必要な努力値 (性格補正が必要な場合は補正後の値を表示 / 例: (Bold) 124)
                                         </p>
                                         <Table
                                             headers={withRemarks(HEADERS_OFF_LINE, calcSettings.showRemarks || false)}
-                                            rows={results.offensiveLine}
+                                            rows={sortedOffensiveLines}
                                         />
                                     </div>
                                 )}
                                 {activeTab === 'defenseLine' && (
                                     <div className="space-y-8">
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-green-500">物理ライン</h3>
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <h3 className="text-xl font-bold text-gray-200 px-2 border-l-4 border-green-500">物理ライン</h3>
+                                                <select
+                                                    value={defLinePhysSortOrder}
+                                                    onChange={(e) => setDefLinePhysSortOrder(e.target.value as any)}
+                                                    className="px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded text-gray-300"
+                                                >
+                                                    <option value="default">デフォルト</option>
+                                                    <option value="asc">必要努力値が少ない順</option>
+                                                    <option value="desc">必要努力値が多い順</option>
+                                                </select>
+                                            </div>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_LINE_PHYS, calcSettings.showRemarks || false)}
-                                                rows={results.defenseLine.physical}
+                                                rows={sortedDefLinePhys}
                                                 highlightEfficient
                                             />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-200 mb-4 px-2 border-l-4 border-yellow-500">特殊ライン</h3>
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <h3 className="text-xl font-bold text-gray-200 px-2 border-l-4 border-yellow-500">特殊ライン</h3>
+                                                <select
+                                                    value={defLineSpecSortOrder}
+                                                    onChange={(e) => setDefLineSpecSortOrder(e.target.value as any)}
+                                                    className="px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded text-gray-300"
+                                                >
+                                                    <option value="default">デフォルト</option>
+                                                    <option value="asc">必要努力値が少ない順</option>
+                                                    <option value="desc">必要努力値が多い順</option>
+                                                </select>
+                                            </div>
                                             <Table
                                                 headers={withRemarks(HEADERS_DEF_LINE_SPEC, calcSettings.showRemarks || false)}
-                                                rows={results.defenseLine.special}
+                                                rows={sortedDefLineSpec}
                                                 highlightEfficient
                                             />
                                         </div>

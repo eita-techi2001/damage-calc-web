@@ -708,6 +708,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         }
                         checkParadox(effectiveUser, fieldArgs);
 
+                        // Apply to Defender (for correct Booster Energy calculation)
+                        checkParadox(effectiveDefender, fieldArgs);
+
                         // STELLAR TERA OFFENSE FIX
                         // Library doesn't support Stellar boosts. We assume Base Type for defense/STAB (isTera=false)
                         // and manually boost BP.
@@ -914,6 +917,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const userAbilityDisplay = getDisplayAbility(effectiveUser.ability || '-', variantLabel, effectiveUser.item, fieldArgs.weather, fieldArgs.terrain);
                         const oppAbilityDisplay = getDisplayAbility(defender.ability || '-', defender.extraLabel || '', defender.item, fieldArgs.weather, fieldArgs.terrain);
 
+                        // Stat label mapping for Booster Energy display
+                        const statToBoostLabel: Record<string, string> = { atk: 'A', def: 'B', spa: 'C', spd: 'D', spe: 'S' };
+
                         // Helper to build comprehensive Field State string
                         const getFieldState = (args: any, isIntimidate?: boolean) => {
                             const parts = [];
@@ -940,10 +946,21 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             // Attacker Side (Helping Hand) - Boosting Damage
                             const att = args.attackerSide || {};
                             if (att.isHelpingHand) parts.push('手助け');
-                            // Battery? Power Spot? (If implemented in future)
 
                             // Intimidate
                             if (isIntimidate) parts.push('いかく');
+
+                            // Booster Energy / Protosynthesis / Quark Drive (only calculation-relevant boosts)
+                            const relevantAtkStat = cat === 'Physical' ? 'atk' : 'spa';
+                            const relevantDefStat = cat === 'Physical' ? 'def' : 'spd';
+                            const userBoost = effectiveUser.overrides?.boostedStat;
+                            if (userBoost === relevantAtkStat) {
+                                parts.push(`${statToBoostLabel[userBoost]}ブースト`);
+                            }
+                            const defBoost = effectiveDefender.overrides?.boostedStat;
+                            if (defBoost === relevantDefStat) {
+                                parts.push(`相手${statToBoostLabel[defBoost]}ブースト`);
+                            }
 
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
@@ -1087,6 +1104,42 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             effectiveAttacker.boosts.atk = (effectiveAttacker.boosts.atk || 0) - 1;
                         }
 
+                        // PROTOSYNTHESIS / QUARK DRIVE for opponent attacker
+                        {
+                            const normalize = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const atkAbility = normalize(effectiveAttacker.ability);
+                            const atkItem = normalize(effectiveAttacker.item);
+                            let paradoxActive = effectiveAttacker.overrides?.abilityOn === true;
+
+                            if (atkAbility === 'protosynthesis') {
+                                if (atkItem === 'boosterenergy' || fieldArgs.weather === 'Sun' || fieldArgs.weather === 'Harsh Sunshine') paradoxActive = true;
+                            } else if (atkAbility === 'quarkdrive') {
+                                if (atkItem === 'boosterenergy' || fieldArgs.terrain === 'Electric') paradoxActive = true;
+                            }
+
+                            if (paradoxActive) {
+                                if (effectiveAttacker === effectiveAttackerBase) {
+                                    effectiveAttacker = JSON.parse(JSON.stringify(effectiveAttackerBase));
+                                }
+                                // Determine highest stat
+                                const getMult = (n: string, s: string) => {
+                                    const plus: any = { 'Adamant': 'atk', 'Modest': 'spa', 'Jolly': 'spe', 'Timid': 'spe', 'Bold': 'def', 'Impish': 'def', 'Calm': 'spd', 'Careful': 'spd' };
+                                    const minus: any = { 'Modest': 'atk', 'Timid': 'atk', 'Adamant': 'spa', 'Jolly': 'spa' };
+                                    if (plus[n] === s) return 1.1;
+                                    if (minus[n] === s) return 0.9;
+                                    return 1.0;
+                                };
+                                const nat = effectiveAttacker.nature || 'Serious';
+                                const evs = effectiveAttacker.evs || {};
+                                const calcSt = (base: number, ev: number, m: number) => Math.floor((base * 2 + 31 + Math.floor(ev / 4)) * 50 / 100 + 5) * m;
+                                const dummyStats = { atk: calcSt(100, evs.atk || 0, getMult(nat, 'atk')), def: calcSt(100, evs.def || 0, getMult(nat, 'def')), spa: calcSt(100, evs.spa || 0, getMult(nat, 'spa')), spd: calcSt(100, evs.spd || 0, getMult(nat, 'spd')), spe: calcSt(100, evs.spe || 0, getMult(nat, 'spe')) };
+                                const best = (Object.keys(dummyStats) as Array<keyof typeof dummyStats>).reduce((a, b) => dummyStats[a] >= dummyStats[b] ? a : b);
+                                if (!effectiveAttacker.overrides) effectiveAttacker.overrides = {};
+                                effectiveAttacker.overrides.abilityOn = true;
+                                effectiveAttacker.overrides.boostedStat = best;
+                            }
+                        }
+
                         const result = calc.calculateReceivedDamage(
                             effectiveAttacker, userPoke, move,
                             attackerScenario.isTera, userScenario.isTera,
@@ -1142,6 +1195,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         const displayDef = defRankValue !== 0 ? `${realDef}(${defRankValue > 0 ? '+' : ''}${defRankValue})` : realDef;
                         const displaySpD = spdRankValue !== 0 ? `${realSpD}(${spdRankValue > 0 ? '+' : ''}${spdRankValue})` : realSpD;
 
+                        // Stat label mapping for Booster Energy display
+                        const statToBoostLabel: Record<string, string> = { atk: 'A', def: 'B', spa: 'C', spd: 'D', spe: 'S' };
+
                         // Helper to build comprehensive Field State string
                         const getFieldState = (args: any, isIntimidate?: boolean) => {
                             const parts = [];
@@ -1168,10 +1224,16 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             // Attacker Side (Helping Hand) - Boosting Damage
                             const att = args.attackerSide || {};
                             if (att.isHelpingHand) parts.push('手助け');
-                            // Battery? Power Spot? (If implemented in future)
 
                             // Intimidate
                             if (isIntimidate) parts.push('いかく');
+
+                            // Booster Energy / Protosynthesis / Quark Drive (only calculation-relevant boosts)
+                            const relevantAtkStat = result.move.category === 'Physical' ? 'atk' : 'spa';
+                            const atkBoost = effectiveAttacker.overrides?.boostedStat;
+                            if (atkBoost === relevantAtkStat) {
+                                parts.push(`相手${statToBoostLabel[atkBoost]}ブースト`);
+                            }
 
                             return parts.length > 0 ? parts.join(', ') : '-';
                         };
@@ -1582,6 +1644,41 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             : baseStatValue.toString();
                     }
                     break;
+                }
+            }
+
+            // Second pass: try with boosting nature if first pass failed
+            if (!foundLine) {
+                const userNature = userPoke.nature || 'Serious';
+                const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
+                const isAlreadyBoosting = natureRef[userNature] === sKey;
+
+                if (!isAlreadyBoosting) {
+                    const bestNature = category === 'Physical' ? 'Adamant' : 'Modest';
+                    const boostedUser = JSON.parse(JSON.stringify(userPoke));
+                    boostedUser.nature = bestNature;
+                    const natureSymbol = category === 'Physical' ? 'A↑' : 'C↑';
+
+                    for (const th of thresholds) {
+                        const res = explorer.findOffensiveLine(boostedUser, target, move, th as any, userScenario.isTera, defenderScenario.isTera, fieldArgs);
+                        if (res.success) {
+                            const koNum = th === 'OHKO' ? 1 : th[0];
+                            tierResults[tier.label] = `確${koNum}: ${natureSymbol} ${res.evs[sKey]}`;
+                            foundLine = true;
+
+                            if (tier.label === '登録値' && res.stat) {
+                                const rankValue = userPoke.ranks?.[sKey] || 0;
+                                const natureMult = 1.1; // Boosting nature
+                                const requiredEV = res.evs[sKey];
+                                const iv = userPoke.ivs?.[sKey] || 31;
+                                const baseStatValue = calcRealStatWithBase(baseStats[sKey], requiredEV, iv, natureMult, false);
+                                registeredTierStatStr = rankValue !== 0
+                                    ? `${baseStatValue}(${rankValue > 0 ? '+' : ''}${rankValue})`
+                                    : baseStatValue.toString();
+                            }
+                            break;
+                        }
+                    }
                 }
             }
 
