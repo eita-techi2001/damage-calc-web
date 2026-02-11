@@ -545,6 +545,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             }
             registerTranslations(filteredPokemon);
             registerTranslations(res.moves); // Also moves
+            setTranslationsReady(true);
         });
     }, []);
 
@@ -581,6 +582,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
     const [userAvailableAbilities, setUserAvailableAbilities] = useState<string[]>([]);
     const [opponentAvailableAbilities, setOpponentAvailableAbilities] = useState<string[]>([]);
     const [isThinkingMoves, setIsThinkingMoves] = useState(false);
+    const [translationsReady, setTranslationsReady] = useState(false);
     const [evInputs, setEvInputs] = useState<{ [key: string]: string }>({}); // Local state for EV inputs
 
     // Derived active abilities based on editMode
@@ -1942,7 +1944,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         className="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-pink-500 w-full max-w-full"
                                     >
                                         {REFINED_ITEMS.map((item) => (
-                                            <option key={item} value={item}>{item === '' ? 'None' : t(item)}</option>
+                                            <option key={item} value={item}>{item === '' ? 'もちものなし' : t(item)}</option>
                                         ))}
                                     </select>
                                 </div>

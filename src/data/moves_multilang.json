@@ -1428,6 +1428,10 @@
     "jname": "ひかりのかべ"
   },
   {
+    "ename": "Liquidation",
+    "jname": "アクアブレイク"
+  },
+  {
     "ename": "Lock-On",
     "jname": "ロックオン"
   },
@@ -1810,6 +1814,10 @@
   {
     "ename": "Poison Jab",
     "jname": "どくづき"
+  },
+  {
+    "ename": "Population Bomb",
+    "jname": "ねずみざん"
   },
   {
     "ename": "Poison Powder",

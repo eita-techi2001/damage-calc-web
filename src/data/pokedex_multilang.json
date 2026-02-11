@@ -169,54 +169,6 @@
   },
   {
     "name": {
-      "english": "Pikachu-Alola",
-      "japanese": "ピカチュウ(アローラ)(アローラ)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Hoenn",
-      "japanese": "ピカチュウ(ホウエン)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Kalos",
-      "japanese": "ピカチュウ(カロス)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Original",
-      "japanese": "ピカチュウ(オリジン)(オリジナル)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Partner",
-      "japanese": "ピカチュウ(キミにきめた)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Sinnoh",
-      "japanese": "ピカチュウ(シンオウ)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-Unova",
-      "japanese": "ピカチュウ(イッシュ)"
-    }
-  },
-  {
-    "name": {
-      "english": "Pikachu-World",
-      "japanese": "ピカチュウ(ワールド)"
-    }
-  },
-  {
-    "name": {
       "english": "Raichu",
       "japanese": "ライチュウ"
     }
@@ -6621,12 +6573,6 @@
     "name": {
       "english": "Maushold",
       "japanese": "イッカネズミ"
-    }
-  },
-  {
-    "name": {
-      "english": "Maushold-Four",
-      "japanese": "イッカネズミ(４ひき)(メス)"
     }
   },
   {

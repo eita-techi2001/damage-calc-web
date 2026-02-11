@@ -559,7 +559,10 @@ export function translateText(text: string): string {
         .replace(/chance to (\d+)HKO/g, "乱数$1発") // Fallback for chance to without percentage
         .replace(/(\d+) hits/g, "$1回ヒット") // "hits or more"?
         .replace(/(\d+) hits? or more/g, "$1回以上ヒット") // Handle "4 hits or more"
-        .replace(/approx\. /g, "(概算) ");
+        .replace(/approx\. /g, "")
+        // Catch-all for bare OHKO/XHKO (e.g. after approx. removal)
+        .replace(/(?<![確乱])(\d+)HKO/g, "確定$1発")
+        .replace(/(?<![確乱])OHKO/g, "確定1発");
 
     return translated;
 }
