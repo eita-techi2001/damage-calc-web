@@ -104,7 +104,31 @@ export class LineExplorer {
 
     // -------------------------------------------------------------------------
     // Defense: Find Min HP+Def/SpD for Next Threshold
+    // Staged binary search approach for performance:
+    //   Stage 1: BD={0,4,8,12}, binary search HP 0-252 (H-focused)
+    //   Stage 2: H=252 fixed, binary search BD 16-252
+    //   Stage 3: Nature boost + 252/252 check
     // -------------------------------------------------------------------------
+
+    // Helper: check if a specific H/BD EV combo survives the target threshold
+    private checkSurvives(
+        target: MetaPokemonVariant, user: UserPokemonConfig, move: string,
+        category: 'Physical' | 'Special', hpEv: number, defEv: number,
+        targetSurvivable: number, isTargetTera: boolean, isUserTera: boolean,
+        fieldArgs: any, natureOverride?: string
+    ): { survives: boolean, hp: number, defStat: number } {
+        const defKey = category === 'Physical' ? 'def' : 'spd';
+        const testUser = JSON.parse(JSON.stringify(user));
+        if (natureOverride) testUser.nature = natureOverride;
+        testUser.evs.hp = hpEv;
+        testUser.evs[defKey] = defEv;
+        const res = this.calc.calculateReceivedDamage(target, testUser, move, isTargetTera, isUserTera, fieldArgs);
+        const maxDmg = res.range()[1];
+        const hp = res.defender.stats.hp;
+        const defStat = res.defender.stats[defKey];
+        return { survives: maxDmg * targetSurvivable < hp, hp, defStat };
+    }
+
     public findDefensiveLine(
         target: MetaPokemonVariant,
         user: UserPokemonConfig,
@@ -116,7 +140,7 @@ export class LineExplorer {
     ): LineResult & { thresholdDesc?: string } {
         const defKey = category === 'Physical' ? 'def' : 'spd';
 
-        // Pre-calculate baseline for fallback description
+        // Calculate baseline (0 HP / 0 Def) to determine current survivability
         const baselineUser = JSON.parse(JSON.stringify(user));
         baselineUser.evs.hp = 0;
         baselineUser.evs[defKey] = 0;
@@ -134,174 +158,124 @@ export class LineExplorer {
         else if (baselineSurvivable === 1) baselineDesc = '確2';
         else baselineDesc = `確${baselineSurvivable + 1}`;
 
-        // Helper to run search with specific nature (Optimized V2)
+        // Staged search with optional nature override
         const runSearch = (natureOverride?: string): LineResult & { thresholdDesc?: string } | null => {
             const currentNature = natureOverride || user.nature;
 
-            // 1. Calculate Baseline (0 HP / 0 Def)
-            const baseUser = JSON.parse(JSON.stringify(user));
-            if (natureOverride) baseUser.nature = natureOverride;
-            baseUser.evs.hp = 0;
-            baseUser.evs[defKey] = 0;
+            // Baseline for this nature
+            const baseCheck = this.checkSurvives(target, user, move, category, 0, 0, 1, isTargetTera, isUserTera, fieldArgs, natureOverride);
+            const baseRes2 = this.calc.calculateReceivedDamage(target, (() => {
+                const u = JSON.parse(JSON.stringify(user));
+                if (natureOverride) u.nature = natureOverride;
+                u.evs.hp = 0; u.evs[defKey] = 0;
+                return u;
+            })(), move, isTargetTera, isUserTera, fieldArgs);
+            const baseMaxDmg = baseRes2.range()[1];
+            const baseHP = baseRes2.defender.stats.hp;
 
-            const baseRes = this.calc.calculateReceivedDamage(target, baseUser, move, isTargetTera, isUserTera, fieldArgs);
-            const baseMaxDmg = baseRes.range()[1];
-            const baseHP = baseRes.defender.stats.hp;
+            if (baseMaxDmg === 0) return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '高耐久' };
 
-            let currentSurvivable = 0;
-            if (baseMaxDmg === 0) currentSurvivable = 999;
-            else currentSurvivable = Math.floor((baseHP - 1) / baseMaxDmg); // Hits to kill - 1 = Hits survivable? No. Using original logic: ceil(HP/Max) - 1.
-            // Original: Math.ceil(baseHP / baseMaxDmg) - 1;
-            // e.g. HP 100, Dmg 100 -> ceil(1) - 1 = 0 survivable (OHKO).
-            // e.g. HP 101, Dmg 100 -> ceil(1.01) - 1 = 1 survivable (Survives 1 hit). Correct.
-            currentSurvivable = Math.ceil(baseHP / baseMaxDmg) - 1;
-
+            const currentSurvivable = Math.ceil(baseHP / baseMaxDmg) - 1;
             if (currentSurvivable >= 4) {
                 return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '高耐久' };
             }
 
-            const targetSurvivable = currentSurvivable + 1; // +1 threshold
-            let targetDesc = targetSurvivable === 1 ? '確定耐え' : `確定${targetSurvivable + 1}発`;
+            const targetSurvivable = currentSurvivable + 1;
+            const targetDesc = targetSurvivable === 1 ? '確定耐え' : `確定${targetSurvivable + 1}発`;
 
-            // -----------------------------------------------------------------
-            // OPTIMIZATION: Pre-calculate Damage Table (Def 0..63)
-            // Damage received depends ONLY on Def Stat (and nature/evs), NOT on HP.
-            // So we can calc damage for each Def EV once.
-            // -----------------------------------------------------------------
-            const damageTable: number[] = [];
-            const defStatsTable: number[] = [];
+            type Candidate = { hp: number, def: number, total: number, stat: number };
+            let bestResult: Candidate | null = null;
+            let efficientResult: Candidate | null = null;
 
-            // We iterate 0..63 for Def EV
-            for (let b = 0; b <= 63; b++) {
-                const defEv = b * 4;
-                // Use a minimal config for damage calc (HP doesn't matter for received damage amount)
-                const testUser = JSON.parse(JSON.stringify(user));
-                if (natureOverride) testUser.nature = natureOverride;
-                testUser.evs[defKey] = defEv;
-                testUser.evs.hp = 0; // Irrelevant for damage amount
+            // Helper: binary search HP for a fixed BD value
+            const bsearchHP = (fixedDef: number): Candidate | null => {
+                // Quick check: does H252+fixedDef work?
+                const maxCheck = this.checkSurvives(target, user, move, category, 252, fixedDef, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                if (!maxCheck.survives) return null;
 
-                const res = this.calc.calculateReceivedDamage(target, testUser, move, isTargetTera, isUserTera, fieldArgs);
-                damageTable[b] = res.range()[1]; // Max Damage
-                defStatsTable[b] = res.defender.stats[defKey]; // Actual Def Stat
-            }
+                // Quick check: does H0+fixedDef work?
+                const minCheck = this.checkSurvives(target, user, move, category, 0, fixedDef, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                if (minCheck.survives) return { hp: 0, def: fixedDef, total: fixedDef, stat: minCheck.defStat };
 
-            // -----------------------------------------------------------------
-            // Search Valid Lines
-            // Iterate HP 0..63. For each HP, find min Def from table.
-            // -----------------------------------------------------------------
-            let validResults: { hp: number, def: number, total: number, stat: number }[] = [];
-            let minTotal = 9999;
-
-            // Pre-calculate HP table to avoid re-running full calc?
-            // HP only depends on Base HP, IV, EV. logic.ts has helper but we can run calcReceivedDamage once per HP?
-            // Actually, we can just use the formula or run calc once. 
-            // Running calc 64 times for HP is cheap if we don't care about damage range.
-            // Or just check valid Def for each HP.
-
-            for (let h = 0; h <= 63; h++) {
-                const hpEv = h * 4;
-
-                // Calculate Real HP for this EV
-                // We can use the calc helper or just run one calc
-                const hpUser = JSON.parse(JSON.stringify(user));
-                hpUser.evs.hp = hpEv;
-                // We need the HP stat.
-                // Re-running full calc is overhead? 
-                // We can cache the HP calc logic or use the calc instance. 
-                // Let's strictly use the calc to be safe (it handles IVs/Base stats internally).
-                // We can rely on `damageTable` for damage, so this call is just for HP.
-                // Wait. calculateReceivedDamage also re-calcs damage.
-                // We want to avoid that overhead if possible.
-                // BUT `damageTable` is already calculated.
-                // We only need the HP value.
-                // Let's assume calculateReceivedDamage is consistent.
-
-                // To get HP cheaply:
-                // We can just inspect the result of `damageTable[0]`'s `res.defender`?
-                // No, that had HP EV 0.
-                // We need to know HP at EV `hpEv`.
-                // Can we extrapolate? HP = Baseline + (hpEv/8)? No, at L50 it's +EV/4/2 + ...
-                // Formula: floor((Base*2 + IV + EV/4) * 0.5) + 60 (Gen 9 L50 Rule: Base+60?)
-                // Wait. logic.ts `calcRealStat` says: floor((Base*2 + IV + EV/4) * 50 / 100) + 50 + 10.
-                // = floor((Base*2 + IV + EV/4) * 0.5) + 60.
-                // Delta HP for +4 EV => +4/4 * 0.5 = 0.5. floor logic applies.
-                // +8 EV => +1 HP.
-                // So reliable formula is needed.
-                // Let's run `calculateReceivedDamage` once per HP usage?
-                // IF we trust the formula is standard, we can implement it here.
-                // But `this.calc` handles dynamic Base Stats if we changed species.
-                // Let's just run `calculateReceivedDamage` but ignore the move damage part? 
-                // `calc` doesn't expose `getStats` public method easily?
-                // Actually `DamageCalculator` wrapper usually runs full calc.
-                // Optimization: Just calculate HP once per loop.
-                // It is 64 calls. Total = 64 (Def Table) + 64 (HP Loop) = 128 calls.
-                // Still better than 384.
-
-                const resHP = this.calc.calculateReceivedDamage(target, hpUser, move, isTargetTera, isUserTera, fieldArgs);
-                const userHP = resHP.defender.stats.hp;
-
-                // Check condition: Damage * TargetSurvivable < userHP
-                // We want min Def Index `b` such that damageTable[b] satisfies this.
-                // damageTable is Sorted Descending (More Def = Less Damage).
-                // We want the FIRST `b` (smallest Def) that fits.
-                // We can simple linear scan `b` from 0?
-                // Or since HP increases, required max damage is looser?
-                // As HP increases, we can tolerate MORE damage.
-                // So required Def decreases.
-
-                // Let's use simple linear scan 0..63 for now, inside logical check.
-                // Wait, if we scan 0..63 for every 64 HPs, that's 64*64 = 4096 checks (though fast checks).
-                // It's just simple number comparison. Very fast.
-
-                let neededDefEv = -1;
-                let achievedStat = 0;
-
-                for (let b = 0; b <= 63; b++) {
-                    const dmg = damageTable[b];
-                    if (dmg * targetSurvivable < userHP) {
-                        neededDefEv = b * 4;
-                        achievedStat = defStatsTable[b];
-                        break; // Found smallest sufficient Def
+                // Binary search for minimum HP
+                let low = 1, high = 63, minH = 63;
+                while (low <= high) {
+                    const mid = Math.floor((low + high) / 2);
+                    const hpEv = mid * 4;
+                    const check = this.checkSurvives(target, user, move, category, hpEv, fixedDef, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                    if (check.survives) {
+                        minH = mid;
+                        high = mid - 1;
+                    } else {
+                        low = mid + 1;
                     }
                 }
+                const hpEv = minH * 4;
+                const finalCheck = this.checkSurvives(target, user, move, category, hpEv, fixedDef, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                return { hp: hpEv, def: fixedDef, total: hpEv + fixedDef, stat: finalCheck.defStat };
+            };
 
-                if (neededDefEv !== -1) {
-                    const total = hpEv + neededDefEv;
-                    validResults.push({ hp: hpEv, def: neededDefEv, total: total, stat: achievedStat });
-                    if (total < minTotal) minTotal = total;
+            // Helper: binary search BD for fixed HP=252
+            const bsearchDef = (lowDef: number, highDef: number): Candidate | null => {
+                const lowIdx = Math.ceil(lowDef / 4);
+                const highIdx = Math.floor(highDef / 4);
+
+                // Quick check: does max BD work?
+                const maxCheck = this.checkSurvives(target, user, move, category, 252, highIdx * 4, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                if (!maxCheck.survives) return null;
+
+                let lo = lowIdx, hi = highIdx, minD = highIdx;
+                while (lo <= hi) {
+                    const mid = Math.floor((lo + hi) / 2);
+                    const defEv = mid * 4;
+                    const check = this.checkSurvives(target, user, move, category, 252, defEv, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                    if (check.survives) {
+                        minD = mid;
+                        hi = mid - 1;
+                    } else {
+                        lo = mid + 1;
+                    }
+                }
+                const defEv = minD * 4;
+                const finalCheck = this.checkSurvives(target, user, move, category, 252, defEv, targetSurvivable, isTargetTera, isUserTera, fieldArgs, natureOverride);
+                return { hp: 252, def: defEv, total: 252 + defEv, stat: finalCheck.defStat };
+            };
+
+            // ---- Stage 1: H-focused search with BD capped at 12 ----
+            const bdCaps = [0, 4, 8, 12];
+            for (const bd of bdCaps) {
+                const result = bsearchHP(bd);
+                if (result) {
+                    if (!efficientResult || result.total < efficientResult.total) {
+                        efficientResult = result;
+                    }
+                    // H-focused: prefer low BD
+                    if (!bestResult || result.total < bestResult.total || (result.total === bestResult.total && result.hp > bestResult.hp)) {
+                        bestResult = result;
+                    }
                 }
             }
 
-            if (validResults.length > 0) {
-                // Heuristic: "H-Main with B-flexibility"
-                validResults.sort((a, b) => {
-                    if (a.total !== b.total) return a.total - b.total;
-                    return b.hp - a.hp; // Tiebreak: Prefer HP
-                });
-                const efficientResult = validResults[0];
-
-                const defLimit = 20;
-                const hFocusedCandidates = validResults.filter(r => r.def <= defLimit);
-                let bestResult;
-
-                if (hFocusedCandidates.length > 0) {
-                    hFocusedCandidates.sort((a, b) => {
-                        if (a.total !== b.total) return a.total - b.total;
-                        return b.hp - a.hp;
-                    });
-                    bestResult = hFocusedCandidates[0];
-                } else {
-                    validResults.sort((a, b) => b.hp - a.hp);
-                    bestResult = validResults[0];
+            // ---- Stage 2: H=252 fixed, BD 16-252 search ----
+            if (!bestResult) {
+                const result = bsearchDef(16, 252);
+                if (result) {
+                    bestResult = result;
+                    if (!efficientResult || result.total < efficientResult.total) {
+                        efficientResult = result;
+                    }
                 }
+            }
 
+            if (bestResult && efficientResult) {
+                const defLabel = defKey === 'def' ? 'B' : 'D';
                 return {
                     success: true,
                     evs: { hp: bestResult.hp, [defKey]: bestResult.def },
                     stat: bestResult.stat,
                     nature: currentNature,
                     totalEvCost: bestResult.total,
-                    description: `Min EVs (HP-Biased): H${bestResult.hp} / ${defKey === 'def' ? 'B' : 'D'}${bestResult.def} (Total: ${bestResult.total})`,
+                    description: `Min EVs (HP-Biased): H${bestResult.hp} / ${defLabel}${bestResult.def} (Total: ${bestResult.total})`,
                     thresholdDesc: targetDesc,
                     efficientEvs: { hp: efficientResult.hp, [defKey]: efficientResult.def },
                     efficientTotal: efficientResult.total,
@@ -311,7 +285,7 @@ export class LineExplorer {
             return null;
         };
 
-        // Pass 1: Original Nature (Neutral Def usually)
+        // Pass 1: Original Nature
         const res1 = runSearch();
         if (res1 && res1.success) return res1;
         if (res1 && res1.thresholdDesc === '高耐久') return res1;
