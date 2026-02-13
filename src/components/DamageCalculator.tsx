@@ -1609,7 +1609,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
                                 <button
                                     onClick={() => setCreateBoxModalOpen(true)}
-                                    className="px-3 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
+                                    className="px-3 sm:px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-emerald-100 rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
                                     + 新規チーム
                                 </button>
@@ -1663,7 +1663,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         setTargetBoxId(boxesState.activeBoxId);
                                     }
                                 }}
-                                className="w-full px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg transition-colors"
+                                className="w-full px-4 py-2 bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-700 hover:to-teal-700 text-emerald-100 font-bold rounded-lg transition-colors"
                             >
                                 + 新規ポケモン追加
                             </button>
@@ -1671,7 +1671,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-gray-700">
                                 <button
                                     onClick={() => setImportModalOpen(true)}
-                                    className="px-3 py-2 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                    className="px-3 py-2 bg-teal-800 hover:bg-teal-700 text-teal-100 rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     PokePaste インポート
                                 </button>
@@ -2516,7 +2516,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                             <button
                                 onClick={handleCreateBox}
                                 disabled={!newBoxName.trim()}
-                                className="px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg transition-colors"
+                                className="px-4 py-2 bg-emerald-800 hover:bg-emerald-700 disabled:bg-gray-700 disabled:text-gray-500 text-emerald-100 rounded-lg transition-colors"
                             >
                                 作成
                             </button>
