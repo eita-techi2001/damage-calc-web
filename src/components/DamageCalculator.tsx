@@ -1565,16 +1565,16 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                         自分のポケモン
                     </button>
                     <button
-                        onClick={() => setEditMode('opponent')}
-                        className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
-                    >
-                        相手の編集
-                    </button>
-                    <button
                         onClick={() => { setEditMode('manage'); setSelectedOpponentId(null); }}
                         className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'manage' ? 'text-green-400 border-b-2 border-green-400' : 'text-gray-400 hover:text-white'}`}
                     >
-                        リスト管理
+                        相手リスト
+                    </button>
+                    <button
+                        onClick={() => setEditMode('opponent')}
+                        className={`pb-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap transition-colors font-bold ${editMode === 'opponent' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-white'}`}
+                    >
+                        チームの編集
                     </button>
                 </div>
 
@@ -1583,11 +1583,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 {/* Manage Mode UI */}
                 {editMode === 'manage' && (
                     <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                        {/* Section: チーム管理 */}
+                        <h2 className="text-lg font-semibold text-green-200 border-b border-gray-700 pb-2">
+                            チーム管理
+                        </h2>
                         {/* Box Management Controls */}
                         <div className="bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm space-y-3">
                             {/* Box Selector Row */}
                             <div className="flex gap-2 items-center w-full">
-                                <label className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">Box:</label>
+                                <label className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">相手チーム:</label>
                                 <select
                                     value={boxesState?.activeBoxId || 'default'}
                                     onChange={(e) => handleSwitchBox(e.target.value)}
@@ -1607,7 +1611,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     onClick={() => setCreateBoxModalOpen(true)}
                                     className="px-3 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
-                                    + 新規Box
+                                    + 新規チーム
                                 </button>
                                 {activeBox && !activeBox.isDefault && (
                                     <>
@@ -1617,18 +1621,18 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 setRenameBoxModalOpen(true);
                                             }}
                                             className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
-                                            title="Box名を変更"
+                                            title="チーム名を変更"
                                         >
                                             名前変更
                                         </button>
                                         <button
                                             onClick={() => {
-                                                if (confirm(`Box「${activeBox.name}」を削除しますか？`)) {
+                                                if (confirm(`相手チーム「${activeBox.name}」を削除しますか？`)) {
                                                     handleDeleteBox();
                                                 }
                                             }}
                                             className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
-                                            title="Boxを削除"
+                                            title="チームを削除"
                                         >
                                             削除
                                         </button>
@@ -1637,39 +1641,19 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                 <button
                                     onClick={handleCloneBox}
                                     className="px-3 sm:px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm sm:text-base whitespace-nowrap min-w-0"
-                                    title="Boxを複製"
+                                    title="チームを複製"
                                 >
                                     複製
                                 </button>
                             </div>
                         </div>
 
-                        {/* Import/Export Controls */}
-                        <div className="bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                <button
-                                    onClick={() => setImportModalOpen(true)}
-                                    className="px-3 py-2 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
-                                >
-                                    📋 PokePaste インポート
-                                </button>
-                                <button
-                                    onClick={() => handleExportBox('ja')}
-                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
-                                >
-                                    📤 エクスポート (日本語)
-                                </button>
-                                <button
-                                    onClick={() => handleExportBox('en')}
-                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
-                                >
-                                    📤 エクスポート (English)
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Add New Pokemon Button */}
-                        <div className="flex gap-3 items-center bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
+                        {/* Section: ポケモンを追加 */}
+                        <h2 className="text-lg font-semibold text-green-200 border-b border-gray-700 pb-2 mt-4">
+                            ポケモンを追加
+                        </h2>
+                        {/* Add New Pokemon Button + PokePaste */}
+                        <div className="bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm space-y-3">
                             <button
                                 onClick={() => {
                                     setEditMode('opponent');
@@ -1679,12 +1663,37 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                         setTargetBoxId(boxesState.activeBoxId);
                                     }
                                 }}
-                                className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg transition-colors"
+                                className="w-full px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg transition-colors"
                             >
-                                ➕ 新規ポケモン追加
+                                + 新規ポケモン追加
                             </button>
+                            {/* PokePaste Import/Export */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-gray-700">
+                                <button
+                                    onClick={() => setImportModalOpen(true)}
+                                    className="px-3 py-2 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    PokePaste インポート
+                                </button>
+                                <button
+                                    onClick={() => handleExportBox('ja')}
+                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    エクスポート (日本語)
+                                </button>
+                                <button
+                                    onClick={() => handleExportBox('en')}
+                                    className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+                                >
+                                    エクスポート (English)
+                                </button>
+                            </div>
                         </div>
 
+                        {/* Section: ポケモンリスト */}
+                        <h2 className="text-lg font-semibold text-green-200 border-b border-gray-700 pb-2 mt-4">
+                            ポケモンリスト ({activeBox?.name || ''})
+                        </h2>
                         <div className="flex gap-4 items-center bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm mb-4">
                             <div className="flex-grow relative group">
                                 <input
@@ -1789,7 +1798,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                     {editMode !== 'manage' && (
                         <div className="p-4 bg-gray-900/40 rounded-xl border border-gray-700/30 space-y-4">
                             <h2 className="text-lg font-semibold text-blue-200 border-b border-gray-700 pb-2">
-                                {editMode === 'user' ? '自分のポケモンを選択' : '相手ポケモンを選択'}
+                                {editMode === 'user' ? '自分のポケモンを選択' : 'ポケモンを追加'}
                             </h2>
                             {editMode === 'user' ? (
                                 <div className="flex flex-col sm:flex-row gap-4 items-end">
@@ -1836,49 +1845,58 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     </button>
                                 </div>
                             ) : (
-                                <div className="space-y-3 w-full overflow-hidden">
-                                    {/* Pokemon Search Row */}
-                                    <div className="flex items-center gap-3 w-full min-w-0">
-                                        {/* Opponent Pokemon Icon */}
-                                        {opponentConfig?.species && (
-                                            <img
-                                                key={opponentConfig.species}
-                                                src={getIconUrl(opponentConfig.species)}
-                                                alt={opponentConfig.species}
-                                                className="w-20 h-15 object-contain pixelated flex-shrink-0"
-                                                title={t(opponentConfig.species)}
-                                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                            />
-                                        )}
-                                        <div className="flex-grow">
-                                            <AutocompleteInput
-                                                value={selectedOpponent}
-                                                onChange={setSelectedOpponent}
-                                                onSelect={handleLoadOpponent}
-                                                itemList={translatedSpeciesList}
-                                                placeholder="ポケモンを検索して追加..."
-                                            />
+                                <div className="space-y-3 w-full">
+                                    {/* Pokemon Search + Add Button Row (same layout as user mode) */}
+                                    <div className="flex flex-col sm:flex-row gap-4 items-end">
+                                        <div className="flex-grow w-full flex items-center gap-3">
+                                            {/* Opponent Pokemon Icon */}
+                                            {opponentConfig?.species && (
+                                                <img
+                                                    key={opponentConfig.species}
+                                                    src={getIconUrl(opponentConfig.species)}
+                                                    alt={opponentConfig.species}
+                                                    className="w-20 h-15 object-contain pixelated flex-shrink-0"
+                                                    title={t(opponentConfig.species)}
+                                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                                />
+                                            )}
+                                            <div className="flex-grow max-w-md">
+                                                <AutocompleteInput
+                                                    value={selectedOpponent}
+                                                    onChange={setSelectedOpponent}
+                                                    onSelect={handleLoadOpponent}
+                                                    itemList={translatedSpeciesList}
+                                                    placeholder="ポケモンを検索して追加..."
+                                                />
+                                            </div>
                                         </div>
+                                        <button
+                                            onClick={handleAddCustomOpponent}
+                                            disabled={!opponentConfig}
+                                            className={`w-full sm:w-auto text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 whitespace-nowrap ${!opponentConfig
+                                                ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                                                : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-500/20'
+                                                }`}
+                                        >
+                                            {saveMessage || (opponentConfig && (opponentConfig as any).id ? '別名で保存' : '追加')}
+                                        </button>
                                     </div>
 
-                                    {/* Remarks Input Row */}
-                                    <input
-                                        type="text"
-                                        placeholder="備考 (メモを入力...)"
-                                        value={opponentConfig?.remarks || ''}
-                                        onChange={(e) => setOpponentConfig({ ...opponentConfig!, remarks: e.target.value })}
-                                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
-                                    />
-
-                                    {/* Box Selector and Buttons Row */}
+                                    {/* Remarks + Box Selector + Update Row */}
                                     <div className="flex flex-col sm:flex-row gap-2 items-stretch w-full overflow-hidden">
-                                        {/* Box Selector - Takes up ~50% of width */}
-                                        <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
-                                            <label className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">Box:</label>
+                                        <input
+                                            type="text"
+                                            placeholder="備考 (メモを入力...)"
+                                            value={opponentConfig?.remarks || ''}
+                                            onChange={(e) => setOpponentConfig({ ...opponentConfig!, remarks: e.target.value })}
+                                            className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none min-w-0"
+                                        />
+                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                            <label className="text-xs text-gray-400 whitespace-nowrap">相手チーム:</label>
                                             <select
                                                 value={targetBoxId}
                                                 onChange={(e) => setTargetBoxId(e.target.value)}
-                                                className="flex-1 px-2 sm:px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 min-w-0 max-w-full"
+                                                className="px-2 sm:px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                                                 style={{ textOverflow: 'ellipsis' }}
                                             >
                                                 {boxesState?.boxes.map(box => (
@@ -1888,32 +1906,20 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 ))}
                                             </select>
                                         </div>
-
-                                        {/* Action Buttons - Takes up ~50% of width */}
-                                        <div className="flex gap-2 flex-1 min-w-0 overflow-hidden">
-                                            {opponentConfig && (opponentConfig as any).id && (
-                                                <button
-                                                    onClick={handleUpdateCustomOpponent}
-                                                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-2 sm:px-4 rounded-lg shadow-lg transition-colors min-w-0"
-                                                >
-                                                    更新
-                                                </button>
-                                            )}
+                                        {opponentConfig && (opponentConfig as any).id && (
                                             <button
-                                                onClick={handleAddCustomOpponent}
-                                                disabled={!opponentConfig}
-                                                className={`flex-1 text-white font-bold py-2 px-2 sm:px-4 rounded-lg shadow-lg transition-all min-w-0 ${!opponentConfig
-                                                    ? 'bg-gray-600 cursor-not-allowed opacity-50'
-                                                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500'
-                                                    }`}
+                                                onClick={handleUpdateCustomOpponent}
+                                                className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-colors whitespace-nowrap flex-shrink-0"
                                             >
-                                                {saveMessage || (opponentConfig && (opponentConfig as any).id ? '別名で保存' : '追加')}
+                                                更新
                                             </button>
-                                        </div>
+                                        )}
                                     </div>
+
                                 </div>
                             )}
                         </div>
+
                     )}
 
                     {/* Stats Slider Section (activeConfig) - For User and Opponent modes */}
@@ -2256,6 +2262,110 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
                         </div>
                     )}
+
+                    {/* Pokemon List in Opponent Mode - at bottom */}
+                    {editMode === 'opponent' && (() => {
+                        const targetBox = boxesState?.boxes.find(b => b.id === targetBoxId) || activeBox;
+                        const targetOpponents = targetBox?.opponents || [];
+                        return (
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold text-purple-200 border-b border-gray-700 pb-2">
+                                ポケモンリスト ({targetBox?.name || ''})
+                            </h2>
+                            <div className="flex gap-4 items-center bg-gray-900/40 p-4 rounded-xl border border-gray-600 shadow-sm">
+                                <div className="flex-grow relative group">
+                                    <input
+                                        type="text"
+                                        placeholder="リスト内を検索 (名前・持ち物・テラス)..."
+                                        value={filterText}
+                                        onChange={(e) => setFilterText(e.target.value)}
+                                        className="block w-full px-3 py-3 border border-gray-600 rounded-lg leading-5 bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:bg-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-lg transition-all shadow-inner"
+                                    />
+                                </div>
+                                <div className="text-sm font-medium text-gray-400 whitespace-nowrap bg-gray-800 px-3 py-2 rounded border border-gray-700">
+                                    <span className="text-gray-500 text-xs block text-center">HIT</span>
+                                    {targetOpponents.filter((o: any) =>
+                                        (t(o.species) + (o.extraLabel || '') + t(o.item || '') + t(o.teraType || '')).toLowerCase().includes(filterText.toLowerCase())
+                                    ).length} <span className="text-xs">/ {targetOpponents.length}</span>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                                {(() => {
+                                    const displayList = targetOpponents as any[];
+                                    return displayList
+                                        .filter(o => (t(o.species) + (o.extraLabel || '') + t(o.item || '') + t(o.teraType || '')).toLowerCase().includes(filterText.toLowerCase()))
+                                        .map(o => {
+                                            const isExcluded = excludedIds.includes(o.id);
+                                            return (
+                                                <div
+                                                    key={o.id}
+                                                    className={`
+                                                        p-3 rounded-lg border transition-all duration-200 flex items-center justify-between group
+                                                        ${isExcluded ? 'bg-gray-800/30 border-gray-700 text-gray-500' : 'bg-purple-900/20 border-purple-500/50 text-white'}
+                                                    `}
+                                                >
+                                                    <div className="flex items-center gap-3 overflow-hidden cursor-pointer flex-grow"
+                                                        onClick={() => {
+                                                            const groupIds = getVariantGroupIds(o.id);
+                                                            updateExcludedIds(prev =>
+                                                                prev.includes(o.id)
+                                                                    ? prev.filter(i => !groupIds.includes(i))
+                                                                    : [...prev, ...groupIds.filter(i => !prev.includes(i))]
+                                                            );
+                                                        }}
+                                                    >
+                                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!isExcluded ? 'border-purple-400 bg-purple-400' : 'border-gray-500'}`}>
+                                                            {!isExcluded && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                                        </div>
+                                                        <div className="flex-shrink-0 mr-3">
+                                                            <img
+                                                                src={getIconUrl(o.species)}
+                                                                alt={o.species}
+                                                                className="w-8 h-8 object-contain pixelated"
+                                                                loading="lazy"
+                                                                onError={(e) => {
+                                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="flex flex-col truncate">
+                                                            <span className="font-bold truncate">{t(o.species)} <span className="text-xs font-normal opacity-70">{o.extraLabel}</span></span>
+                                                            <span className="text-[10px] opacity-60 truncate">{t(o.item || 'No Item')} / {t(o.ability)}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEditOpponent(o as any);
+                                                            }}
+                                                            className="w-8 h-8 flex items-center justify-center rounded hover:bg-blue-500/20 text-gray-400 hover:text-blue-400 transition-colors"
+                                                            title="Edit configuration"
+                                                        >
+                                                            ✎
+                                                        </button>
+                                                        {(o.id as string).includes('-custom-') && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (confirm('Delete custom opponent?')) handleDeleteOverride(o.id);
+                                                                }}
+                                                                className="w-8 h-8 flex items-center justify-center rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors"
+                                                                title="Delete"
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                })()}
+                            </div>
+                        </div>
+                        );
+                    })()}
                 </div>
                 {error && (
                     <div className="mt-4 p-4 rounded-lg bg-red-900/20 border border-red-500/50 text-red-200 text-sm">
@@ -2386,13 +2496,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {createBoxModalOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setCreateBoxModalOpen(false)}>
                     <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 border border-gray-700" onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-xl font-bold text-white mb-4">新しいBoxを作成</h2>
+                        <h2 className="text-xl font-bold text-white mb-4">新しい相手チームを作成</h2>
                         <input
                             type="text"
                             value={newBoxName}
                             onChange={(e) => setNewBoxName(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
-                            placeholder="Box名を入力..."
+                            placeholder="チーム名を入力..."
                             className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
                             autoFocus
                         />
@@ -2419,13 +2529,13 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             {renameBoxModalOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setRenameBoxModalOpen(false)}>
                     <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 border border-gray-700" onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-xl font-bold text-white mb-4">Boxの名前を変更</h2>
+                        <h2 className="text-xl font-bold text-white mb-4">相手チームの名前を変更</h2>
                         <input
                             type="text"
                             value={newBoxName}
                             onChange={(e) => setNewBoxName(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleRenameBox()}
-                            placeholder="新しいBox名を入力..."
+                            placeholder="新しいチーム名を入力..."
                             className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                             autoFocus
                         />
