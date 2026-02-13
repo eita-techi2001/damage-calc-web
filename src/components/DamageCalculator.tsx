@@ -1597,7 +1597,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                     onChange={(e) => handleSwitchBox(e.target.value)}
                                     className="flex-1 min-w-0 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                                 >
-                                    {boxesState?.boxes.map(box => (
+                                    {boxesState?.boxes.slice().sort((a, b) => (a.isDefault ? 1 : 0) - (b.isDefault ? 1 : 0)).map(box => (
                                         <option key={box.id} value={box.id}>
                                             {box.name} {box.isDefault ? '(デフォルト)' : ''}
                                         </option>
@@ -1899,7 +1899,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                 className="px-2 sm:px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                                                 style={{ textOverflow: 'ellipsis' }}
                                             >
-                                                {boxesState?.boxes.map(box => (
+                                                {boxesState?.boxes.slice().sort((a, b) => (a.isDefault ? 1 : 0) - (b.isDefault ? 1 : 0)).map(box => (
                                                     <option key={box.id} value={box.id}>
                                                         {box.name} {box.isDefault ? '(デフォルト)' : ''}
                                                     </option>
