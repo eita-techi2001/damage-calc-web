@@ -1469,13 +1469,14 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                 );
 
                 if (lineRes) {
-                    if (lineRes.thresholdDesc !== '高耐久') {
+                    if (lineRes.thresholdDesc !== '確5以上') {
                         hasMeaningfulResult = true;
                     }
 
-                    // Populate User Real Stats (HP/Def/SpD) if Success (Only for first slot needed? Or consistently?)
-                    // Logic was `if (slotIndex === 1 && lineRes.success)`. 
-                    // Now Slot 1 is "Registered". This is fine. Use it as baseline.
+                    // Choose EVs based on defLineMode setting
+                    const useEfficient = settings?.defLineMode === 'efficient';
+                    const displayEvs = (useEfficient && lineRes.efficientEvs) ? lineRes.efficientEvs : lineRes.evs;
+
                     if (slotIndex === 1 && lineRes.success) {
                         const nature = lineRes.nature || userPoke.nature;
                         const natureBoosts: { [key: string]: string } = {
@@ -1484,9 +1485,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         };
                         const boostedStat = natureBoosts[nature];
                         const getMult = (s: string) => s === boostedStat ? 1.1 : 1.0;
-                        const realHP = calcStat('hp', lineRes.evs.hp);
-                        const displayDef = calcStat('def', lineRes.evs.def || 0, 31, getMult('def'));
-                        const displaySpD = calcStat('spd', lineRes.evs.spd || 0, 31, getMult('spd'));
+                        const realHP = calcStat('hp', displayEvs.hp);
+                        const displayDef = calcStat('def', displayEvs.def || 0, 31, getMult('def'));
+                        const displaySpD = calcStat('spd', displayEvs.spd || 0, 31, getMult('spd'));
                         let defText = displayDef.toString();
                         let spdText = displaySpD.toString();
                         if (category === 'Physical' && nature === 'Bold' && userPoke.nature !== 'Bold') defText += '↑';
@@ -1495,7 +1496,6 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         row['HP実数'] = realHP;
                         if (category === 'Physical') row['防御実数'] = defText;
                         else row['特防実数'] = spdText;
-                        // Update combined 必要実数値
                         const updatedDefVal = category === 'Physical' ? defText : spdText;
                         row['必要実数値'] = `H${realHP}${defKey}${updatedDefVal}`;
                     }
@@ -1546,9 +1546,9 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                         resStr = '無理';
                     } else {
                         const evParts = [];
-                        if (lineRes.evs.hp > 0) evParts.push(`H${lineRes.evs.hp}`);
-                        if (lineRes.evs.def > 0) evParts.push(`B${lineRes.evs.def}`);
-                        if (lineRes.evs.spd > 0) evParts.push(`D${lineRes.evs.spd}`);
+                        if (displayEvs.hp > 0) evParts.push(`H${displayEvs.hp}`);
+                        if (displayEvs.def > 0) evParts.push(`B${displayEvs.def}`);
+                        if (displayEvs.spd > 0) evParts.push(`D${displayEvs.spd}`);
                         const evStr = evParts.length > 0 ? evParts.join(' ') : '無振り';
                         const w = lineRes.thresholdDesc || '耐え';
                         resStr = `${evStr} (${w})`;
@@ -1640,24 +1640,20 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
             const sKey = category === 'Physical' ? 'atk' : 'spa';
 
             for (const th of thresholds) {
+                // findOffensiveLine internally tries Serious first, then Adamant/Modest
                 const res = explorer.findOffensiveLine(userPoke, target, move, th as any, userScenario.isTera, defenderScenario.isTera, fieldArgs);
                 if (res.success) {
-                    // Extract number from OHKO/2HKO/3HKO/4HKO
                     const koNum = th === 'OHKO' ? 1 : th[0];
-                    tierResults[tier.label] = `確${koNum}: ${statLabel}${res.evs[sKey]}`;
+                    const usedBoostedNature = !!res.nature; // nature is set when Adamant/Modest was needed
+                    const natureSymbol = usedBoostedNature
+                        ? (category === 'Physical' ? 'A↑ ' : 'C↑ ')
+                        : '';
+                    tierResults[tier.label] = `確${koNum}: ${natureSymbol}${statLabel}${res.evs[sKey]}`;
                     foundLine = true;
 
                     if (tier.label === '登録値' && res.stat) {
-                        // Calculate actual stat from required EVs
                         const rankValue = userPoke.ranks?.[sKey] || 0;
-
-                        // Calculate nature multiplier
-                        const userNature = userPoke.nature || 'Serious';
-                        const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
-                        const natureAnti: { [key: string]: string } = { 'Modest': 'atk', 'Timid': 'atk', 'Calm': 'atk', 'Bold': 'atk', 'Adamant': 'spa', 'Impish': 'spa', 'Jolly': 'spa', 'Careful': 'spa' };
-                        const natureMult = natureRef[userNature] === sKey ? 1.1 : (natureAnti[userNature] === sKey ? 0.9 : 1.0);
-
-                        // Calculate base stat value from EVs
+                        const natureMult = usedBoostedNature ? 1.1 : 1.0;
                         const requiredEV = res.evs[sKey];
                         const iv = userPoke.ivs?.[sKey] || 31;
                         const baseStatValue = calcRealStatWithBase(baseStats[sKey], requiredEV, iv, natureMult, false);
@@ -1667,41 +1663,6 @@ export async function calculateDamageForConfig(baseUserPoke: UserPokemonConfig, 
                             : baseStatValue.toString();
                     }
                     break;
-                }
-            }
-
-            // Second pass: try with boosting nature if first pass failed
-            if (!foundLine) {
-                const userNature = userPoke.nature || 'Serious';
-                const natureRef: { [key: string]: string } = { 'Adamant': 'atk', 'Bravery': 'atk', 'Lonely': 'atk', 'Naughty': 'atk', 'Bold': 'def', 'Relaxed': 'def', 'Impish': 'def', 'Lax': 'def', 'Modest': 'spa', 'Mild': 'spa', 'Quiet': 'spa', 'Rash': 'spa', 'Calm': 'spd', 'Gentle': 'spd', 'Sassy': 'spd', 'Careful': 'spd', 'Timid': 'spe', 'Hasty': 'spe', 'Jolly': 'spe', 'Naive': 'spe' };
-                const isAlreadyBoosting = natureRef[userNature] === sKey;
-
-                if (!isAlreadyBoosting) {
-                    const bestNature = category === 'Physical' ? 'Adamant' : 'Modest';
-                    const boostedUser = JSON.parse(JSON.stringify(userPoke));
-                    boostedUser.nature = bestNature;
-                    const natureSymbol = category === 'Physical' ? 'A↑' : 'C↑';
-
-                    for (const th of thresholds) {
-                        const res = explorer.findOffensiveLine(boostedUser, target, move, th as any, userScenario.isTera, defenderScenario.isTera, fieldArgs);
-                        if (res.success) {
-                            const koNum = th === 'OHKO' ? 1 : th[0];
-                            tierResults[tier.label] = `確${koNum}: ${natureSymbol} ${res.evs[sKey]}`;
-                            foundLine = true;
-
-                            if (tier.label === '登録値' && res.stat) {
-                                const rankValue = userPoke.ranks?.[sKey] || 0;
-                                const natureMult = 1.1; // Boosting nature
-                                const requiredEV = res.evs[sKey];
-                                const iv = userPoke.ivs?.[sKey] || 31;
-                                const baseStatValue = calcRealStatWithBase(baseStats[sKey], requiredEV, iv, natureMult, false);
-                                registeredTierStatStr = rankValue !== 0
-                                    ? `${baseStatValue}(${rankValue > 0 ? '+' : ''}${rankValue})`
-                                    : baseStatValue.toString();
-                            }
-                            break;
-                        }
-                    }
                 }
             }
 

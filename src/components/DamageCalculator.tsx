@@ -520,16 +520,24 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         // Initialize boxes and fetch data on mount
         getMetaOpponents().then(res => {
             if (res.success && res.data) {
-                // Assign stable IDs to Meta Opponents and ensure all required fields exist
-                const metas = res.data.map((m: any, idx: number) => ({
-                    ...m,
-                    id: `default-meta-${idx}`, // Box-scoped ID
-                    extraLabel: m.extraLabel,
-                    // Add default level, ivs and ranks if missing
-                    level: m.level || 50,
-                    ivs: m.ivs || { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-                    ranks: m.ranks || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }
-                }));
+                // Assign stable IDs and groupIds to Meta Opponents
+                // Group by species+ability+item so variants share a groupId
+                const groupIdMap = new Map<string, string>();
+                const metas = res.data.map((m: any, idx: number) => {
+                    const groupKey = `${m.species}|${m.ability}|${m.item}`;
+                    if (!groupIdMap.has(groupKey)) {
+                        groupIdMap.set(groupKey, `meta-group-${idx}`);
+                    }
+                    return {
+                        ...m,
+                        id: `default-meta-${idx}`,
+                        groupId: groupIdMap.get(groupKey),
+                        extraLabel: m.extraLabel,
+                        level: m.level || 50,
+                        ivs: m.ivs || { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+                        ranks: m.ranks || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }
+                    };
+                });
 
                 // Initialize boxes state with meta opponents
                 const initialState = initializeBoxes(metas);
@@ -998,6 +1006,8 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
         let newOpponents: any[];
 
+        const groupId = `group-${Date.now()}`;
+
         if (branchFn) {
             // Generate variants
             const branches = branchFn(opponentConfig as any);
@@ -1005,6 +1015,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                 ...opponentConfig,
                 ...b,
                 id: `${targetBoxId}-custom-${Date.now()}-${idx}`,
+                groupId,
                 customLabel: (customLabel.trim() ? `${customLabel.trim()} ` : '') + (b.extraLabel || '').replace(/[()]/g, ''),
             }));
             setSaveMessage(`Added Set (${newOpponents.length})!`);
@@ -1013,6 +1024,7 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
             newOpponents = [{
                 ...opponentConfig,
                 id: `${targetBoxId}-custom-${Date.now()}`,
+                groupId,
                 customLabel: customLabel.trim() || undefined
             }];
             setSaveMessage('Added New!');
@@ -1030,16 +1042,18 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
         setTimeout(() => setSaveMessage(null), 2000);
     };
 
-    // Find all sibling variant IDs (same species + item + ability = same variant group)
+    // Find all sibling variant IDs using groupId
+    // Pokemon added together share the same groupId, so deletion/exclusion affects the whole group
     const getVariantGroupIds = (targetId: string): string[] => {
         if (!activeBox) return [targetId];
         const target = activeBox.opponents.find((o: any) => o.id === targetId);
         if (!target) return [targetId];
-        const seen = new Set<string>();
+        const gid = (target as any).groupId;
+        // No groupId (legacy data) → fall back to individual only
+        if (!gid) return [targetId];
         return activeBox.opponents
-            .filter((o: any) => o.species === target.species && o.item === target.item && o.ability === target.ability)
-            .map((o: any) => o.id)
-            .filter(id => { if (seen.has(id)) return false; seen.add(id); return true; });
+            .filter((o: any) => o.groupId === gid)
+            .map((o: any) => o.id);
     };
 
     const handleDeleteOverride = (id: string) => {
@@ -1174,7 +1188,16 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
 
     const handleExportBox = (language: 'en' | 'ja') => {
         if (!activeBox) return;
-        const visibleOpponents = (activeBox.opponents as any[]).filter(o => !excludedIds.includes(o.id));
+        // Filter out excluded, then deduplicate by groupId (export one per variant group)
+        const seenGroups = new Set<string>();
+        const visibleOpponents = (activeBox.opponents as any[])
+            .filter(o => !excludedIds.includes(o.id))
+            .filter(o => {
+                if (!o.groupId) return true;
+                if (seenGroups.has(o.groupId)) return false;
+                seenGroups.add(o.groupId);
+                return true;
+            });
         const exported = formatMultipleToPokePaste(visibleOpponents, language);
         setExportText(exported);
         setExportModalOpen(true);
@@ -2254,6 +2277,15 @@ export default function DamageCalculator({ configs, allMoves }: DamageCalculator
                                                     className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
                                                 />
                                                 備考を表示
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={calcSettings.defLineMode === 'efficient'}
+                                                    onChange={(e) => setCalcSettings({ ...calcSettings, defLineMode: e.target.checked ? 'efficient' : 'hp-bias' })}
+                                                    className="w-4 h-4 bg-gray-800 border border-gray-600 rounded focus:ring-1 focus:ring-blue-500"
+                                                />
+                                                耐久ライン: 最大効率
                                             </label>
                                         </div>
                                     </div>

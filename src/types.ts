@@ -90,11 +90,14 @@ export interface GlobalFieldState {
 
 export type VariantFilterMode = 'default' | 'active-only' | 'inactive-only';
 
+export type DefLineMode = 'hp-bias' | 'efficient';
+
 export interface CalculationSettings {
     abilityVariantMode: VariantFilterMode;
     teraVariantMode: VariantFilterMode;
     excludeWeakMoves?: boolean;
     showRemarks?: boolean; // 備考を表示
+    defLineMode?: DefLineMode; // 耐久ライン: HP優先 or 最大効率
 }
 
 // Pokemon Box Management

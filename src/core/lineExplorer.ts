@@ -47,56 +47,69 @@ export class LineExplorer {
         else if (category === 'Special') statKey = 'spa';
         else return { success: false, evs: {}, description: 'Status Move' };
 
-        // Binary Search for Min EV (0..252, step 4) -> 0..63
-        let low = 0;
-        let high = 63;
-        let minEv = -1;
+        // Helper: binary search for min EV with a given nature
+        const searchWithNature = (natureOverride: string): LineResult | null => {
+            let low = 0;
+            let high = 63;
+            let minEv = -1;
 
-        while (low <= high) {
-            const mid = Math.floor((low + high) / 2);
-            const ev = mid * 4;
+            while (low <= high) {
+                const mid = Math.floor((low + high) / 2);
+                const ev = mid * 4;
 
-            // Clone User config with test EV
-            const testUser = JSON.parse(JSON.stringify(user));
-            testUser.evs[statKey] = ev; // Override EV
+                const testUser = JSON.parse(JSON.stringify(user));
+                testUser.evs[statKey] = ev;
+                testUser.nature = natureOverride;
 
-            const res = this.calc.calculateDamage(testUser, target, move, isUserTera, isTargetTera, fieldArgs);
-            const range = res.range();
-            const minDamage = range[0];
-            const targetHP = res.defender.stats.hp; // Actual HP stat
+                const res = this.calc.calculateDamage(testUser, target, move, isUserTera, isTargetTera, fieldArgs);
+                const range = res.range();
+                const minDamage = range[0];
+                const targetHP = res.defender.stats.hp;
 
-            let metCondition = false;
-            if (threshold === 'OHKO') {
-                if (minDamage >= targetHP) metCondition = true;
-            } else if (threshold === '2HKO') {
-                if (minDamage * 2 >= targetHP) metCondition = true;
-            } else if (threshold === '3HKO') {
-                if (minDamage * 3 >= targetHP) metCondition = true;
-            } else if (threshold === '4HKO') {
-                if (minDamage * 4 >= targetHP) metCondition = true;
+                let metCondition = false;
+                if (threshold === 'OHKO') {
+                    if (minDamage >= targetHP) metCondition = true;
+                } else if (threshold === '2HKO') {
+                    if (minDamage * 2 >= targetHP) metCondition = true;
+                } else if (threshold === '3HKO') {
+                    if (minDamage * 3 >= targetHP) metCondition = true;
+                } else if (threshold === '4HKO') {
+                    if (minDamage * 4 >= targetHP) metCondition = true;
+                }
+
+                if (metCondition) {
+                    minEv = ev;
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
             }
 
-            if (metCondition) {
-                minEv = ev;
-                high = mid - 1; // Try lower
-            } else {
-                low = mid + 1; // Need more power
+            if (minEv !== -1) {
+                const finalUser = JSON.parse(JSON.stringify(user));
+                finalUser.evs[statKey] = minEv;
+                finalUser.nature = natureOverride;
+                const res = this.calc.calculateDamage(finalUser, target, move, isUserTera, isTargetTera, fieldArgs);
+
+                return {
+                    success: true,
+                    evs: { [statKey]: minEv },
+                    stat: res.attacker.stats[statKey],
+                    nature: natureOverride !== 'Serious' ? natureOverride : undefined,
+                    description: `Min ${statKey.toUpperCase()} EV: ${minEv}`
+                };
             }
-        }
+            return null;
+        };
 
-        if (minEv !== -1) {
-            // Get final stat
-            const finalUser = JSON.parse(JSON.stringify(user));
-            finalUser.evs[statKey] = minEv;
-            const res = this.calc.calculateDamage(finalUser, target, move, isUserTera, isTargetTera, fieldArgs);
+        // Pass 1: Neutral nature (no modifier)
+        const res1 = searchWithNature('Serious');
+        if (res1) return res1;
 
-            return {
-                success: true,
-                evs: { [statKey]: minEv },
-                stat: res.attacker.stats[statKey],
-                description: `Min ${statKey.toUpperCase()} EV: ${minEv}`
-            };
-        }
+        // Pass 2: Positive nature (Adamant for physical, Modest for special)
+        const positiveNature = statKey === 'atk' ? 'Adamant' : 'Modest';
+        const res2 = searchWithNature(positiveNature);
+        if (res2) return res2;
 
         return { success: false, evs: {}, description: 'Cannot achieve threshold with 252 EV' };
     }
@@ -140,10 +153,11 @@ export class LineExplorer {
     ): LineResult & { thresholdDesc?: string } {
         const defKey = category === 'Physical' ? 'def' : 'spd';
 
-        // Calculate baseline (0 HP / 0 Def) to determine current survivability
+        // Calculate baseline (0 HP / 0 Def) to determine current survivability (neutral nature)
         const baselineUser = JSON.parse(JSON.stringify(user));
         baselineUser.evs.hp = 0;
         baselineUser.evs[defKey] = 0;
+        baselineUser.nature = 'Serious';
         const baselineRes = this.calc.calculateReceivedDamage(target, baselineUser, move, isTargetTera, isUserTera, fieldArgs);
         const baselineMaxDmg = baselineRes.range()[1];
         const baselineHP = baselineRes.defender.stats.hp;
@@ -153,7 +167,7 @@ export class LineExplorer {
         else baselineSurvivable = Math.ceil(baselineHP / baselineMaxDmg) - 1;
 
         let baselineDesc = '';
-        if (baselineSurvivable >= 4) baselineDesc = '高耐久';
+        if (baselineSurvivable >= 4) baselineDesc = '確5以上';
         else if (baselineSurvivable <= 0) baselineDesc = '確1';
         else if (baselineSurvivable === 1) baselineDesc = '確2';
         else baselineDesc = `確${baselineSurvivable + 1}`;
@@ -173,11 +187,11 @@ export class LineExplorer {
             const baseMaxDmg = baseRes2.range()[1];
             const baseHP = baseRes2.defender.stats.hp;
 
-            if (baseMaxDmg === 0) return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '高耐久' };
+            if (baseMaxDmg === 0) return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '確5以上' };
 
             const currentSurvivable = Math.ceil(baseHP / baseMaxDmg) - 1;
             if (currentSurvivable >= 4) {
-                return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '高耐久' };
+                return { success: false, evs: {}, description: 'Already highly durable', thresholdDesc: '確5以上' };
             }
 
             const targetSurvivable = currentSurvivable + 1;
@@ -285,17 +299,17 @@ export class LineExplorer {
             return null;
         };
 
-        // Pass 1: Original Nature
-        const res1 = runSearch();
+        // Pass 1: Neutral Nature (no nature modifier)
+        const res1 = runSearch('Serious');
         if (res1 && res1.success) return res1;
-        if (res1 && res1.thresholdDesc === '高耐久') return res1;
+        if (res1 && res1.thresholdDesc === '確5以上') return res1;
 
         // Pass 2: Positive Nature (Bold / Calm)
         const positiveNature = category === 'Physical' ? 'Bold' : 'Calm';
         const res2 = runSearch(positiveNature);
 
         if (res2 && res2.success) return res2;
-        if (res2 && res2.thresholdDesc === '高耐久') return res2;
+        if (res2 && res2.thresholdDesc === '確5以上') return res2;
 
         return { success: false, evs: {}, description: 'Cannot reach next threshold', thresholdDesc: baselineDesc };
     }
