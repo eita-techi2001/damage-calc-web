@@ -102,8 +102,8 @@ export class DamageCalculator {
             move = new Move(gen, moveName, { overrides: moveOverrides });
         }
 
-        // Merge default field (Doubles) with overrides
-        const currentField = new Field({ gameType: 'Doubles', ...realFieldOptions });
+        // Merge field: Doubles when spread damage is on, Singles when off (also affects wall reduction)
+        const currentField = new Field({ gameType: isSpreadDamage ? 'Doubles' : 'Singles', ...realFieldOptions });
 
         // Calculate
         const result = calculate(gen, attacker, defender, move, currentField);
@@ -138,7 +138,7 @@ export class DamageCalculator {
             move = new Move(gen, moveName, { overrides: moveOverrides });
         }
 
-        const currentField = new Field({ gameType: 'Doubles', ...realFieldOptions });
+        const currentField = new Field({ gameType: isSpreadDamage ? 'Doubles' : 'Singles', ...realFieldOptions });
 
         return calculate(gen, attacker, defender, move, currentField);
     }
